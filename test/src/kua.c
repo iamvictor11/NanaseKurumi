@@ -1,2 +1,2 @@
-#define NANAKU_IMPL_FILE
-#include "nanaku/platform/console.h"
+#define PN_IMPL_FILE
+#include "project_name/platform/console.h"

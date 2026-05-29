@@ -1,15 +1,15 @@
-#ifndef NANAKU_CONTAINER_VECTOR_H
-#define NANAKU_CONTAINER_VECTOR_H
+#ifndef PN_CONTAINER_VECTOR_H
+#define PN_CONTAINER_VECTOR_H
 
 #include "allocator.h"
 #include <stdbool.h>
 #include <string.h>
 
 #pragma region Konst
-#define NK_VECTOR_GROWTH_FACTOR 2
+#define PN_VECTOR_GROWTH_FACTOR 2
 #pragma endregion
 #pragma region Dec
-#define NK_DEC_VECTOR(PREFIX, NAME, TYPE) \
+#define PN_DEC_VECTOR(PREFIX, NAME, TYPE) \
     typedef struct PREFIX##NAME##Def PREFIX##NAME##Def; \
     typedef struct PREFIX##NAME##_T PREFIX##NAME##_T; \
     typedef PREFIX##NAME##_T* PREFIX##NAME; \
@@ -51,7 +51,7 @@
     /* 容量 */ \
     void PREFIX##NAME##Reserve(PREFIX##NAME me, size_t capacity); \
     void PREFIX##NAME##Resize(PREFIX##NAME me, size_t size); \
-    void PREFIX##NAME##ShrinkToFit(PREFIX##NAME me); \
+    void PREFIX##NAME##Shripn_ToFit(PREFIX##NAME me); \
     void PREFIX##NAME##Clear(PREFIX##NAME me); \
     /* 增删改 */ \
     void PREFIX##NAME##Insert(PREFIX##NAME me, size_t index, const TYPE* element); \
@@ -66,7 +66,7 @@
     void PREFIX##NAME##Swap(PREFIX##NAME me, PREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define NK_DEF_VECTOR(PREFIX, NAME, TYPE) \
+#define PN_DEF_VECTOR(PREFIX, NAME, TYPE) \
     typedef struct PREFIX##NAME##Def \
     { \
         size_t size; \
@@ -94,7 +94,7 @@
     } PREFIX##NAME##_T;
 #pragma endregion
 #pragma region Impl
-#define NK_IMPL_VECTOR(PREFIX, NAME, TYPE, ALLOCATOR) \
+#define PN_IMPL_VECTOR(PREFIX, NAME, TYPE, ALLOCATOR) \
     /* 创建销毁 */ \
     PREFIX##NAME PREFIX##NAME##Create(const PREFIX##NAME##Def* def) \
     { \
@@ -260,7 +260,7 @@
         if (required > me->capacity) \
         { \
             size_t newCapacity = me->capacity ? me->capacity : 1; \
-            while (newCapacity < required) newCapacity *= NK_VECTOR_GROWTH_FACTOR; \
+            while (newCapacity < required) newCapacity *= PN_VECTOR_GROWTH_FACTOR; \
             PREFIX##NAME##Reserve(me, newCapacity); \
         } \
         for (size_t i = 0; i < count; i++) \
@@ -275,7 +275,7 @@
         if (required > me->capacity) \
         { \
             size_t newCapacity = me->capacity ? me->capacity : 1; \
-            while (newCapacity < required) newCapacity *= NK_VECTOR_GROWTH_FACTOR; \
+            while (newCapacity < required) newCapacity *= PN_VECTOR_GROWTH_FACTOR; \
             PREFIX##NAME##Reserve(me, newCapacity); \
         } \
         if (index < me->size) \
@@ -351,7 +351,7 @@
         if (size > me->capacity) \
         { \
             size_t newCapacity = me->capacity ? me->capacity : 1; \
-            while (newCapacity < size) newCapacity *= NK_VECTOR_GROWTH_FACTOR; \
+            while (newCapacity < size) newCapacity *= PN_VECTOR_GROWTH_FACTOR; \
             PREFIX##NAME##Reserve(me, newCapacity); \
         } \
         if (size > me->size) \
@@ -370,7 +370,7 @@
         } \
         me->size = size; \
     } \
-    void PREFIX##NAME##ShrinkToFit(PREFIX##NAME me) \
+    void PREFIX##NAME##Shripn_ToFit(PREFIX##NAME me) \
     { \
         if (me->size == me->capacity) return; \
         if (me->size == 0) \
@@ -408,7 +408,7 @@
     { \
         if (me->size + 1 > me->capacity) \
         { \
-            size_t newCapacity = me->capacity ? me->capacity * NK_VECTOR_GROWTH_FACTOR : 1; \
+            size_t newCapacity = me->capacity ? me->capacity * PN_VECTOR_GROWTH_FACTOR : 1; \
             PREFIX##NAME##Reserve(me, newCapacity); \
         } \
         me->data[me->size] = *element; \
@@ -450,13 +450,13 @@
     }
 #pragma endregion
 #pragma region Sugar
-#define NK_VECTOR_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
+#define PN_VECTOR_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
     for ( \
         TYPE* ELEM_PTR_NAME = (CONTAINER)->data; \
         ELEM_PTR_NAME != NULL && (size_t)(ELEM_PTR_NAME - (CONTAINER)->data) < (CONTAINER)->size; \
         ELEM_PTR_NAME++ \
     )
-#define NK_VECTOR_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
+#define PN_VECTOR_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
     for ( \
         TYPE* ELEM_PTR_NAME = ((CONTAINER)->size > 0 ? &((CONTAINER)->data[(CONTAINER)->size - 1]) : NULL); \
         ELEM_PTR_NAME != NULL; \

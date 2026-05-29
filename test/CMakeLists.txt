@@ -13,7 +13,7 @@ PUBLIC
 add_subdirectory("src")
 target_link_libraries(test
 PUBLIC
-    nanaku
+    project_name
 )
 
 set_property(TARGET test PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)

@@ -1,5 +1,5 @@
-#ifndef NANAKU_CONTAINER_STR_H
-#define NANAKU_CONTAINER_STR_H
+#ifndef PN_CONTAINER_STR_H
+#define PN_CONTAINER_STR_H
 
 #include "vector.h"
 #include <ctype.h>
@@ -7,8 +7,8 @@
 #include <stdio.h>
 
 #pragma region Dec
-#define NK_DEC_STRING(PREFIX, NAME) \
-    NK_DEC_VECTOR(PREFIX, NAME, char) \
+#define PN_DEC_STRING(PREFIX, NAME) \
+    PN_DEC_VECTOR(PREFIX, NAME, char) \
     /* 创建 */ \
     PREFIX##NAME PREFIX##NAME##CreateFromCstr(const char* cstr); \
     PREFIX##NAME PREFIX##NAME##CreateFromFormat(const char* format, ...); \
@@ -29,12 +29,12 @@
     size_t PREFIX##NAME##Hash(const PREFIX##NAME me);
 #pragma endregion
 #pragma region Def
-#define NK_DEF_STRING(PREFIX, NAME) \
-    NK_DEF_VECTOR(PREFIX, NAME, char)
+#define PN_DEF_STRING(PREFIX, NAME) \
+    PN_DEF_VECTOR(PREFIX, NAME, char)
 #pragma endregion
 #pragma region Impl
-#define NK_IMPL_STRING(PREFIX, NAME, ALLOCATOR) \
-    NK_IMPL_VECTOR(PREFIX, NAME, char, ALLOCATOR) \
+#define PN_IMPL_STRING(PREFIX, NAME, ALLOCATOR) \
+    PN_IMPL_VECTOR(PREFIX, NAME, char, ALLOCATOR) \
     /* 创建 */ \
     PREFIX##NAME PREFIX##NAME##CreateFromCstr(const char* cstr) \
     { \
@@ -198,8 +198,8 @@
     }
 #pragma endregion
 #pragma region Sugar
-#define NK_STRING_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) NK_VECTOR_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME)
-#define NK_STRING_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) NK_VECTOR_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME)
+#define PN_STRING_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) PN_VECTOR_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME)
+#define PN_STRING_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) PN_VECTOR_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME)
 #pragma endregion
 
 #endif

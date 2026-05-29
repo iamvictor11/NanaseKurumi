@@ -11,5 +11,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${INT_DIR})
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/nanaku")
+add_subdirectory("${CMAKE_SOURCE_DIR}/project_name")
 add_subdirectory("${CMAKE_SOURCE_DIR}/test")

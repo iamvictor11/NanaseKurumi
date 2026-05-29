@@ -1,15 +1,15 @@
-add_library(nanaku INTERFACE)
+add_library(project_name INTERFACE)
 
-target_compile_definitions(nanaku
+target_compile_definitions(project_name
 INTERFACE
-    NK_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
-    NK_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
+    PN_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
+    PN_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
 )
-target_include_directories(nanaku
+target_include_directories(project_name
 INTERFACE
     "include"
 )
-target_compile_options(nanaku
+target_compile_options(project_name
 INTERFACE
     $<$<CONFIG:Debug>:
         -O0
@@ -24,7 +24,7 @@ INTERFACE
         -fdata-sections
     >
 )
-target_link_options(nanaku
+target_link_options(project_name
 INTERFACE
     $<$<CONFIG:Release>:
         -s
