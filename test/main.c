@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "nanaku/platform/console.h"
 #include "nanaku/nk.h"
 #include "nanaku/container/str.h"
 
@@ -10,13 +11,16 @@ NK_IMPL_STRING(test, String, &allocator)
 
 int main()
 {
-    int key;
-    scanf("%d", &key);
-    testString str = testStringCreateFromFormat("%d", key);
+    nkSetConsoleOutputCP_UTF8();
+    testString str = testStringCreateFromFormat("%s", "-011");
+    printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));
+    testStringAssignFromCstr(str, "0xF'F");
+    printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));
+    testStringAssignFromCstr(str, "01.2e-3");
     printf("%s, hash: %zu, float: %f\n", testStringToCstr(str), testStringHash(str), testStringToFloat(str));
-    testStringAssignFromCstr(str, "11e3");
-    printf("%s, hash: %zu, float: %f\n", testStringToCstr(str), testStringHash(str), testStringToFloat(str));
+    NK_STRING_FOREACH(char, str, c)
+        printf("%c", *c);
     testStringDestroy(str);
-    scanf("%d", &key);
+    nkGetChar();
     return EXIT_SUCCESS;
 }
