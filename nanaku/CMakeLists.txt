@@ -1,0 +1,33 @@
+add_library(nanaku INTERFACE)
+
+target_compile_definitions(nanaku
+INTERFACE
+    NK_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
+    NK_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
+)
+target_include_directories(nanaku
+INTERFACE
+    "include"
+)
+target_compile_options(nanaku
+INTERFACE
+    $<$<CONFIG:Debug>:
+        -O0
+        -g
+    >
+    $<$<CONFIG:Release>:
+        -O3
+        -DNDEBUG
+        -fomit-frame-pointer
+        -fno-semantic-interposition
+        -ffunction-sections
+        -fdata-sections
+    >
+)
+target_link_options(nanaku
+INTERFACE
+    $<$<CONFIG:Release>:
+        -s
+        -Wl,--gc-sections
+    >
+)
