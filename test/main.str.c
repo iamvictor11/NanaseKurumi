@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "project_name/pn.h"
 #include "project_name/platform/console.h"
+#include "project_name/version.h"
 #include "project_name/container/str.h"
 
 pn_Allocator allocator = PN_DEFAULT_ALLOCATOR;
@@ -12,15 +12,19 @@ PN_IMPL_STRING(test, String, &allocator)
 int main()
 {
     pn_SetConsoleOutputCP_UTF8();
-    testString str = testStringCreateFromFormat("%s", "-011");
+
+    pn_Version version = PN_VERSION;
+    printf("%s\n", version.name);
+    testString str = testStringCreateFromFormat("0%d", PN_VERSION_CAST_UINT(version));
     printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));
-    testStringAssignFromCstr(str, "0xF'F");
+    testStringAssignFromCstr(str, "-0xF'F");
     printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));
     testStringAssignFromCstr(str, "01.2e-3");
     printf("%s, hash: %zu, float: %f\n", testStringToCstr(str), testStringHash(str), testStringToFloat(str));
     PN_STRING_FOREACH(char, str, c)
         printf("%c", *c);
     testStringDestroy(str);
+
     pn_GetChar();
     return EXIT_SUCCESS;
 }
