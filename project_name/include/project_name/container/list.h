@@ -192,6 +192,7 @@
 	{ \
 		return PREFIX##NAME##Find(me, goal, equalor) != NULL; \
 	} \
+	/* 批处理 */ \
 	void PREFIX##NAME##Foreach(PREFIX##NAME me, PREFIX##NAME##ForeachCallback processor) \
 	{ \
 		for (TYPE* it = me->head; it != NULL; it = PREFIX##NAME##_GetNode(it)->next) processor(it); \
@@ -225,6 +226,7 @@
 		me->tail = NULL; \
 		me->size = 0; \
 	} \
+	/* 交换 */ \
 	void PREFIX##NAME##Swap(PREFIX##NAME me, PREFIX##NAME other) \
 	{ \
 		TYPE* t_head = me->head; \
