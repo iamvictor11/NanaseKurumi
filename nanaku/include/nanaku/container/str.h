@@ -3,23 +3,114 @@
 
 #include "vector.h"
 #include <ctype.h>
+#include <stdarg.h>
+#include <stdio.h>
 
+#pragma region Dec
 #define NK_DEC_STRING(PREFIX, NAME) \
     NK_DEC_VECTOR(PREFIX, NAME, char) \
+    /* 创建 */ \
+    PREFIX##NAME PREFIX##NAME##CreateFromCstr(const char* cstr); \
+    PREFIX##NAME PREFIX##NAME##CreateFromFormat(const char* format, ...); \
+    PREFIX##NAME PREFIX##NAME##CreateFromVFormat(const char* format, va_list args); \
+    /* 写入 */ \
+    void PREFIX##NAME##AssignFromCstr(PREFIX##NAME me, const char* cstr); \
+    void PREFIX##NAME##AssignFromFormat(PREFIX##NAME me, const char* format, ...); \
+    void PREFIX##NAME##AssignFromVFormat(PREFIX##NAME me, const char* format, va_list args); \
+    void PREFIX##NAME##AppendFromCstr(PREFIX##NAME me, const char* cstr); \
+    void PREFIX##NAME##AppendFromFormat(PREFIX##NAME me, const char* format, ...); \
+    void PREFIX##NAME##AppendFromVFormat(PREFIX##NAME me, const char* format, va_list args); \
+    /* 转换 */ \
     const char* PREFIX##NAME##ToCstr(const PREFIX##NAME me); \
     int PREFIX##NAME##ToInt(const PREFIX##NAME me); \
     float PREFIX##NAME##ToFloat(const PREFIX##NAME me); \
     double PREFIX##NAME##ToDouble(const PREFIX##NAME me); \
+    /* 哈希 */ \
     size_t PREFIX##NAME##Hash(const PREFIX##NAME me);
-
+#pragma endregion
+#pragma region Def
 #define NK_DEF_STRING(PREFIX, NAME) \
     NK_DEF_VECTOR(PREFIX, NAME, char)
-
+#pragma endregion
+#pragma region Impl
 #define NK_IMPL_STRING(PREFIX, NAME, ALLOCATOR) \
     NK_IMPL_VECTOR(PREFIX, NAME, char, ALLOCATOR) \
+    /* 创建 */ \
+    PREFIX##NAME PREFIX##NAME##CreateFromCstr(const char* cstr) \
+    { \
+        PREFIX##NAME me = PREFIX##NAME##Create(NULL); \
+        if (me == NULL) return NULL; \
+        PREFIX##NAME##AssignFromCstr(me, cstr); \
+        return me; \
+    } \
+    PREFIX##NAME PREFIX##NAME##CreateFromFormat(const char* format, ...) \
+    { \
+        va_list args; \
+        va_start(args, format); \
+        PREFIX##NAME me = PREFIX##NAME##CreateFromVFormat(format, args); \
+        va_end(args); \
+        return me; \
+    } \
+    PREFIX##NAME PREFIX##NAME##CreateFromVFormat(const char* format, va_list args) \
+    { \
+        PREFIX##NAME me = PREFIX##NAME##Create(NULL); \
+        PREFIX##NAME##AssignFromVFormat(me, format, args); \
+        return me; \
+    } \
+    /* 写入 */ \
+    void PREFIX##NAME##AssignFromCstr(PREFIX##NAME me, const char* cstr) \
+    { \
+        if (cstr != NULL) \
+            PREFIX##NAME##Assign(me, strlen(cstr), cstr); \
+    } \
+    void PREFIX##NAME##AppendFromCstr(PREFIX##NAME me, const char* cstr) \
+    { \
+        if (cstr != NULL) \
+            PREFIX##NAME##Append(me, strlen(cstr), cstr); \
+    } \
+    void PREFIX##NAME##AssignFromFormat(PREFIX##NAME me, const char* format, ...) \
+    { \
+        va_list args; \
+        va_start(args, format); \
+        PREFIX##NAME##AssignFromVFormat(me, format, args); \
+        va_end(args); \
+    } \
+    void PREFIX##NAME##AssignFromVFormat(PREFIX##NAME me, const char* format, va_list args) \
+    { \
+        if (format == NULL) return; \
+        va_list args_copy; \
+        va_copy(args_copy, args); \
+        int len = vsnprintf(NULL, 0, format, args_copy); \
+        va_end(args_copy); \
+        if (len < 0) return; \
+        PREFIX##NAME##Reserve(me, len + 1); \
+        me->size = len; \
+        vsnprintf(me->data, len + 1, format, args); \
+    } \
+    void PREFIX##NAME##AppendFromFormat(PREFIX##NAME me, const char* format, ...) \
+    { \
+        va_list args; \
+        va_start(args, format); \
+        PREFIX##NAME##AppendFromVFormat(me, format, args); \
+        va_end(args); \
+    } \
+    void PREFIX##NAME##AppendFromVFormat(PREFIX##NAME me, const char* format, va_list args) \
+    { \
+        if (format == NULL) return; \
+        va_list args_copy; \
+        va_copy(args_copy, args); \
+        int len = vsnprintf(NULL, 0, format, args_copy); \
+        va_end(args_copy); \
+        if (len < 0) return; \
+        size_t old_size = me->size; \
+        PREFIX##NAME##Reserve(me, old_size + len + 1); \
+        vsnprintf(me->data + old_size, len + 1, format, args); \
+        me->size = old_size + len; \
+    } \
+    /* 转换 */ \
     const char* PREFIX##NAME##ToCstr(const PREFIX##NAME me) \
     { \
-        if (me == NULL || me->data == NULL) return ""; \
+        if (me->data == NULL) return ""; \
         if (me->size == me->capacity) \
             PREFIX##NAME##Reserve(me, me->size + 1); \
         me->data[me->size] = '\0'; \
@@ -100,6 +191,7 @@
         free(buf); \
         return val; \
     } \
+    /* 哈希 */ \
     size_t PREFIX##NAME##Hash(const PREFIX##NAME me) \
     { \
         const char* str = PREFIX##NAME##ToCstr(me); \
@@ -109,5 +201,6 @@
             hash = ((hash << 5) + hash) + (unsigned char)c; \
         return hash; \
     }
+#pragma endregion
 
 #endif
