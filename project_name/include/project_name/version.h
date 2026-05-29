@@ -1,17 +1,17 @@
-#ifndef PN_VERSION_H
-#define PN_VERSION_H
+#ifndef PNX_VERSION_H
+#define PNX_VERSION_H
 
 #include <stdint.h>
 
-typedef struct pn_Version
+typedef struct pnxVersion
 {
     const char* name;
     uint8_t major;
     uint8_t minor;
     uint8_t patch;
     void* user;
-} pn_Version;
-#define PN_VERSION \
+} pnxVersion;
+#define PNX_VERSION \
 { \
     .name = "Nanase Kurumi", \
     .major = 1, \
@@ -19,12 +19,12 @@ typedef struct pn_Version
     .patch = 1, \
     .user = NULL \
 }
-#define PN_VERSION_TO_UINT(MAJOR, MINOR, PATCH) \
+#define PNX_VERSION_TO_UINT(MAJOR, MINOR, PATCH) \
     (((uint32_t)(MAJOR) << 16) | ((uint32_t)(MINOR) << 8) | (uint32_t)(PATCH))
-#define PN_VERSION_CAST_UINT(VERSION) \
-    PN_VERSION_TO_UINT((VERSION).major, (VERSION).minor, (VERSION).patch)
-#define PN_UINT_TO_MAJOR(VERSION) (((VERSION) >> 16) & 0xFF)
-#define PN_UINT_TO_MINOR(VERSION) (((VERSION) >> 8) & 0xFF)
-#define PN_UINT_TO_PATCH(VERSION) ((VERSION) & 0xFF)
+#define PNX_VERSION_CAST_UINT(VERSION) \
+    PNX_VERSION_TO_UINT((VERSION).major, (VERSION).minor, (VERSION).patch)
+#define PNX_UINT_TO_MAJOR(VERSION) (((VERSION) >> 16) & 0xFF)
+#define PNX_UINT_TO_MINOR(VERSION) (((VERSION) >> 8) & 0xFF)
+#define PNX_UINT_TO_PATCH(VERSION) ((VERSION) & 0xFF)
 
 #endif

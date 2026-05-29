@@ -1,12 +1,12 @@
-#ifndef PN_CONTAINER_LIST_H
-#define PN_CONTAINER_LIST_H
+#ifndef PNX_CONTAINER_LIST_H
+#define PNX_CONTAINER_LIST_H
 
 #include "allocator.h"
 #include <stdbool.h>
 #include <stddef.h>
 
 #pragma region Dec
-#define PN_DEC_LIST(PREFIX, NAME, TYPE) \
+#define PNX_DEC_LIST(PREFIX, NAME, TYPE) \
     typedef struct TYPE TYPE; \
 	typedef struct PREFIX##NAME##Def PREFIX##NAME##Def; \
 	typedef struct PREFIX##NAME##_T PREFIX##NAME##_T; \
@@ -44,7 +44,7 @@
 	void PREFIX##NAME##Swap(PREFIX##NAME me, PREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PN_DEF_LIST(PREFIX, NAME, TYPE) \
+#define PNX_DEF_LIST(PREFIX, NAME, TYPE) \
 	typedef struct PREFIX##NAME##Def \
 	{ \
 		PREFIX##NAME##Signal insertSignal; \
@@ -72,7 +72,7 @@
 	} PREFIX##NAME##_T;
 #pragma endregion
 #pragma region Impl
-#define PN_IMPL_LIST(PREFIX, NAME, TYPE, NODE_NAME, ALLOCATOR) \
+#define PNX_IMPL_LIST(PREFIX, NAME, TYPE, NODE_NAME, ALLOCATOR) \
 	static inline PREFIX##NAME##Node* PREFIX##NAME##_GetNode(TYPE* e) { return &((e)->NODE_NAME); } \
 	/* 创建销毁 */ \
 	PREFIX##NAME PREFIX##NAME##Create(const PREFIX##NAME##Def* def) \
@@ -239,9 +239,9 @@
 	}
 #pragma endregion
 #pragma region Sugar
-#define PN_LIST_FOREACH(TYPE, NODE_NAME, CONTAINER, ELEM_PTR_NAME) \
+#define PNX_LIST_FOREACH(TYPE, NODE_NAME, CONTAINER, ELEM_PTR_NAME) \
 	for (TYPE* ELEM_PTR_NAME = (CONTAINER)->head; ELEM_PTR_NAME != NULL; ELEM_PTR_NAME = (ELEM_PTR_NAME)->NODE_NAME.next)
-#define PN_LIST_RFOREACH(TYPE, NODE_NAME, CONTAINER, ELEM_PTR_NAME) \
+#define PNX_LIST_RFOREACH(TYPE, NODE_NAME, CONTAINER, ELEM_PTR_NAME) \
 	for (TYPE* ELEM_PTR_NAME = (CONTAINER)->tail; ELEM_PTR_NAME != NULL; ELEM_PTR_NAME = (ELEM_PTR_NAME)->NODE_NAME.prev)
 #pragma endregion
 

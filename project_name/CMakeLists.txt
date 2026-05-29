@@ -2,8 +2,8 @@ add_library(project_name INTERFACE)
 
 target_compile_definitions(project_name
 INTERFACE
-    PN_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
-    PN_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
+    PNX_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
+    PNX_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
 )
 target_include_directories(project_name
 INTERFACE
