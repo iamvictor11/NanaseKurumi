@@ -145,17 +145,12 @@
                 base = 16; \
                 str++; \
             } \
-            else \
-            { \
-                base = 8; \
-                str--; \
-            } \
         } \
         long result = 0; \
         const char* digits = "0123456789ABCDEF"; \
         while (*str) \
         { \
-            if (*str == '\'') str++; continue; \
+            if (*str == '\'') {str++; continue;} \
             int digit = -1; \
             for (int i = 0; i < base; i++) \
                 if (toupper((unsigned char)*str) == digits[i]) \
@@ -201,6 +196,10 @@
             hash = ((hash << 5) + hash) + (unsigned char)c; \
         return hash; \
     }
+#pragma endregion
+#pragma region Sugar
+#define NK_STRING_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) NK_VECTOR_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME)
+#define NK_STRING_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) NK_VECTOR_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME)
 #pragma endregion
 
 #endif
