@@ -10,7 +10,7 @@ PUBLIC
     "include"
     "src"
 )
-# add_subdirectory("src")
+add_subdirectory("src")
 target_link_libraries(test
 PUBLIC
     nanaku
