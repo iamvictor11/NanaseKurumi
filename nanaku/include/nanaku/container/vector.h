@@ -20,10 +20,10 @@
     typedef void(*PREFIX##NAME##ForeachCallback)(TYPE* curr); \
     typedef int(*PREFIX##NAME##Comparator)(const TYPE* left, const TYPE* right); \
     /* 创建销毁 */ \
-    void PREFIX##NAME##Create(PREFIX##NAME me, const PREFIX##NAME##Def* def); \
-    void PREFIX##NAME##Copy(PREFIX##NAME me, const PREFIX##NAME src); \
+    PREFIX##NAME PREFIX##NAME##Create(const PREFIX##NAME##Def* def); \
+    PREFIX##NAME PREFIX##NAME##Copy(const PREFIX##NAME src); \
     void PREFIX##NAME##CopyTo(PREFIX##NAME me, const PREFIX##NAME dst); \
-    void PREFIX##NAME##Move(PREFIX##NAME me, const PREFIX##NAME src); \
+    PREFIX##NAME PREFIX##NAME##Move(const PREFIX##NAME src); \
     void PREFIX##NAME##MoveTo(PREFIX##NAME me, const PREFIX##NAME dst); \
     void PREFIX##NAME##Destroy(PREFIX##NAME me); \
     /* 访问 */ \
@@ -96,16 +96,18 @@
 #pragma region Impl
 #define NK_IMPL_VECTOR(PREFIX, NAME, TYPE, ALLOCATOR) \
     /* 创建销毁 */ \
-    void PREFIX##NAME##Create(PREFIX##NAME me, const PREFIX##NAME##Def* def) \
+    PREFIX##NAME PREFIX##NAME##Create(const PREFIX##NAME##Def* def) \
     { \
+        PREFIX##NAME me = (PREFIX##NAME)(ALLOCATOR)->malloc((ALLOCATOR)->context, sizeof(PREFIX##NAME##_T)); \
+        if (me == NULL) return NULL; \
         me->data = NULL; \
         me->size = 0; \
         me->capacity = 0; \
-        me->insertSignal = def->insertSignal; \
-        me->removeSignal = def->removeSignal; \
-        if (def->capacity > 0) \
+        me->insertSignal = def ? def->insertSignal : NULL; \
+        me->removeSignal = def ? def->removeSignal : NULL; \
+        if (def && def->capacity > 0) \
             PREFIX##NAME##Reserve(me, def->capacity); \
-        if (def->size > 0) \
+        if (def && def->size > 0) \
         { \
             if (me->capacity < def->size) \
                 PREFIX##NAME##Reserve(me, def->size); \
@@ -116,10 +118,13 @@
             } \
             me->size = def->size; \
         } \
+        return me; \
     } \
-    void PREFIX##NAME##Copy(PREFIX##NAME me, const PREFIX##NAME src) \
+    PREFIX##NAME PREFIX##NAME##Copy(const PREFIX##NAME src) \
     { \
-        PREFIX##NAME##Destroy(me); \
+        if (src == NULL) return NULL; \
+        PREFIX##NAME me = (PREFIX##NAME)(ALLOCATOR)->malloc((ALLOCATOR)->context, sizeof(PREFIX##NAME##_T)); \
+        if (me == NULL) return NULL; \
         me->data = NULL; \
         me->size = 0; \
         me->capacity = 0; \
@@ -133,29 +138,52 @@
             for (size_t i = 0; i < src->size; i++) \
                 me->data[i] = src->data[i]; \
         } \
+        return me; \
     } \
-    void PREFIX##NAME##CopyTo(PREFIX##NAME me, const PREFIX##NAME dst) \
+    void PREFIX##NAME##CopyTo(PREFIX##NAME me, const PREFIX##NAME src) \
     { \
-        PREFIX##NAME##Copy((PREFIX##NAME)dst, me); \
+        if (src == NULL || me == src) return; \
+        PREFIX##NAME##Clear(me); \
+        if (src->capacity > 0) \
+            PREFIX##NAME##Reserve(me, src->capacity); \
+        me->insertSignal = src->insertSignal; \
+        me->removeSignal = src->removeSignal; \
+        if (src->size > 0) \
+            for (size_t i = 0; i < src->size; i++) \
+                me->data[i] = src->data[i]; \
+        me->size = src->size; \
     } \
-    void PREFIX##NAME##Move(PREFIX##NAME me, const PREFIX##NAME src) \
+    PREFIX##NAME PREFIX##NAME##Move(const PREFIX##NAME src) \
     { \
-        if (me == src) return; \
+        if (src == NULL) return NULL; \
+        PREFIX##NAME me = (PREFIX##NAME)(ALLOCATOR)->malloc((ALLOCATOR)->context, sizeof(PREFIX##NAME##_T)); \
+        if (me == NULL) return NULL; \
+        me->data = src->data; \
+        me->size = src->size; \
+        me->capacity = src->capacity; \
+        me->insertSignal = src->insertSignal; \
+        me->removeSignal = src->removeSignal; \
+        src->data = NULL; \
+        src->size = 0; \
+        src->capacity = 0; \
+        src->insertSignal = NULL; \
+        src->removeSignal = NULL; \
+        return me; \
+    } \
+    void PREFIX##NAME##MoveTo(PREFIX##NAME me, const PREFIX##NAME src) \
+    { \
+        if (src == NULL || me == src) return; \
         PREFIX##NAME##Destroy(me); \
         me->data = src->data; \
         me->size = src->size; \
         me->capacity = src->capacity; \
         me->insertSignal = src->insertSignal; \
         me->removeSignal = src->removeSignal; \
-        ((PREFIX##NAME)src)->data = NULL; \
-        ((PREFIX##NAME)src)->size = 0; \
-        ((PREFIX##NAME)src)->capacity = 0; \
-        ((PREFIX##NAME)src)->insertSignal = NULL; \
-        ((PREFIX##NAME)src)->removeSignal = NULL; \
-    } \
-    void PREFIX##NAME##MoveTo(PREFIX##NAME me, const PREFIX##NAME dst) \
-    { \
-        PREFIX##NAME##Move((PREFIX##NAME)dst, me); \
+        src->data = NULL; \
+        src->size = 0; \
+        src->capacity = 0; \
+        src->insertSignal = NULL; \
+        src->removeSignal = NULL; \
     } \
     void PREFIX##NAME##Destroy(PREFIX##NAME me) \
     { \
