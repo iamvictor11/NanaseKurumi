@@ -10,12 +10,13 @@ NK_IMPL_STRING(test, String, &allocator)
 
 int main()
 {
-    testString_T str = {};
-    testStringDef def = testNullStringDef();
-    testStringCreate(&str, &def);
-    testStringAssign(&str, 3, "abc");
-    printf("%s, hash: %zu", testStringToCstr(&str), testStringHash(&str));
     int key;
+    scanf("%d", &key);
+    testString str = testStringCreateFromFormat("%d", key);
+    printf("%s, hash: %zu, float: %f\n", testStringToCstr(str), testStringHash(str), testStringToFloat(str));
+    testStringAssignFromCstr(str, "11e3");
+    printf("%s, hash: %zu, float: %f\n", testStringToCstr(str), testStringHash(str), testStringToFloat(str));
+    testStringDestroy(str);
     scanf("%d", &key);
     return EXIT_SUCCESS;
 }
