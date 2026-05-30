@@ -3,20 +3,26 @@
 #include "project_name/container/list.h"
 #include <stdlib.h>
 
-PnxAllocator allocator = PNX_DEFAULT_ALLOCATOR;
+PNX_DEC_ALLOCATOR(static inline, test, Test)
+PNX_DEF_ALLOCATOR(static inline, test, Test)
+PNX_IMPL_ALLOCATOR(static inline, test, Test)
 
-PNX_DEC_LIST(test, Test, List, TestItem)
-PNX_DEF_LIST(test, Test, List, TestItem)
+TestAllocator allocator;
+
+PNX_DEC_LIST(static inline, test, Test, List, TestItem)
+PNX_DEF_LIST(static inline, test, Test, List, TestItem)
 typedef struct TestItem
 {
     int value;
     TestListNode node;
 } TestItem;
-PNX_IMPL_LIST(test, Test, List, TestItem, node, &allocator)
+PNX_IMPL_LIST(static inline, test, Test, List, TestItem, node, &allocator)
 
 int main()
 {
     pnxSetConsoleOutputCP_UTF8();
+
+    allocator = testDefaultAllocator();
 
     TestList list = testListCreate(NULL);
     TestItem items[] = {{0}, {1}, {2}};

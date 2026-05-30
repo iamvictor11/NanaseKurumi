@@ -7,45 +7,45 @@
 #include <stdio.h>
 
 #pragma region Dec
-#define PNX_DEC_STRING(SPREFIX, LPREFIX, NAME) \
-    PNX_DEC_VECTOR(SPREFIX, LPREFIX, NAME, char) \
+#define PNX_DEC_STRING(ATTR, SPREFIX, LPREFIX, NAME) \
+    PNX_DEC_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, char) \
     /* 创建 */ \
-    LPREFIX##NAME SPREFIX##NAME##CreateFromCstr(const char* cstr); \
-    LPREFIX##NAME SPREFIX##NAME##CreateFromFormat(const char* format, ...); \
-    LPREFIX##NAME SPREFIX##NAME##CreateFromVFormat(const char* format, va_list args); \
+    ATTR LPREFIX##NAME SPREFIX##NAME##CreateFromCstr(const char* cstr); \
+    ATTR LPREFIX##NAME SPREFIX##NAME##CreateFromFormat(const char* format, ...); \
+    ATTR LPREFIX##NAME SPREFIX##NAME##CreateFromVFormat(const char* format, va_list args); \
     /* 属性 */ \
-    size_t SPREFIX##NAME##Length(LPREFIX##NAME me); \
+    ATTR size_t SPREFIX##NAME##Length(LPREFIX##NAME me); \
     /* 写入 */ \
-    void SPREFIX##NAME##AssignFromCstr(LPREFIX##NAME me, const char* cstr); \
-    void SPREFIX##NAME##AssignFromFormat(LPREFIX##NAME me, const char* format, ...); \
-    void SPREFIX##NAME##AssignFromVFormat(LPREFIX##NAME me, const char* format, va_list args); \
-    void SPREFIX##NAME##AppendFromCstr(LPREFIX##NAME me, const char* cstr); \
-    void SPREFIX##NAME##AppendFromFormat(LPREFIX##NAME me, const char* format, ...); \
-    void SPREFIX##NAME##AppendFromVFormat(LPREFIX##NAME me, const char* format, va_list args); \
+    ATTR void SPREFIX##NAME##AssignFromCstr(LPREFIX##NAME me, const char* cstr); \
+    ATTR void SPREFIX##NAME##AssignFromFormat(LPREFIX##NAME me, const char* format, ...); \
+    ATTR void SPREFIX##NAME##AssignFromVFormat(LPREFIX##NAME me, const char* format, va_list args); \
+    ATTR void SPREFIX##NAME##AppendFromCstr(LPREFIX##NAME me, const char* cstr); \
+    ATTR void SPREFIX##NAME##AppendFromFormat(LPREFIX##NAME me, const char* format, ...); \
+    ATTR void SPREFIX##NAME##AppendFromVFormat(LPREFIX##NAME me, const char* format, va_list args); \
     /* 转换 */ \
-    const char* SPREFIX##NAME##ToCstr(const LPREFIX##NAME me); \
-    int SPREFIX##NAME##ToInt(const LPREFIX##NAME me); \
-    float SPREFIX##NAME##ToFloat(const LPREFIX##NAME me); \
-    double SPREFIX##NAME##ToDouble(const LPREFIX##NAME me); \
+    ATTR const char* SPREFIX##NAME##ToCstr(const LPREFIX##NAME me); \
+    ATTR int SPREFIX##NAME##ToInt(const LPREFIX##NAME me); \
+    ATTR float SPREFIX##NAME##ToFloat(const LPREFIX##NAME me); \
+    ATTR double SPREFIX##NAME##ToDouble(const LPREFIX##NAME me); \
     /* 哈希 */ \
-    size_t SPREFIX##NAME##Hash(const LPREFIX##NAME me);
+    ATTR size_t SPREFIX##NAME##Hash(const LPREFIX##NAME me);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_STRING(SPREFIX, LPREFIX, NAME) \
-    PNX_DEF_VECTOR(SPREFIX, LPREFIX, NAME, char)
+#define PNX_DEF_STRING(ATTR, SPREFIX, LPREFIX, NAME) \
+    PNX_DEF_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, char)
 #pragma endregion
 #pragma region Impl
-#define PNX_IMPL_STRING(SPREFIX, LPREFIX, NAME, ALLOCATOR) \
-    PNX_IMPL_VECTOR(SPREFIX, LPREFIX, NAME, char, ALLOCATOR) \
+#define PNX_IMPL_STRING(ATTR, SPREFIX, LPREFIX, NAME, ALLOCATOR) \
+    PNX_IMPL_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, char, ALLOCATOR) \
     /* 创建 */ \
-    LPREFIX##NAME SPREFIX##NAME##CreateFromCstr(const char* cstr) \
+    ATTR LPREFIX##NAME SPREFIX##NAME##CreateFromCstr(const char* cstr) \
     { \
         LPREFIX##NAME me = SPREFIX##NAME##Create(NULL); \
         if (me == NULL) return NULL; \
         SPREFIX##NAME##AssignFromCstr(me, cstr); \
         return me; \
     } \
-    LPREFIX##NAME SPREFIX##NAME##CreateFromFormat(const char* format, ...) \
+    ATTR LPREFIX##NAME SPREFIX##NAME##CreateFromFormat(const char* format, ...) \
     { \
         va_list args; \
         va_start(args, format); \
@@ -53,36 +53,36 @@
         va_end(args); \
         return me; \
     } \
-    LPREFIX##NAME SPREFIX##NAME##CreateFromVFormat(const char* format, va_list args) \
+    ATTR LPREFIX##NAME SPREFIX##NAME##CreateFromVFormat(const char* format, va_list args) \
     { \
         LPREFIX##NAME me = SPREFIX##NAME##Create(NULL); \
         SPREFIX##NAME##AssignFromVFormat(me, format, args); \
         return me; \
     } \
     /* 属性 */ \
-    size_t SPREFIX##NAME##Length(LPREFIX##NAME me) \
+    ATTR size_t SPREFIX##NAME##Length(LPREFIX##NAME me) \
     { \
         return me->size; \
     } \
     /* 写入 */ \
-    void SPREFIX##NAME##AssignFromCstr(LPREFIX##NAME me, const char* cstr) \
+    ATTR void SPREFIX##NAME##AssignFromCstr(LPREFIX##NAME me, const char* cstr) \
     { \
         if (cstr != NULL) \
             SPREFIX##NAME##Assign(me, strlen(cstr), cstr); \
     } \
-    void SPREFIX##NAME##AppendFromCstr(LPREFIX##NAME me, const char* cstr) \
+    ATTR void SPREFIX##NAME##AppendFromCstr(LPREFIX##NAME me, const char* cstr) \
     { \
         if (cstr != NULL) \
             SPREFIX##NAME##Append(me, strlen(cstr), cstr); \
     } \
-    void SPREFIX##NAME##AssignFromFormat(LPREFIX##NAME me, const char* format, ...) \
+    ATTR void SPREFIX##NAME##AssignFromFormat(LPREFIX##NAME me, const char* format, ...) \
     { \
         va_list args; \
         va_start(args, format); \
         SPREFIX##NAME##AssignFromVFormat(me, format, args); \
         va_end(args); \
     } \
-    void SPREFIX##NAME##AssignFromVFormat(LPREFIX##NAME me, const char* format, va_list args) \
+    ATTR void SPREFIX##NAME##AssignFromVFormat(LPREFIX##NAME me, const char* format, va_list args) \
     { \
         if (format == NULL) return; \
         va_list args_copy; \
@@ -94,14 +94,14 @@
         me->size = len; \
         vsnprintf(me->data, len + 1, format, args); \
     } \
-    void SPREFIX##NAME##AppendFromFormat(LPREFIX##NAME me, const char* format, ...) \
+    ATTR void SPREFIX##NAME##AppendFromFormat(LPREFIX##NAME me, const char* format, ...) \
     { \
         va_list args; \
         va_start(args, format); \
         SPREFIX##NAME##AppendFromVFormat(me, format, args); \
         va_end(args); \
     } \
-    void SPREFIX##NAME##AppendFromVFormat(LPREFIX##NAME me, const char* format, va_list args) \
+    ATTR void SPREFIX##NAME##AppendFromVFormat(LPREFIX##NAME me, const char* format, va_list args) \
     { \
         if (format == NULL) return; \
         va_list args_copy; \
@@ -115,7 +115,7 @@
         me->size = old_size + len; \
     } \
     /* 转换 */ \
-    const char* SPREFIX##NAME##ToCstr(const LPREFIX##NAME me) \
+    ATTR const char* SPREFIX##NAME##ToCstr(const LPREFIX##NAME me) \
     { \
         if (me->data == NULL) return ""; \
         if (me->size == me->capacity) \
@@ -123,7 +123,7 @@
         me->data[me->size] = '\0'; \
         return me->data; \
     } \
-    int SPREFIX##NAME##ToInt(const LPREFIX##NAME me) \
+    ATTR int SPREFIX##NAME##ToInt(const LPREFIX##NAME me) \
     { \
         const char* str = SPREFIX##NAME##ToCstr(me); \
         while (isspace((unsigned char)*str)) str++; \
@@ -171,11 +171,11 @@
         } \
         return (int)(result * sign); \
     } \
-    float SPREFIX##NAME##ToFloat(const LPREFIX##NAME me) \
+    ATTR float SPREFIX##NAME##ToFloat(const LPREFIX##NAME me) \
     { \
         return (float)SPREFIX##NAME##ToDouble(me);\
     } \
-    double SPREFIX##NAME##ToDouble(const LPREFIX##NAME me) \
+    ATTR double SPREFIX##NAME##ToDouble(const LPREFIX##NAME me) \
     { \
         const char* str = SPREFIX##NAME##ToCstr(me); \
         if (str == NULL) return 0.0f; \
@@ -194,7 +194,7 @@
         return val; \
     } \
     /* 哈希 */ \
-    size_t SPREFIX##NAME##Hash(const LPREFIX##NAME me) \
+    ATTR size_t SPREFIX##NAME##Hash(const LPREFIX##NAME me) \
     { \
         const char* str = SPREFIX##NAME##ToCstr(me); \
         size_t hash = 5381; \

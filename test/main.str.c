@@ -3,17 +3,25 @@
 #include "project_name/version.h"
 #include "project_name/container/str.h"
 
-PnxAllocator allocator = PNX_DEFAULT_ALLOCATOR;
+PNX_DEF_VERSION(, test, Test)
 
-PNX_DEC_STRING(test, Test, String)
-PNX_DEF_STRING(test, Test, String)
-PNX_IMPL_STRING(test, Test, String, &allocator)
+PNX_DEC_ALLOCATOR(static inline, test, Test)
+PNX_DEF_ALLOCATOR(static inline, test, Test)
+PNX_IMPL_ALLOCATOR(static inline, test, Test)
+
+TestAllocator allocator;
+
+PNX_DEC_STRING(static inline, test, Test, String)
+PNX_DEF_STRING(static inline, test, Test, String)
+PNX_IMPL_STRING(static inline, test, Test, String, &allocator)
 
 int main()
 {
     pnxSetConsoleOutputCP_UTF8();
 
-    PnxVersion version = PNX_VERSION;
+    allocator = testDefaultAllocator();
+
+    TestVersion version = PNX_VERSION;
     printf("%s\n", version.name);
     TestString str = testStringCreateFromFormat("0%d", PNX_VERSION_CAST_UINT(version));
     printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));

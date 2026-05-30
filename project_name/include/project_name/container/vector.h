@@ -9,7 +9,7 @@
 #define PNX_VECTOR_GROWTH_FACTOR 2
 #pragma endregion
 #pragma region Dec
-#define PNX_DEC_VECTOR(SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEC_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
     typedef struct LPREFIX##NAME##Def LPREFIX##NAME##Def; \
     typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
     typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
@@ -19,54 +19,56 @@
     typedef bool(*LPREFIX##NAME##RemoveIfCallback)(const TYPE* curr); \
     typedef void(*LPREFIX##NAME##ForeachCallback)(TYPE* curr); \
     typedef int(*LPREFIX##NAME##Comparator)(const TYPE* left, const TYPE* right); \
+    /* 空定义 */ \
+    ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(); \
     /* 创建销毁 */ \
-    LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
-    LPREFIX##NAME SPREFIX##NAME##Copy(const LPREFIX##NAME src); \
-    void SPREFIX##NAME##CopyTo(LPREFIX##NAME me, const LPREFIX##NAME dst); \
-    LPREFIX##NAME SPREFIX##NAME##Move(const LPREFIX##NAME src); \
-    void SPREFIX##NAME##MoveTo(LPREFIX##NAME me, const LPREFIX##NAME dst); \
-    void SPREFIX##NAME##Destroy(LPREFIX##NAME me); \
+    ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
+    ATTR LPREFIX##NAME SPREFIX##NAME##Copy(const LPREFIX##NAME src); \
+    ATTR void SPREFIX##NAME##CopyTo(LPREFIX##NAME me, const LPREFIX##NAME dst); \
+    ATTR LPREFIX##NAME SPREFIX##NAME##Move(const LPREFIX##NAME src); \
+    ATTR void SPREFIX##NAME##MoveTo(LPREFIX##NAME me, const LPREFIX##NAME dst); \
+    ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me); \
     /* 属性 */ \
-    TYPE* SPREFIX##NAME##Data(LPREFIX##NAME me); \
-    size_t SPREFIX##NAME##Size(LPREFIX##NAME me); \
-    size_t SPREFIX##NAME##Capacity(LPREFIX##NAME me); \
+    ATTR TYPE* SPREFIX##NAME##Data(LPREFIX##NAME me); \
+    ATTR size_t SPREFIX##NAME##Size(LPREFIX##NAME me); \
+    ATTR size_t SPREFIX##NAME##Capacity(LPREFIX##NAME me); \
     /* 状态 */ \
-    bool SPREFIX##NAME##Empty(LPREFIX##NAME me); \
+    ATTR bool SPREFIX##NAME##Empty(LPREFIX##NAME me); \
     /* 访问 */ \
-    TYPE* SPREFIX##NAME##At(LPREFIX##NAME me, size_t index); \
-    TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me); \
-    TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me); \
-    TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor, size_t* out_index); \
-    bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
+    ATTR TYPE* SPREFIX##NAME##At(LPREFIX##NAME me, size_t index); \
+    ATTR TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me); \
+    ATTR TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me); \
+    ATTR TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor, size_t* out_index); \
+    ATTR bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
     /* 批处理 */ \
-    void SPREFIX##NAME##Assign(LPREFIX##NAME me, size_t count, const TYPE* elements); \
-    void SPREFIX##NAME##Append(LPREFIX##NAME me, size_t count, const TYPE* elements); \
-    void SPREFIX##NAME##InsertRange(LPREFIX##NAME me, size_t index, size_t count, const TYPE* elements); \
-    void SPREFIX##NAME##EraseRange(LPREFIX##NAME me, size_t index, size_t count); \
-    void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate); \
-    void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
-    void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
+    ATTR void SPREFIX##NAME##Assign(LPREFIX##NAME me, size_t count, const TYPE* elements); \
+    ATTR void SPREFIX##NAME##Append(LPREFIX##NAME me, size_t count, const TYPE* elements); \
+    ATTR void SPREFIX##NAME##InsertRange(LPREFIX##NAME me, size_t index, size_t count, const TYPE* elements); \
+    ATTR void SPREFIX##NAME##EraseRange(LPREFIX##NAME me, size_t index, size_t count); \
+    ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate); \
+    ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
+    ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
     /* 排序 */ \
-    void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator); \
+    ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator); \
     /* 容量 */ \
-    void SPREFIX##NAME##Reserve(LPREFIX##NAME me, size_t capacity); \
-    void SPREFIX##NAME##Resize(LPREFIX##NAME me, size_t size); \
-    void SPREFIX##NAME##ShripnxToFit(LPREFIX##NAME me); \
-    void SPREFIX##NAME##Clear(LPREFIX##NAME me); \
+    ATTR void SPREFIX##NAME##Reserve(LPREFIX##NAME me, size_t capacity); \
+    ATTR void SPREFIX##NAME##Resize(LPREFIX##NAME me, size_t size); \
+    ATTR void SPREFIX##NAME##ShripnxToFit(LPREFIX##NAME me); \
+    ATTR void SPREFIX##NAME##Clear(LPREFIX##NAME me); \
     /* 增删改 */ \
-    void SPREFIX##NAME##Insert(LPREFIX##NAME me, size_t index, const TYPE* element); \
-    void SPREFIX##NAME##InsertLiteral(LPREFIX##NAME me, size_t index, TYPE literal); \
-    void SPREFIX##NAME##Erase(LPREFIX##NAME me, size_t index); \
-    size_t SPREFIX##NAME##Push(LPREFIX##NAME me, const TYPE* element); \
-    size_t SPREFIX##NAME##PushLiteral(LPREFIX##NAME me, TYPE literal); \
-    void SPREFIX##NAME##Pop(LPREFIX##NAME me); \
-    void SPREFIX##NAME##Set(LPREFIX##NAME me, size_t index, const TYPE* element); \
-    void SPREFIX##NAME##SetLiteral(LPREFIX##NAME me, size_t index, TYPE literal); \
+    ATTR void SPREFIX##NAME##Insert(LPREFIX##NAME me, size_t index, const TYPE* element); \
+    ATTR void SPREFIX##NAME##InsertLiteral(LPREFIX##NAME me, size_t index, TYPE literal); \
+    ATTR void SPREFIX##NAME##Erase(LPREFIX##NAME me, size_t index); \
+    ATTR size_t SPREFIX##NAME##Push(LPREFIX##NAME me, const TYPE* element); \
+    ATTR size_t SPREFIX##NAME##PushLiteral(LPREFIX##NAME me, TYPE literal); \
+    ATTR void SPREFIX##NAME##Pop(LPREFIX##NAME me); \
+    ATTR void SPREFIX##NAME##Set(LPREFIX##NAME me, size_t index, const TYPE* element); \
+    ATTR void SPREFIX##NAME##SetLiteral(LPREFIX##NAME me, size_t index, TYPE literal); \
     /* 交换 */ \
-    void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
+    ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_VECTOR(SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEF_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
     typedef struct LPREFIX##NAME##Def \
     { \
         size_t size; \
@@ -75,7 +77,7 @@
         LPREFIX##NAME##Signal insertSignal; \
         LPREFIX##NAME##Signal removeSignal; \
     } LPREFIX##NAME##Def; \
-    LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
+    ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
     { \
         LPREFIX##NAME##Def def; \
         def.size = 0; \
@@ -83,7 +85,7 @@
         def.insertSignal = NULL; \
         def.removeSignal = NULL; \
         return def; \
-    }; \
+    } \
     typedef struct LPREFIX##NAME##_T \
     { \
         TYPE* data; \
@@ -94,9 +96,9 @@
     } SPREFIX##NAME##_T;
 #pragma endregion
 #pragma region Impl
-#define PNX_IMPL_VECTOR(SPREFIX, LPREFIX, NAME, TYPE, ALLOCATOR) \
+#define PNX_IMPL_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE, ALLOCATOR) \
     /* 创建销毁 */ \
-    LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def) \
+    ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def) \
     { \
         LPREFIX##NAME me = (LPREFIX##NAME)(ALLOCATOR)->malloc((ALLOCATOR)->context, sizeof(LPREFIX##NAME##_T)); \
         if (me == NULL) return NULL; \
@@ -120,7 +122,7 @@
         } \
         return me; \
     } \
-    LPREFIX##NAME SPREFIX##NAME##Copy(const LPREFIX##NAME src) \
+    ATTR LPREFIX##NAME SPREFIX##NAME##Copy(const LPREFIX##NAME src) \
     { \
         if (src == NULL) return NULL; \
         LPREFIX##NAME me = (LPREFIX##NAME)(ALLOCATOR)->malloc((ALLOCATOR)->context, sizeof(LPREFIX##NAME##_T)); \
@@ -140,7 +142,7 @@
         } \
         return me; \
     } \
-    void SPREFIX##NAME##CopyTo(LPREFIX##NAME me, const LPREFIX##NAME src) \
+    ATTR void SPREFIX##NAME##CopyTo(LPREFIX##NAME me, const LPREFIX##NAME src) \
     { \
         if (src == NULL || me == src) return; \
         SPREFIX##NAME##Clear(me); \
@@ -153,7 +155,7 @@
                 me->data[i] = src->data[i]; \
         me->size = src->size; \
     } \
-    LPREFIX##NAME SPREFIX##NAME##Move(const LPREFIX##NAME src) \
+    ATTR LPREFIX##NAME SPREFIX##NAME##Move(const LPREFIX##NAME src) \
     { \
         if (src == NULL) return NULL; \
         LPREFIX##NAME me = (LPREFIX##NAME)(ALLOCATOR)->malloc((ALLOCATOR)->context, sizeof(LPREFIX##NAME##_T)); \
@@ -170,7 +172,7 @@
         src->removeSignal = NULL; \
         return me; \
     } \
-    void SPREFIX##NAME##MoveTo(LPREFIX##NAME me, const LPREFIX##NAME src) \
+    ATTR void SPREFIX##NAME##MoveTo(LPREFIX##NAME me, const LPREFIX##NAME src) \
     { \
         if (src == NULL || me == src) return; \
         SPREFIX##NAME##Destroy(me); \
@@ -185,7 +187,7 @@
         src->insertSignal = NULL; \
         src->removeSignal = NULL; \
     } \
-    void SPREFIX##NAME##Destroy(LPREFIX##NAME me) \
+    ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me) \
     { \
         if (me->data != NULL && me->removeSignal != NULL) \
             for (size_t i = 0; i < me->size; i++) \
@@ -199,37 +201,37 @@
         me->capacity = 0; \
     } \
     /* 属性 */ \
-    TYPE* SPREFIX##NAME##Data(LPREFIX##NAME me) \
+    ATTR TYPE* SPREFIX##NAME##Data(LPREFIX##NAME me) \
     { \
         return me->data; \
     } \
-    size_t SPREFIX##NAME##Size(LPREFIX##NAME me) \
+    ATTR size_t SPREFIX##NAME##Size(LPREFIX##NAME me) \
     { \
         return me->size; \
     } \
-    size_t SPREFIX##NAME##Capacity(LPREFIX##NAME me) \
+    ATTR size_t SPREFIX##NAME##Capacity(LPREFIX##NAME me) \
     { \
         return me->capacity; \
     } \
     /* 状态 */ \
-    bool SPREFIX##NAME##Empty(LPREFIX##NAME me) \
+    ATTR bool SPREFIX##NAME##Empty(LPREFIX##NAME me) \
     { \
         return me->size == 0; \
     } \
     /* 访问 */ \
-    TYPE* SPREFIX##NAME##At(LPREFIX##NAME me, size_t index) \
+    ATTR TYPE* SPREFIX##NAME##At(LPREFIX##NAME me, size_t index) \
     { \
         return &me->data[index]; \
     } \
-    TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me) \
+    ATTR TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me) \
     { \
         return &me->data[0]; \
     } \
-    TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me) \
+    ATTR TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me) \
     { \
         return &me->data[me->size - 1]; \
     } \
-    TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor, size_t* out_index) \
+    ATTR TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor, size_t* out_index) \
     { \
         for (size_t i = 0; i < me->size; i++) \
             if (equalor(&me->data[i], goal)) \
@@ -239,12 +241,12 @@
             } \
         return NULL; \
     } \
-    bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor) \
+    ATTR bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor) \
     { \
         return SPREFIX##NAME##Find(me, goal, equalor, NULL) != NULL; \
     } \
     /* 批处理 */ \
-    void SPREFIX##NAME##Assign(LPREFIX##NAME me, size_t count, const TYPE* elements) \
+    ATTR void SPREFIX##NAME##Assign(LPREFIX##NAME me, size_t count, const TYPE* elements) \
     { \
         SPREFIX##NAME##Clear(me); \
         if (count == 0) return; \
@@ -253,7 +255,7 @@
             me->data[i] = elements[i]; \
         me->size = count; \
     } \
-    void SPREFIX##NAME##Append(LPREFIX##NAME me, size_t count, const TYPE* elements) \
+    ATTR void SPREFIX##NAME##Append(LPREFIX##NAME me, size_t count, const TYPE* elements) \
     { \
         if (count == 0) return; \
         size_t required = me->size + count; \
@@ -267,7 +269,7 @@
             me->data[me->size + i] = elements[i]; \
         me->size = required; \
     } \
-    void SPREFIX##NAME##InsertRange(LPREFIX##NAME me, size_t index, size_t count, const TYPE* elements) \
+    ATTR void SPREFIX##NAME##InsertRange(LPREFIX##NAME me, size_t index, size_t count, const TYPE* elements) \
     { \
         if (count == 0) return; \
         if (index > me->size) index = me->size; \
@@ -284,7 +286,7 @@
             me->data[index + i] = elements[i]; \
         me->size = required; \
     } \
-    void SPREFIX##NAME##EraseRange(LPREFIX##NAME me, size_t index, size_t count) \
+    ATTR void SPREFIX##NAME##EraseRange(LPREFIX##NAME me, size_t index, size_t count) \
     { \
         if (count == 0) return; \
         if (count > me->size - index) count = me->size - index; \
@@ -296,7 +298,7 @@
             memmove(&me->data[index], &me->data[index + count], tail * sizeof(TYPE)); \
         me->size -= count; \
     } \
-    void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate) \
+    ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate) \
     { \
         size_t write = 0; \
         for (size_t read = 0; read < me->size; read++) \
@@ -312,18 +314,18 @@
         } \
         me->size = write; \
     } \
-    void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+    ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
     { \
         for (size_t i = 0; i < me->size; i++) \
             processor(&me->data[i]); \
     } \
-    void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+    ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
     { \
         for (size_t i = me->size; i > 0; i--) \
             processor(&me->data[i - 1]); \
     } \
     /* 排序 */ \
-    void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator) \
+    ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator) \
     { \
         if (me->size < 2) return; \
         for (size_t i = 0; i < me->size - 1; i++) \
@@ -336,7 +338,7 @@
                 } \
     } \
     /* 容量 */ \
-    void SPREFIX##NAME##Reserve(LPREFIX##NAME me, size_t capacity) \
+    ATTR void SPREFIX##NAME##Reserve(LPREFIX##NAME me, size_t capacity) \
     { \
         if (capacity <= me->capacity) return; \
         if (me->data == NULL) \
@@ -346,7 +348,7 @@
         if (me->data != NULL) \
             me->capacity = capacity; \
     } \
-    void SPREFIX##NAME##Resize(LPREFIX##NAME me, size_t size) \
+    ATTR void SPREFIX##NAME##Resize(LPREFIX##NAME me, size_t size) \
     { \
         if (size > me->capacity) \
         { \
@@ -370,7 +372,7 @@
         } \
         me->size = size; \
     } \
-    void SPREFIX##NAME##ShripnxToFit(LPREFIX##NAME me) \
+    ATTR void SPREFIX##NAME##ShripnxToFit(LPREFIX##NAME me) \
     { \
         if (me->size == me->capacity) return; \
         if (me->size == 0) \
@@ -387,7 +389,7 @@
             me->capacity = me->size; \
         } \
     } \
-    void SPREFIX##NAME##Clear(LPREFIX##NAME me) \
+    ATTR void SPREFIX##NAME##Clear(LPREFIX##NAME me) \
     { \
         if (me->removeSignal != NULL && me->data != NULL) \
             for (size_t i = 0; i < me->size; i++) \
@@ -395,16 +397,16 @@
         me->size = 0; \
     } \
     /* 增删改 */ \
-    void SPREFIX##NAME##Insert(LPREFIX##NAME me, size_t index, const TYPE* element) \
+    ATTR void SPREFIX##NAME##Insert(LPREFIX##NAME me, size_t index, const TYPE* element) \
     { \
         SPREFIX##NAME##InsertRange(me, index, 1, element); \
     } \
-    void SPREFIX##NAME##InsertLiteral(LPREFIX##NAME me, size_t index, TYPE literal) { SPREFIX##NAME##Insert(me, index, &literal); } \
-    void SPREFIX##NAME##Erase(LPREFIX##NAME me, size_t index) \
+    ATTR void SPREFIX##NAME##InsertLiteral(LPREFIX##NAME me, size_t index, TYPE literal) { SPREFIX##NAME##Insert(me, index, &literal); } \
+    ATTR void SPREFIX##NAME##Erase(LPREFIX##NAME me, size_t index) \
     { \
         SPREFIX##NAME##EraseRange(me, index, 1); \
     } \
-    size_t SPREFIX##NAME##Push(LPREFIX##NAME me, const TYPE* element) \
+    ATTR size_t SPREFIX##NAME##Push(LPREFIX##NAME me, const TYPE* element) \
     { \
         if (me->size + 1 > me->capacity) \
         { \
@@ -415,22 +417,22 @@
         me->size += 1; \
         return me->size - 1; \
     } \
-    size_t SPREFIX##NAME##PushLiteral(LPREFIX##NAME me, TYPE literal) { return SPREFIX##NAME##Push(me, &literal); } \
-    void SPREFIX##NAME##Pop(LPREFIX##NAME me) \
+    ATTR size_t SPREFIX##NAME##PushLiteral(LPREFIX##NAME me, TYPE literal) { return SPREFIX##NAME##Push(me, &literal); } \
+    ATTR void SPREFIX##NAME##Pop(LPREFIX##NAME me) \
     { \
         me->size -= 1; \
         if (me->removeSignal != NULL) \
             me->removeSignal(me, &me->data[me->size]); \
     } \
-    void SPREFIX##NAME##Set(LPREFIX##NAME me, size_t index, const TYPE* element) \
+    ATTR void SPREFIX##NAME##Set(LPREFIX##NAME me, size_t index, const TYPE* element) \
     { \
         if (me->removeSignal != NULL) \
             me->removeSignal(me, &me->data[index]); \
         me->data[index] = *element; \
     } \
-    void SPREFIX##NAME##SetLiteral(LPREFIX##NAME me, size_t index, TYPE literal) { SPREFIX##NAME##Set(me, index, &literal); } \
+    ATTR void SPREFIX##NAME##SetLiteral(LPREFIX##NAME me, size_t index, TYPE literal) { SPREFIX##NAME##Set(me, index, &literal); } \
     /* 交换 */ \
-    void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other) \
+    ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other) \
     { \
         TYPE* tempData = me->data; \
         size_t tempSize = me->size; \

@@ -6,7 +6,7 @@
 #include <stddef.h>
 
 #pragma region Dec
-#define PNX_DEC_LIST(SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEC_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
     typedef struct TYPE TYPE; \
 	typedef struct LPREFIX##NAME##Def LPREFIX##NAME##Def; \
 	typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
@@ -16,41 +16,43 @@
 	typedef bool(*LPREFIX##NAME##Equalor)(const TYPE* curr, const TYPE* goal); \
 	typedef bool(*LPREFIX##NAME##RemoveIfCallback)(const TYPE* curr); \
 	typedef void(*LPREFIX##NAME##ForeachCallback)(TYPE* curr); \
+    /* 空定义 */ \
+	ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(); \
 	/* 创建销毁 */ \
-	LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
-	void SPREFIX##NAME##Destroy(LPREFIX##NAME me); \
+	ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
+	ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me); \
 	/* 访问 */ \
-	TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me); \
-	TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me); \
+	ATTR TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me); \
+	ATTR TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me); \
 	/* 属性 */ \
-	size_t SPREFIX##NAME##Size(LPREFIX##NAME me); \
-	bool SPREFIX##NAME##Empty(LPREFIX##NAME me); \
+	ATTR size_t SPREFIX##NAME##Size(LPREFIX##NAME me); \
+	ATTR bool SPREFIX##NAME##Empty(LPREFIX##NAME me); \
 	/* 增删改 */ \
-	size_t SPREFIX##NAME##PushFront(LPREFIX##NAME me, TYPE* element); \
-	size_t SPREFIX##NAME##PushBack(LPREFIX##NAME me, TYPE* element); \
-	void SPREFIX##NAME##PopFront(LPREFIX##NAME me); \
-	void SPREFIX##NAME##PopBack(LPREFIX##NAME me); \
-	void SPREFIX##NAME##InsertAfter(LPREFIX##NAME me, TYPE* index, TYPE* element); \
-	void SPREFIX##NAME##InsertBefore(LPREFIX##NAME me, TYPE* index, TYPE* element); \
-	void SPREFIX##NAME##Erase(LPREFIX##NAME me, TYPE* element); \
-	TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
-	bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
+	ATTR size_t SPREFIX##NAME##PushFront(LPREFIX##NAME me, TYPE* element); \
+	ATTR size_t SPREFIX##NAME##PushBack(LPREFIX##NAME me, TYPE* element); \
+	ATTR void SPREFIX##NAME##PopFront(LPREFIX##NAME me); \
+	ATTR void SPREFIX##NAME##PopBack(LPREFIX##NAME me); \
+	ATTR void SPREFIX##NAME##InsertAfter(LPREFIX##NAME me, TYPE* index, TYPE* element); \
+	ATTR void SPREFIX##NAME##InsertBefore(LPREFIX##NAME me, TYPE* index, TYPE* element); \
+	ATTR void SPREFIX##NAME##Erase(LPREFIX##NAME me, TYPE* element); \
+	ATTR TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
+	ATTR bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
 	/* 批处理 */ \
-	void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
-	void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
-	void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate); \
-	void SPREFIX##NAME##Clear(LPREFIX##NAME me); \
+	ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
+	ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
+	ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate); \
+	ATTR void SPREFIX##NAME##Clear(LPREFIX##NAME me); \
 	/* 交换 */ \
-	void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
+	ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_LIST(SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEF_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
 	typedef struct LPREFIX##NAME##Def \
 	{ \
 		LPREFIX##NAME##Signal insertSignal; \
 		LPREFIX##NAME##Signal removeSignal; \
 	} LPREFIX##NAME##Def; \
-	LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
+	ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
 	{ \
 		LPREFIX##NAME##Def def; \
 		def.insertSignal = NULL; \
@@ -72,10 +74,11 @@
 	} LPREFIX##NAME##_T;
 #pragma endregion
 #pragma region Impl
-#define PNX_IMPL_LIST(SPREFIX, LPREFIX, NAME, TYPE, NODE_NAME, ALLOCATOR) \
-	static inline LPREFIX##NAME##Node* SPREFIX##NAME##_GetNode(TYPE* e) { return &((e)->NODE_NAME); } \
+#define PNX_IMPL_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE, NODE_NAME, ALLOCATOR) \
+    /* 私有 */ \
+	ATTR LPREFIX##NAME##Node* SPREFIX##NAME##_GetNode(TYPE* e) { return &((e)->NODE_NAME); } \
 	/* 创建销毁 */ \
-	LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def) \
+	ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def) \
 	{ \
 		LPREFIX##NAME me = (LPREFIX##NAME)(ALLOCATOR)->malloc((ALLOCATOR)->context, sizeof(LPREFIX##NAME##_T)); \
 		if (me == NULL) return NULL; \
@@ -86,19 +89,19 @@
 		me->removeSignal = def ? def->removeSignal : NULL; \
 		return me; \
 	} \
-	void SPREFIX##NAME##Destroy(LPREFIX##NAME me) \
+	ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me) \
 	{ \
 		SPREFIX##NAME##Clear(me); \
 		(ALLOCATOR)->free((ALLOCATOR)->context, me); \
 	} \
 	/* 访问 */ \
-	TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me) { return me->head; } \
-	TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me) { return me->tail; } \
+	ATTR TYPE* SPREFIX##NAME##Front(LPREFIX##NAME me) { return me->head; } \
+	ATTR TYPE* SPREFIX##NAME##Back(LPREFIX##NAME me) { return me->tail; } \
 	/* 属性 */ \
-	size_t SPREFIX##NAME##Size(LPREFIX##NAME me) { return me->size; } \
-	bool SPREFIX##NAME##Empty(LPREFIX##NAME me) { return me->size == 0; } \
+	ATTR size_t SPREFIX##NAME##Size(LPREFIX##NAME me) { return me->size; } \
+	ATTR bool SPREFIX##NAME##Empty(LPREFIX##NAME me) { return me->size == 0; } \
 	/* 增删改 */ \
-	size_t SPREFIX##NAME##PushFront(LPREFIX##NAME me, TYPE* element) \
+	ATTR size_t SPREFIX##NAME##PushFront(LPREFIX##NAME me, TYPE* element) \
 	{ \
 		LPREFIX##NAME##Node* n = SPREFIX##NAME##_GetNode(element); \
 		n->prev = NULL; \
@@ -110,7 +113,7 @@
 		if (me->insertSignal) me->insertSignal(me, element); \
 		return me->size - 1; \
 	} \
-	size_t SPREFIX##NAME##PushBack(LPREFIX##NAME me, TYPE* element) \
+	ATTR size_t SPREFIX##NAME##PushBack(LPREFIX##NAME me, TYPE* element) \
 	{ \
 		LPREFIX##NAME##Node* n = SPREFIX##NAME##_GetNode(element); \
 		n->next = NULL; \
@@ -122,7 +125,7 @@
 		if (me->insertSignal) me->insertSignal(me, element); \
 		return me->size - 1; \
 	} \
-	void SPREFIX##NAME##PopFront(LPREFIX##NAME me) \
+	ATTR void SPREFIX##NAME##PopFront(LPREFIX##NAME me) \
 	{ \
 		if (me->head == NULL) return; \
 		TYPE* old = me->head; \
@@ -133,7 +136,7 @@
 		if (me->head == NULL) me->tail = NULL; \
 		me->size -= 1; \
 	} \
-	void SPREFIX##NAME##PopBack(LPREFIX##NAME me) \
+	ATTR void SPREFIX##NAME##PopBack(LPREFIX##NAME me) \
 	{ \
 		if (me->tail == NULL) return; \
 		TYPE* old = me->tail; \
@@ -144,7 +147,7 @@
 		if (me->tail == NULL) me->head = NULL; \
 		me->size -= 1; \
 	} \
-	void SPREFIX##NAME##InsertAfter(LPREFIX##NAME me, TYPE* index, TYPE* element) \
+	ATTR void SPREFIX##NAME##InsertAfter(LPREFIX##NAME me, TYPE* index, TYPE* element) \
 	{ \
 		if (index == NULL) { SPREFIX##NAME##PushFront(me, element); return; } \
 		if (index == me->tail) { SPREFIX##NAME##PushBack(me, element); return; } \
@@ -156,7 +159,7 @@
 		me->size += 1; \
 		if (me->insertSignal) me->insertSignal(me, element); \
 	} \
-	void SPREFIX##NAME##InsertBefore(LPREFIX##NAME me, TYPE* index, TYPE* element) \
+	ATTR void SPREFIX##NAME##InsertBefore(LPREFIX##NAME me, TYPE* index, TYPE* element) \
 	{ \
 		if (index == NULL) { SPREFIX##NAME##PushBack(me, element); return; } \
 		if (index == me->head) { SPREFIX##NAME##PushFront(me, element); return; } \
@@ -168,7 +171,7 @@
 		me->size += 1; \
 		if (me->insertSignal) me->insertSignal(me, element); \
 	} \
-	void SPREFIX##NAME##Erase(LPREFIX##NAME me, TYPE* element) \
+	ATTR void SPREFIX##NAME##Erase(LPREFIX##NAME me, TYPE* element) \
 	{ \
 		if (element == NULL) return; \
 		TYPE* prev = SPREFIX##NAME##_GetNode(element)->prev; \
@@ -182,26 +185,26 @@
 		SPREFIX##NAME##_GetNode(element)->prev = NULL; \
 		me->size -= 1; \
 	} \
-	TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor) \
+	ATTR TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor) \
 	{ \
 		for (TYPE* it = me->head; it != NULL; it = SPREFIX##NAME##_GetNode(it)->next) \
 			if (equalor(it, goal)) return it; \
 		return NULL; \
 	} \
-	bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor) \
+	ATTR bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor) \
 	{ \
 		return SPREFIX##NAME##Find(me, goal, equalor) != NULL; \
 	} \
 	/* 批处理 */ \
-	void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+	ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
 	{ \
 		for (TYPE* it = me->head; it != NULL; it = SPREFIX##NAME##_GetNode(it)->next) processor(it); \
 	} \
-	void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+	ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
 	{ \
 		for (TYPE* it = me->tail; it != NULL; it = SPREFIX##NAME##_GetNode(it)->prev) processor(it); \
 	} \
-	void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate) \
+	ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate) \
 	{ \
 		TYPE* it = me->head; \
 		while (it != NULL) \
@@ -211,7 +214,7 @@
 			it = next; \
 		} \
 	} \
-	void SPREFIX##NAME##Clear(LPREFIX##NAME me) \
+	ATTR void SPREFIX##NAME##Clear(LPREFIX##NAME me) \
 	{ \
 		TYPE* it = me->head; \
 		while (it != NULL) \
@@ -227,7 +230,7 @@
 		me->size = 0; \
 	} \
 	/* 交换 */ \
-	void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other) \
+	ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other) \
 	{ \
 		TYPE* t_head = me->head; \
 		TYPE* t_tail = me->tail; \
