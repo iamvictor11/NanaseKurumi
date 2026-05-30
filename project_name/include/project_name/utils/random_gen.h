@@ -3,6 +3,7 @@
 
 #include "../allocator.h"
 #include <stdint.h>
+#include <string.h>
 
 #pragma region Dec
 #define PNX_DEC_RANDOM_GEN(ATTR, SPREFIX, LPREFIX, NAME, NUM_TYPE) \
@@ -44,10 +45,7 @@
     } LPREFIX##NAME##Def; \
     static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void) \
     { \
-        LPREFIX##NAME##Def def; \
-        def.seed = 11; \
-        def.generator = NULL; \
-        def.clampor = NULL; \
+        LPREFIX##NAME##Def def = {0}; \
         return def; \
     }
 #pragma endregion
@@ -73,8 +71,8 @@
         } \
         else \
         { \
-            me->seed = 11; \
-            me->state = 11; \
+            memset(&me->seed, 0, sizeof(me->seed)); \
+            memset(&me->state, 0, sizeof(me->state)); \
             me->generator = NULL; \
             me->clampor = NULL; \
         } \
@@ -102,7 +100,6 @@
     } \
     ATTR NUM_TYPE SPREFIX##NAME##NextRange(LPREFIX##NAME me, NUM_TYPE min, NUM_TYPE max) \
     { \
-        if (min >= max) return min; \
         NUM_TYPE random; \
         if (me->generator) \
             random = SPREFIX##NAME##_Next(me); \
