@@ -20,7 +20,7 @@
     typedef void(*LPREFIX##NAME##ForeachCallback)(TYPE* curr); \
     typedef int(*LPREFIX##NAME##Comparator)(const TYPE* left, const TYPE* right); \
     /* 空定义 */ \
-    ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(); \
+    static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(); \
     /* 创建销毁 */ \
     ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
     ATTR LPREFIX##NAME SPREFIX##NAME##Copy(const LPREFIX##NAME src); \
@@ -68,7 +68,7 @@
     ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEF_VECTOR(SPREFIX, LPREFIX, NAME, TYPE) \
     typedef struct LPREFIX##NAME##Def \
     { \
         size_t size; \
@@ -77,7 +77,7 @@
         LPREFIX##NAME##Signal insertSignal; \
         LPREFIX##NAME##Signal removeSignal; \
     } LPREFIX##NAME##Def; \
-    ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
+    static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
     { \
         LPREFIX##NAME##Def def; \
         def.size = 0; \

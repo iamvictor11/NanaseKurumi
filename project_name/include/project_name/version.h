@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define PNX_DEF_VERSION(ATTR, SPREFIX, LPREFIX) \
+#define PNX_DEF_VERSION(SPREFIX, LPREFIX) \
     typedef struct LPREFIX##Version \
     { \
         const char* name; \

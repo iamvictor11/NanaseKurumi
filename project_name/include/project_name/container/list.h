@@ -17,7 +17,7 @@
 	typedef bool(*LPREFIX##NAME##RemoveIfCallback)(const TYPE* curr); \
 	typedef void(*LPREFIX##NAME##ForeachCallback)(TYPE* curr); \
     /* 空定义 */ \
-	ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(); \
+	static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(); \
 	/* 创建销毁 */ \
 	ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
 	ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me); \
@@ -46,13 +46,13 @@
 	ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEF_LIST(SPREFIX, LPREFIX, NAME, TYPE) \
 	typedef struct LPREFIX##NAME##Def \
 	{ \
 		LPREFIX##NAME##Signal insertSignal; \
 		LPREFIX##NAME##Signal removeSignal; \
 	} LPREFIX##NAME##Def; \
-	ATTR LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
+	static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
 	{ \
 		LPREFIX##NAME##Def def; \
 		def.insertSignal = NULL; \

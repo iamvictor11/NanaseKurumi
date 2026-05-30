@@ -4,13 +4,13 @@
 #include <stdlib.h>
 
 PNX_DEC_ALLOCATOR(static inline, test, Test)
-PNX_DEF_ALLOCATOR(static inline, test, Test)
+PNX_DEF_ALLOCATOR(test, Test)
 PNX_IMPL_ALLOCATOR(static inline, test, Test)
 
 TestAllocator allocator;
 
 PNX_DEC_LIST(static inline, test, Test, List, TestItem)
-PNX_DEF_LIST(static inline, test, Test, List, TestItem)
+PNX_DEF_LIST(test, Test, List, TestItem)
 typedef struct TestItem
 {
     int value;
