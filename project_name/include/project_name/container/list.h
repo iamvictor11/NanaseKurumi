@@ -46,7 +46,7 @@
 	ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_LIST(SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEF_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
 	typedef struct LPREFIX##NAME##Def \
 	{ \
 		LPREFIX##NAME##Signal insertSignal; \

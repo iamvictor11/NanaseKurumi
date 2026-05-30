@@ -6,13 +6,13 @@
 PNX_DEF_VERSION(test, Test)
 
 PNX_DEC_ALLOCATOR(static inline, test, Test)
-PNX_DEF_ALLOCATOR(test, Test)
+PNX_DEF_ALLOCATOR(static inline, test, Test)
 PNX_IMPL_ALLOCATOR(static inline, test, Test)
 
 TestAllocator allocator;
 
 PNX_DEC_STRING(static inline, test, Test, String)
-PNX_DEF_STRING(test, Test, String)
+PNX_DEF_STRING(static inline, test, Test, String)
 PNX_IMPL_STRING(static inline, test, Test, String, &allocator)
 
 int main()

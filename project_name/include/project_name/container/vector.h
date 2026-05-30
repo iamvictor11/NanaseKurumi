@@ -68,7 +68,7 @@
     ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_VECTOR(SPREFIX, LPREFIX, NAME, TYPE) \
+#define PNX_DEF_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
     typedef struct LPREFIX##NAME##Def \
     { \
         size_t size; \

@@ -10,7 +10,7 @@
     ATTR void* SPREFIX##AllocatorDefaultRealloc(void* ctx, void* ptr, size_t size); \
     ATTR void SPREFIX##AllocatorDefaultFree(void* ctx, void* ptr); \
     ATTR LPREFIX##Allocator SPREFIX##DefaultAllocator();
-#define PNX_DEF_ALLOCATOR(SPREFIX, LPREFIX) \
+#define PNX_DEF_ALLOCATOR(ATTR, SPREFIX, LPREFIX) \
     typedef struct LPREFIX##Allocator \
     { \
         void* context; \

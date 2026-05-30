@@ -31,8 +31,8 @@
     ATTR size_t SPREFIX##NAME##Hash(const LPREFIX##NAME me);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_STRING(SPREFIX, LPREFIX, NAME) \
-    PNX_DEF_VECTOR(SPREFIX, LPREFIX, NAME, char)
+#define PNX_DEF_STRING(ATTR, SPREFIX, LPREFIX, NAME) \
+    PNX_DEF_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, char)
 #pragma endregion
 #pragma region Impl
 #define PNX_IMPL_STRING(ATTR, SPREFIX, LPREFIX, NAME, ALLOCATOR) \
