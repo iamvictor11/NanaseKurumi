@@ -3,14 +3,14 @@
 
 #include <stdint.h>
 
-typedef struct pnxVersion
+typedef struct PnxVersion
 {
     const char* name;
     uint8_t major;
     uint8_t minor;
     uint8_t patch;
     void* user;
-} pnxVersion;
+} PnxVersion;
 #define PNX_VERSION \
 { \
     .name = "Nanase Kurumi", \

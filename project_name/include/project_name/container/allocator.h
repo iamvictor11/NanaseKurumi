@@ -4,13 +4,13 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-typedef struct pnxAllocator
+typedef struct PnxAllocator
 {
     void* context;
     void* (*malloc)(void* ctx, size_t size);
     void* (*realloc)(void* ctx, void* ptr, size_t size);
     void  (*free)(void* ctx, void* ptr);
-} pnxAllocator;
+} PnxAllocator;
 void* pnxAllocatorDefaultMalloc(void* ctx, size_t size)
 {
     (void)ctx;
