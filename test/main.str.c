@@ -3,7 +3,7 @@
 #include "project_name/version.h"
 #include "project_name/container/str.h"
 
-PNX_DEF_VERSION(test, Test)
+PNX_DEF_VERSION(static inline, test, Test)
 
 PNX_DEC_ALLOCATOR(static inline, test, Test)
 PNX_DEF_ALLOCATOR(static inline, test, Test)
