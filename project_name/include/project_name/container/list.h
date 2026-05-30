@@ -1,22 +1,22 @@
 #ifndef PNX_CONTAINER_LIST_H
 #define PNX_CONTAINER_LIST_H
 
-#include "allocator.h"
+#include "../allocator.h"
 #include <stdbool.h>
 #include <stddef.h>
 
 #pragma region Dec
 #define PNX_DEC_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
-    typedef struct TYPE TYPE; \
-	typedef struct LPREFIX##NAME##Def LPREFIX##NAME##Def; \
 	typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
 	typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
+    /* 内部类 */ \
 	typedef struct LPREFIX##NAME##Node LPREFIX##NAME##Node; \
 	typedef void(*LPREFIX##NAME##Signal)(const LPREFIX##NAME container, TYPE* element); \
 	typedef bool(*LPREFIX##NAME##Equalor)(const TYPE* curr, const TYPE* goal); \
-	typedef bool(*LPREFIX##NAME##RemoveIfCallback)(const TYPE* curr); \
-	typedef void(*LPREFIX##NAME##ForeachCallback)(TYPE* curr); \
-    /* 空定义 */ \
+	typedef bool(*LPREFIX##NAME##Predicate)(const TYPE* curr); \
+	typedef void(*LPREFIX##NAME##Visitor)(TYPE* curr); \
+    /* 定义类 */ \
+	typedef struct LPREFIX##NAME##Def LPREFIX##NAME##Def; \
 	static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void); \
 	/* 创建销毁 */ \
 	ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
@@ -38,27 +38,15 @@
 	ATTR TYPE* SPREFIX##NAME##Find(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
 	ATTR bool SPREFIX##NAME##Contains(LPREFIX##NAME me, const TYPE* goal, LPREFIX##NAME##Equalor equalor); \
 	/* 批处理 */ \
-	ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
-	ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
-	ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate); \
+	ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor); \
+	ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor); \
+	ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##Predicate predicate); \
 	ATTR void SPREFIX##NAME##Clear(LPREFIX##NAME me); \
 	/* 交换 */ \
 	ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
 #define PNX_DEF_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
-	typedef struct LPREFIX##NAME##Def \
-	{ \
-		LPREFIX##NAME##Signal insertSignal; \
-		LPREFIX##NAME##Signal removeSignal; \
-	} LPREFIX##NAME##Def; \
-	static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void) \
-	{ \
-		LPREFIX##NAME##Def def; \
-		def.insertSignal = NULL; \
-		def.removeSignal = NULL; \
-		return def; \
-	}; \
 	typedef struct LPREFIX##NAME##Node \
 	{ \
 		TYPE* next; \
@@ -71,7 +59,20 @@
 		size_t size; \
 		LPREFIX##NAME##Signal insertSignal; \
 		LPREFIX##NAME##Signal removeSignal; \
-	} LPREFIX##NAME##_T;
+	} LPREFIX##NAME##_T; \
+    /* 定义类 */ \
+	typedef struct LPREFIX##NAME##Def \
+	{ \
+		LPREFIX##NAME##Signal insertSignal; \
+		LPREFIX##NAME##Signal removeSignal; \
+	} LPREFIX##NAME##Def; \
+	static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void) \
+	{ \
+		LPREFIX##NAME##Def def; \
+		def.insertSignal = NULL; \
+		def.removeSignal = NULL; \
+		return def; \
+	};
 #pragma endregion
 #pragma region Impl
 #define PNX_IMPL_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE, NODE_NAME, ALLOCATOR) \
@@ -196,15 +197,15 @@
 		return SPREFIX##NAME##Find(me, goal, equalor) != NULL; \
 	} \
 	/* 批处理 */ \
-	ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+	ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor) \
 	{ \
-		for (TYPE* it = me->head; it != NULL; it = SPREFIX##NAME##_GetNode(it)->next) processor(it); \
+		for (TYPE* it = me->head; it != NULL; it = SPREFIX##NAME##_GetNode(it)->next) visitor(it); \
 	} \
-	ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+	ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor) \
 	{ \
-		for (TYPE* it = me->tail; it != NULL; it = SPREFIX##NAME##_GetNode(it)->prev) processor(it); \
+		for (TYPE* it = me->tail; it != NULL; it = SPREFIX##NAME##_GetNode(it)->prev) visitor(it); \
 	} \
-	ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate) \
+	ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##Predicate predicate) \
 	{ \
 		TYPE* it = me->head; \
 		while (it != NULL) \

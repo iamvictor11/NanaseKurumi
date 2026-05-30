@@ -1,7 +1,7 @@
 #ifndef PNX_CONTAINER_VECTOR_H
 #define PNX_CONTAINER_VECTOR_H
 
-#include "allocator.h"
+#include "../allocator.h"
 #include <stdbool.h>
 #include <string.h>
 
@@ -10,16 +10,16 @@
 #pragma endregion
 #pragma region Dec
 #define PNX_DEC_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
-    typedef struct LPREFIX##NAME##Def LPREFIX##NAME##Def; \
     typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
     typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
-    /* 回调 */ \
+    /* 内部类 */ \
     typedef void(*LPREFIX##NAME##Signal)(const LPREFIX##NAME container, TYPE* element); \
     typedef bool(*LPREFIX##NAME##Equalor)(const TYPE* curr, const TYPE* goal); \
-    typedef bool(*LPREFIX##NAME##RemoveIfCallback)(const TYPE* curr); \
-    typedef void(*LPREFIX##NAME##ForeachCallback)(TYPE* curr); \
+    typedef bool(*LPREFIX##NAME##Predicate)(const TYPE* curr); \
+    typedef void(*LPREFIX##NAME##Visitor)(TYPE* curr); \
     typedef int(*LPREFIX##NAME##Comparator)(const TYPE* left, const TYPE* right); \
-    /* 空定义 */ \
+    /* 定义类 */ \
+    typedef struct LPREFIX##NAME##Def LPREFIX##NAME##Def; \
     static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void); \
     /* 创建销毁 */ \
     ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
@@ -45,9 +45,9 @@
     ATTR void SPREFIX##NAME##Append(LPREFIX##NAME me, size_t count, const TYPE* elements); \
     ATTR void SPREFIX##NAME##InsertRange(LPREFIX##NAME me, size_t index, size_t count, const TYPE* elements); \
     ATTR void SPREFIX##NAME##EraseRange(LPREFIX##NAME me, size_t index, size_t count); \
-    ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate); \
-    ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
-    ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor); \
+    ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##Predicate predicate); \
+    ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor); \
+    ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor); \
     /* 排序 */ \
     ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator); \
     /* 容量 */ \
@@ -69,6 +69,15 @@
 #pragma endregion
 #pragma region Def
 #define PNX_DEF_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
+    typedef struct LPREFIX##NAME##_T \
+    { \
+        TYPE* data; \
+        size_t size; \
+        size_t capacity; \
+        LPREFIX##NAME##Signal insertSignal; \
+        LPREFIX##NAME##Signal removeSignal; \
+    } LPREFIX##NAME##_T; \
+    /* 定义类 */ \
     typedef struct LPREFIX##NAME##Def \
     { \
         size_t size; \
@@ -85,15 +94,7 @@
         def.insertSignal = NULL; \
         def.removeSignal = NULL; \
         return def; \
-    } \
-    typedef struct LPREFIX##NAME##_T \
-    { \
-        TYPE* data; \
-        size_t size; \
-        size_t capacity; \
-        LPREFIX##NAME##Signal insertSignal; \
-        LPREFIX##NAME##Signal removeSignal; \
-    } SPREFIX##NAME##_T;
+    }
 #pragma endregion
 #pragma region Impl
 #define PNX_IMPL_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE, ALLOCATOR) \
@@ -298,7 +299,7 @@
             memmove(&me->data[index], &me->data[index + count], tail * sizeof(TYPE)); \
         me->size -= count; \
     } \
-    ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##RemoveIfCallback predicate) \
+    ATTR void SPREFIX##NAME##RemoveIf(LPREFIX##NAME me, LPREFIX##NAME##Predicate predicate) \
     { \
         size_t write = 0; \
         for (size_t read = 0; read < me->size; read++) \
@@ -314,15 +315,15 @@
         } \
         me->size = write; \
     } \
-    ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+    ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor) \
     { \
         for (size_t i = 0; i < me->size; i++) \
-            processor(&me->data[i]); \
+            visitor(&me->data[i]); \
     } \
-    ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##ForeachCallback processor) \
+    ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor) \
     { \
         for (size_t i = me->size; i > 0; i--) \
-            processor(&me->data[i - 1]); \
+            visitor(&me->data[i - 1]); \
     } \
     /* 排序 */ \
     ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator) \
