@@ -9,7 +9,7 @@
     ATTR void* SPREFIX##AllocatorDefaultMalloc(void* ctx, size_t size); \
     ATTR void* SPREFIX##AllocatorDefaultRealloc(void* ctx, void* ptr, size_t size); \
     ATTR void SPREFIX##AllocatorDefaultFree(void* ctx, void* ptr); \
-    ATTR LPREFIX##Allocator SPREFIX##DefaultAllocator();
+    ATTR LPREFIX##Allocator SPREFIX##DefaultAllocator(void);
 #define PNX_DEF_ALLOCATOR(ATTR, SPREFIX, LPREFIX) \
     typedef struct LPREFIX##Allocator \
     { \
@@ -34,7 +34,7 @@
         (void)ctx; \
         free(ptr); \
     } \
-    ATTR LPREFIX##Allocator SPREFIX##DefaultAllocator() \
+    ATTR LPREFIX##Allocator SPREFIX##DefaultAllocator(void) \
     { \
         LPREFIX##Allocator allocator = \
         { \

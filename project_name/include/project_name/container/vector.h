@@ -20,7 +20,7 @@
     typedef void(*LPREFIX##NAME##ForeachCallback)(TYPE* curr); \
     typedef int(*LPREFIX##NAME##Comparator)(const TYPE* left, const TYPE* right); \
     /* 空定义 */ \
-    static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(); \
+    static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void); \
     /* 创建销毁 */ \
     ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
     ATTR LPREFIX##NAME SPREFIX##NAME##Copy(const LPREFIX##NAME src); \
@@ -77,7 +77,7 @@
         LPREFIX##NAME##Signal insertSignal; \
         LPREFIX##NAME##Signal removeSignal; \
     } LPREFIX##NAME##Def; \
-    static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def() \
+    static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void) \
     { \
         LPREFIX##NAME##Def def; \
         def.size = 0; \
