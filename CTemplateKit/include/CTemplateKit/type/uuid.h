@@ -1,11 +1,11 @@
-#ifndef PNX_TYPE_UUID_H
-#define PNX_TYPE_UUID_H
+#ifndef C_TEMPLATE_TYPE_UUID_H
+#define C_TEMPLATE_TYPE_UUID_H
 
 #include "../allocator.h"
 #include <stdint.h>
 
 #pragma region Dec
-#define PNX_DEC_UUID(ATTR, SPREFIX, LPREFIX, NAME) \
+#define C_TEMPLATE_DECL_UUID(ATTR, SPREFIX, LPREFIX, NAME) \
     typedef struct LPREFIX##NAME LPREFIX##NAME; \
     /* 随机数引擎函数指针 */ \
     ATTR LPREFIX##NAME SPREFIX##NAME##Generator(LPREFIX##NAME state); \
@@ -16,7 +16,7 @@
 #pragma endregion
 
 #pragma region Def
-#define PNX_DEF_UUID(ATTR, SPREFIX, LPREFIX, NAME) \
+#define C_TEMPLATE_DEFN_UUID(ATTR, SPREFIX, LPREFIX, NAME) \
     typedef struct LPREFIX##NAME \
     { \
         uint64_t high, low; \
@@ -24,7 +24,7 @@
 #pragma endregion
 
 #pragma region Impl
-#define PNX_IMPL_UUID(ATTR, SPREFIX, LPREFIX, NAME, ALLOCATOR) \
+#define C_TEMPLATE_IMPL_UUID(ATTR, SPREFIX, LPREFIX, NAME, ALLOCATOR) \
     /* 私有 */ \
     static inline uint64_t SPREFIX##NAME##_HexToInt(char c) \
     { \

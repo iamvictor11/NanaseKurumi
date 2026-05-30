@@ -1,22 +1,22 @@
 #include <stdio.h>
-#include "project_name/platform/console.h"
-#include "project_name/container/list.h"
+#include "CTemplateKit/platform/console.h"
+#include "CTemplateKit/container/list.h"
 
-PNX_DEC_ALLOCATOR(static inline, test, Test)
-PNX_DEF_ALLOCATOR(static inline, test, Test)
-PNX_IMPL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DECL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_IMPL_ALLOCATOR(static inline, test, Test)
 
 TestAllocator allocator;
 
 typedef struct TestItem TestItem;
-PNX_DEC_LIST(static inline, test, Test, List, TestItem)
-PNX_DEF_LIST(static inline, test, Test, List, TestItem)
+C_TEMPLATE_DECL_LIST(static inline, test, Test, List, TestItem)
+C_TEMPLATE_DEFN_LIST(static inline, test, Test, List, TestItem)
 typedef struct TestItem
 {
     int value;
     TestListNode node;
 } TestItem;
-PNX_IMPL_LIST(static inline, test, Test, List, TestItem, node, &allocator)
+C_TEMPLATE_IMPL_LIST(static inline, test, Test, List, TestItem, node, &allocator)
 
 int main()
 {
@@ -29,11 +29,11 @@ int main()
     testListPushBack(list, &items[0]);
     testListPushBack(list, &items[1]);
     testListPushBack(list, &items[2]);
-    PNX_LIST_RFOREACH(TestItem, node, list, it)
+    C_TEMPLATE_LIST_RFOREACH(TestItem, node, list, it)
         printf("%d ", it->value);
     printf("\n");
     testListErase(list, &items[1]);
-    PNX_LIST_FOREACH(TestItem, node, list, it)
+    C_TEMPLATE_LIST_FOREACH(TestItem, node, list, it)
         printf("%d ", it->value);
     printf("\n");
     testListClear(list);

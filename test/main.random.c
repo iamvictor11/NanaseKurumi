@@ -1,16 +1,16 @@
 #include <stdio.h>
-#include "project_name/platform/console.h"
-#include "project_name/utils/random_gen.h"
+#include "CTemplateKit/platform/console.h"
+#include "CTemplateKit/utils/random_gen.h"
 
-PNX_DEC_ALLOCATOR(static inline, test, Test)
-PNX_DEF_ALLOCATOR(static inline, test, Test)
-PNX_IMPL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DECL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_IMPL_ALLOCATOR(static inline, test, Test)
 
 TestAllocator allocator;
 
-PNX_DEC_RANDOM_GEN(static inline, test, Test, RandomGen, uint64_t)
-PNX_DEF_RANDOM_GEN(static inline, test, Test, RandomGen, uint64_t)
-PNX_IMPL_RANDOM_GEN(static inline, test, Test, RandomGen, uint64_t, &allocator)
+C_TEMPLATE_DECL_RANDOM_GEN(static inline, test, Test, RandomGen, uint64_t)
+C_TEMPLATE_DEFN_RANDOM_GEN(static inline, test, Test, RandomGen, uint64_t)
+C_TEMPLATE_IMPL_RANDOM_GEN(static inline, test, Test, RandomGen, uint64_t, &allocator)
 
 static inline uint64_t testRandomGenGenerator_LCG(uint64_t state)
 {

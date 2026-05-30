@@ -1,15 +1,15 @@
-#ifndef PNX_CONTAINER_VECTOR_H
-#define PNX_CONTAINER_VECTOR_H
+#ifndef C_TEMPLATE_CONTAINER_VECTOR_H
+#define C_TEMPLATE_CONTAINER_VECTOR_H
 
 #include "../allocator.h"
 #include <stdbool.h>
 #include <string.h>
 
 #pragma region Konst
-#define PNX_VECTOR_GROWTH_FACTOR 2
+#define C_TEMPLATE_VECTOR_GROWTH_FACTOR 2
 #pragma endregion
 #pragma region Dec
-#define PNX_DEC_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
+#define C_TEMPLATE_DECL_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
     typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
     typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
     /* 内部类 */ \
@@ -68,7 +68,7 @@
     ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
+#define C_TEMPLATE_DEFN_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
     typedef struct LPREFIX##NAME##_T \
     { \
         TYPE* data; \
@@ -97,7 +97,7 @@
     }
 #pragma endregion
 #pragma region Impl
-#define PNX_IMPL_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE, ALLOCATOR) \
+#define C_TEMPLATE_IMPL_VECTOR(ATTR, SPREFIX, LPREFIX, NAME, TYPE, ALLOCATOR) \
     /* 创建销毁 */ \
     ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def) \
     { \
@@ -263,7 +263,7 @@
         if (required > me->capacity) \
         { \
             size_t newCapacity = me->capacity ? me->capacity : 1; \
-            while (newCapacity < required) newCapacity *= PNX_VECTOR_GROWTH_FACTOR; \
+            while (newCapacity < required) newCapacity *= C_TEMPLATE_VECTOR_GROWTH_FACTOR; \
             SPREFIX##NAME##Reserve(me, newCapacity); \
         } \
         for (size_t i = 0; i < count; i++) \
@@ -278,7 +278,7 @@
         if (required > me->capacity) \
         { \
             size_t newCapacity = me->capacity ? me->capacity : 1; \
-            while (newCapacity < required) newCapacity *= PNX_VECTOR_GROWTH_FACTOR; \
+            while (newCapacity < required) newCapacity *= C_TEMPLATE_VECTOR_GROWTH_FACTOR; \
             SPREFIX##NAME##Reserve(me, newCapacity); \
         } \
         if (index < me->size) \
@@ -354,7 +354,7 @@
         if (size > me->capacity) \
         { \
             size_t newCapacity = me->capacity ? me->capacity : 1; \
-            while (newCapacity < size) newCapacity *= PNX_VECTOR_GROWTH_FACTOR; \
+            while (newCapacity < size) newCapacity *= C_TEMPLATE_VECTOR_GROWTH_FACTOR; \
             SPREFIX##NAME##Reserve(me, newCapacity); \
         } \
         if (size > me->size) \
@@ -411,7 +411,7 @@
     { \
         if (me->size + 1 > me->capacity) \
         { \
-            size_t newCapacity = me->capacity ? me->capacity * PNX_VECTOR_GROWTH_FACTOR : 1; \
+            size_t newCapacity = me->capacity ? me->capacity * C_TEMPLATE_VECTOR_GROWTH_FACTOR : 1; \
             SPREFIX##NAME##Reserve(me, newCapacity); \
         } \
         me->data[me->size] = *element; \
@@ -453,13 +453,13 @@
     }
 #pragma endregion
 #pragma region Sugar
-#define PNX_VECTOR_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
+#define C_TEMPLATE_VECTOR_FOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
     for ( \
         TYPE* ELEM_PTR_NAME = (CONTAINER)->data; \
         ELEM_PTR_NAME != NULL && (size_t)(ELEM_PTR_NAME - (CONTAINER)->data) < (CONTAINER)->size; \
         ELEM_PTR_NAME++ \
     )
-#define PNX_VECTOR_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
+#define C_TEMPLATE_VECTOR_RFOREACH(TYPE, CONTAINER, ELEM_PTR_NAME) \
     for ( \
         TYPE* ELEM_PTR_NAME = ((CONTAINER)->size > 0 ? &((CONTAINER)->data[(CONTAINER)->size - 1]) : NULL); \
         ELEM_PTR_NAME != NULL; \

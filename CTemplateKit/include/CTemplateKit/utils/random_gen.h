@@ -1,12 +1,12 @@
-#ifndef PNX_UTILS_RANDOM_H
-#define PNX_UTILS_RANDOM_H
+#ifndef C_TEMPLATE_UTILS_RANDOM_H
+#define C_TEMPLATE_UTILS_RANDOM_H
 
 #include "../allocator.h"
 #include <stdint.h>
 #include <string.h>
 
 #pragma region Dec
-#define PNX_DEC_RANDOM_GEN(ATTR, SPREFIX, LPREFIX, NAME, NUM_TYPE) \
+#define C_TEMPLATE_DECL_RANDOM_GEN(ATTR, SPREFIX, LPREFIX, NAME, NUM_TYPE) \
     typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
     typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
     /* 内部类 */ \
@@ -28,7 +28,7 @@
     ATTR void SPREFIX##NAME##NextRangetBulk(LPREFIX##NAME me, NUM_TYPE min, NUM_TYPE max, size_t count, NUM_TYPE* out);
 #pragma endregion
 #pragma region Def
-#define PNX_DEF_RANDOM_GEN(ATTR, SPREFIX, LPREFIX, NAME, NUM_TYPE) \
+#define C_TEMPLATE_DEFN_RANDOM_GEN(ATTR, SPREFIX, LPREFIX, NAME, NUM_TYPE) \
     typedef struct LPREFIX##NAME##_T \
     { \
         NUM_TYPE seed; \
@@ -50,7 +50,7 @@
     }
 #pragma endregion
 #pragma region Impl
-#define PNX_IMPL_RANDOM_GEN(ATTR, SPREFIX, LPREFIX, NAME, NUM_TYPE, ALLOCATOR) \
+#define C_TEMPLATE_IMPL_RANDOM_GEN(ATTR, SPREFIX, LPREFIX, NAME, NUM_TYPE, ALLOCATOR) \
     /* 私有 */ \
     ATTR NUM_TYPE SPREFIX##NAME##_Next(LPREFIX##NAME me) \
     { \

@@ -1,19 +1,19 @@
 #include <stdio.h>
-#include "project_name/platform/console.h"
-#include "project_name/version.h"
-#include "project_name/container/str.h"
+#include "CTemplateKit/platform/console.h"
+#include "CTemplateKit/version.h"
+#include "CTemplateKit/container/str.h"
 
-PNX_DEF_VERSION(static inline, test, Test)
+C_TEMPLATE_DEFN_VERSION(static inline, test, Test)
 
-PNX_DEC_ALLOCATOR(static inline, test, Test)
-PNX_DEF_ALLOCATOR(static inline, test, Test)
-PNX_IMPL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DECL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_IMPL_ALLOCATOR(static inline, test, Test)
 
 TestAllocator allocator;
 
-PNX_DEC_STRING(static inline, test, Test, String)
-PNX_DEF_STRING(static inline, test, Test, String)
-PNX_IMPL_STRING(static inline, test, Test, String, &allocator)
+C_TEMPLATE_DECL_STRING(static inline, test, Test, String)
+C_TEMPLATE_DEFN_STRING(static inline, test, Test, String)
+C_TEMPLATE_IMPL_STRING(static inline, test, Test, String, &allocator)
 
 int main()
 {
@@ -21,15 +21,15 @@ int main()
 
     allocator = testDefaultAllocator();
 
-    TestVersion version = PNX_VERSION;
+    TestVersion version = C_TEMPLATE_VERSION;
     printf("%s\n", version.name);
-    TestString str = testStringCreateFromFormat("0%d", PNX_VERSION_CAST_UINT(version));
+    TestString str = testStringCreateFromFormat("0%d", C_TEMPLATE_VERSION_CAST_UINT(version));
     printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));
     testStringAssignFromCstr(str, "-0xF'F");
     printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));
     testStringAssignFromCstr(str, "01.2e-3");
     printf("%s, hash: %zu, float: %f\n", testStringToCstr(str), testStringHash(str), testStringToFloat(str));
-    PNX_STRING_FOREACH(str, c)
+    C_TEMPLATE_STRING_FOREACH(str, c)
         printf("%c", *c);
     printf("\n");
     testStringDestroy(str);

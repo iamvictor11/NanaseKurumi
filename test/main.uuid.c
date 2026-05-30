@@ -1,21 +1,21 @@
 #include <stdio.h>
-#include "project_name/platform/console.h"
-#include "project_name/utils/random_gen.h"
-#include "project_name/type/uuid.h"
+#include "CTemplateKit/platform/console.h"
+#include "CTemplateKit/utils/random_gen.h"
+#include "CTemplateKit/type/uuid.h"
 
-PNX_DEC_ALLOCATOR(static inline, test, Test)
-PNX_DEF_ALLOCATOR(static inline, test, Test)
-PNX_IMPL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DECL_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_IMPL_ALLOCATOR(static inline, test, Test)
 
 TestAllocator allocator;
 
-PNX_DEC_UUID(static inline, test, Test, UUID)
-PNX_DEF_UUID(static inline, test, Test, UUID)
-PNX_IMPL_UUID(static inline, test, Test, UUID, allocator)
+C_TEMPLATE_DECL_UUID(static inline, test, Test, UUID)
+C_TEMPLATE_DEFN_UUID(static inline, test, Test, UUID)
+C_TEMPLATE_IMPL_UUID(static inline, test, Test, UUID, allocator)
 
-PNX_DEC_RANDOM_GEN(static inline, test, Test, RandomGen, TestUUID)
-PNX_DEF_RANDOM_GEN(static inline, test, Test, RandomGen, TestUUID)
-PNX_IMPL_RANDOM_GEN(static inline, test, Test, RandomGen, TestUUID, &allocator)
+C_TEMPLATE_DECL_RANDOM_GEN(static inline, test, Test, RandomGen, TestUUID)
+C_TEMPLATE_DEFN_RANDOM_GEN(static inline, test, Test, RandomGen, TestUUID)
+C_TEMPLATE_IMPL_RANDOM_GEN(static inline, test, Test, RandomGen, TestUUID, &allocator)
 
 int main()
 {
