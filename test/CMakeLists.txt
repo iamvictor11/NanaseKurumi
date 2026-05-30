@@ -1,6 +1,5 @@
 add_executable(str "main.str.c")
 add_executable(list "main.list.c")
-add_executable(tmd "main.TMD.c")
 
 function(setup_target TARGET_NAME)
     target_compile_definitions(${TARGET_NAME}
@@ -49,5 +48,3 @@ endfunction()
 
 setup_target(str)
 setup_target(list)
-setup_target(tmd)
-
