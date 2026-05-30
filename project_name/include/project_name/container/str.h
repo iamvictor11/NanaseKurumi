@@ -180,7 +180,7 @@
         const char* str = SPREFIX##NAME##ToCstr(me); \
         if (str == NULL) return 0.0f; \
         size_t len = strlen(str); \
-        char* buf = (char*)malloc(len + 1); \
+        char* buf = (char*)(ALLOCATOR)->malloc((ALLOCATOR)->context, len + 1);\
         if (!buf) return 0.0f; \
         size_t j = 0; \
         for (size_t i = 0; i < len; i++) \
@@ -190,7 +190,7 @@
         } \
         buf[j] = '\0'; \
         double val = strtod(buf, NULL); \
-        free(buf); \
+        (ALLOCATOR)->free((ALLOCATOR)->context, buf); \
         return val; \
     } \
     /* 哈希 */ \
