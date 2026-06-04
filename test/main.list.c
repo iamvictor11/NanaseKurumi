@@ -29,11 +29,11 @@ int main()
     testListPushBack(list, &items[0]);
     testListPushBack(list, &items[1]);
     testListPushBack(list, &items[2]);
-    C_TEMPLATE_LIST_RFOREACH(TestItem, node, list, it)
+    C_TEMPLATE_LIST_RFOREACH(TestItem, it, node, list)
         printf("%d ", it->value);
     printf("\n");
     testListErase(list, &items[1]);
-    C_TEMPLATE_LIST_FOREACH(TestItem, node, list, it)
+    C_TEMPLATE_LIST_FOREACH(TestItem, it, node, list)
         printf("%d ", it->value);
     printf("\n");
     testListClear(list);

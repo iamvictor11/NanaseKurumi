@@ -29,7 +29,7 @@ int main()
     printf("%s, hash: %zu, int: %d\n", testStringToCstr(str), testStringHash(str), testStringToInt(str));
     testStringAssignFromCstr(str, "01.2e-3");
     printf("%s, hash: %zu, float: %f\n", testStringToCstr(str), testStringHash(str), testStringToFloat(str));
-    C_TEMPLATE_STRING_FOREACH(str, c)
+    C_TEMPLATE_STRING_FOREACH(c, str)
         printf("%c", *c);
     printf("\n");
     testStringDestroy(str);
