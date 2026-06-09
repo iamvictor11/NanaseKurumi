@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "CTemplateKit/platform/console.h"
-#include "CTemplateKit/container/list.h"
+#include "CTemplateKit/container/list.doubly.h"
 
 C_TEMPLATE_DECL_ALLOCATOR(static inline, test, Test)
 C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test)
@@ -9,14 +9,14 @@ C_TEMPLATE_IMPL_ALLOCATOR(static inline, test, Test)
 TestAllocator allocator;
 
 typedef struct TestItem TestItem;
-C_TEMPLATE_DECL_LIST(static inline, test, Test, List, TestItem)
-C_TEMPLATE_DEFN_LIST(static inline, test, Test, List, TestItem)
+C_TEMPLATE_DECL_DLIST(static inline, test, Test, List, TestItem)
+C_TEMPLATE_DEFN_DLIST(static inline, test, Test, List, TestItem)
 typedef struct TestItem
 {
     int value;
     TestListNode node;
 } TestItem;
-C_TEMPLATE_IMPL_LIST(static inline, test, Test, List, TestItem, node, &allocator)
+C_TEMPLATE_IMPL_DLIST(static inline, test, Test, List, TestItem, node, &allocator)
 
 int main()
 {
@@ -29,11 +29,11 @@ int main()
     testListPushBack(list, &items[0]);
     testListPushBack(list, &items[1]);
     testListPushBack(list, &items[2]);
-    C_TEMPLATE_LIST_RFOREACH(TestItem, it, node, list)
+    C_TEMPLATE_DLIST_RFOREACH(TestItem, it, node, list)
         printf("%d ", it->value);
     printf("\n");
     testListErase(list, &items[1]);
-    C_TEMPLATE_LIST_FOREACH(TestItem, it, node, list)
+    C_TEMPLATE_DLIST_FOREACH(TestItem, it, node, list)
         printf("%d ", it->value);
     printf("\n");
     testListClear(list);

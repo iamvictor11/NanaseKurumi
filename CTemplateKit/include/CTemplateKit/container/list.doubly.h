@@ -1,12 +1,12 @@
-#ifndef C_TEMPLATE_CONTAINER_LIST_H
-#define C_TEMPLATE_CONTAINER_LIST_H
+#ifndef C_TEMPLATE_CONTAINER_LIST_DOUBLY_H
+#define C_TEMPLATE_CONTAINER_LIST_DOUBLY_H
 
 #include "../allocator.h"
 #include <stdbool.h>
 #include <stddef.h>
 
 #pragma region Dec
-#define C_TEMPLATE_DECL_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
+#define C_TEMPLATE_DECL_DLIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
 	typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
 	typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
     /* 内部类 */ \
@@ -46,7 +46,7 @@
 	ATTR void SPREFIX##NAME##Swap(LPREFIX##NAME me, LPREFIX##NAME other);
 #pragma endregion
 #pragma region Def
-#define C_TEMPLATE_DEFN_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
+#define C_TEMPLATE_DEFN_DLIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE) \
 	typedef struct LPREFIX##NAME##Node \
 	{ \
 		TYPE* next; \
@@ -75,7 +75,7 @@
 	};
 #pragma endregion
 #pragma region Impl
-#define C_TEMPLATE_IMPL_LIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE, NODE_NAME, ALLOCATOR) \
+#define C_TEMPLATE_IMPL_DLIST(ATTR, SPREFIX, LPREFIX, NAME, TYPE, NODE_NAME, ALLOCATOR) \
     /* 私有 */ \
 	ATTR LPREFIX##NAME##Node* SPREFIX##NAME##_GetNode(TYPE* e) { return &((e)->NODE_NAME); } \
 	/* 创建销毁 */ \
@@ -243,9 +243,9 @@
 	}
 #pragma endregion
 #pragma region Sugar
-#define C_TEMPLATE_LIST_FOREACH(TYPE, ELEM_PTR_NAME, NODE_NAME, CONTAINER) \
+#define C_TEMPLATE_DLIST_FOREACH(TYPE, ELEM_PTR_NAME, NODE_NAME, CONTAINER) \
 	for (TYPE* ELEM_PTR_NAME = (CONTAINER)->head; ELEM_PTR_NAME != NULL; ELEM_PTR_NAME = (ELEM_PTR_NAME)->NODE_NAME.next)
-#define C_TEMPLATE_LIST_RFOREACH(TYPE, ELEM_PTR_NAME, NODE_NAME, CONTAINER) \
+#define C_TEMPLATE_DLIST_RFOREACH(TYPE, ELEM_PTR_NAME, NODE_NAME, CONTAINER) \
 	for (TYPE* ELEM_PTR_NAME = (CONTAINER)->tail; ELEM_PTR_NAME != NULL; ELEM_PTR_NAME = (ELEM_PTR_NAME)->NODE_NAME.prev)
 #pragma endregion
 

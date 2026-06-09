@@ -1,5 +1,6 @@
 add_executable(str "main.str.c")
-add_executable(list "main.list.c")
+add_executable(list_singly "main.list.singly.c")
+add_executable(list_doubly "main.list.doubly.c")
 add_executable(random "main.random.c")
 add_executable(uuid "main.uuid.c")
 
@@ -49,6 +50,7 @@ function(setup_target TARGET_NAME)
 endfunction()
 
 setup_target(str)
-setup_target(list)
+setup_target(list_singly)
+setup_target(list_doubly)
 setup_target(random)
 setup_target(uuid)
