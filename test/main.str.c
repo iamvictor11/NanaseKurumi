@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "CTemplateKit/platform/console.h"
-#include "CTemplateKit/version.h"
-#include "CTemplateKit/container/str.h"
+#include "c_template/platform/console.h"
+#include "c_template/version.h"
+#include "c_template/container/str.h"
 
 C_TEMPLATE_DEFN_VERSION(static inline, test, Test)
 

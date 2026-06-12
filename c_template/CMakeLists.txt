@@ -1,15 +1,15 @@
-add_library(CTemplateKit INTERFACE)
+add_library(c_template INTERFACE)
 
-target_compile_definitions(CTemplateKit
+target_compile_definitions(c_template
 INTERFACE
     C_TEMPLATE_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
     C_TEMPLATE_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
 )
-target_include_directories(CTemplateKit
+target_include_directories(c_template
 INTERFACE
     "include"
 )
-target_compile_options(CTemplateKit
+target_compile_options(c_template
 INTERFACE
     $<$<CONFIG:Debug>:
         -O0
@@ -24,7 +24,7 @@ INTERFACE
         -fdata-sections
     >
 )
-target_link_options(CTemplateKit
+target_link_options(c_template
 INTERFACE
     $<$<CONFIG:Release>:
         -s

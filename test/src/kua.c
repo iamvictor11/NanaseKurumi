@@ -1,2 +1,2 @@
 #define C_TEMPLATE_IMPL_FILE
-#include "CTemplateKit/platform/console.h"
+#include "c_template/platform/console.h"

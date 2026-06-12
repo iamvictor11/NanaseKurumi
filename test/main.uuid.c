@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include "CTemplateKit/platform/console.h"
-#include "CTemplateKit/utils/random_gen.h"
-#include "CTemplateKit/type/uuid.h"
+#include "c_template/platform/console.h"
+#include "c_template/utils/random_gen.h"
+#include "c_template/type/uuid.h"
 
 C_TEMPLATE_DECL_ALLOCATOR(static inline, test, Test)
 C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test)
