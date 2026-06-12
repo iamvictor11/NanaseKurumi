@@ -13,7 +13,6 @@
     typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
     typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
     /* 内部类 */ \
-    typedef void(*LPREFIX##NAME##Signal)(const LPREFIX##NAME container, TYPE* element); \
     typedef bool(*LPREFIX##NAME##Equalor)(const TYPE* curr, const TYPE* goal); \
     typedef bool(*LPREFIX##NAME##Predicate)(const TYPE* curr); \
     typedef void(*LPREFIX##NAME##Visitor)(TYPE* curr); \
@@ -24,9 +23,9 @@
     /* 创建销毁 */ \
     ATTR LPREFIX##NAME SPREFIX##NAME##Create(const LPREFIX##NAME##Def* def); \
     ATTR LPREFIX##NAME SPREFIX##NAME##Copy(const LPREFIX##NAME src); \
-    ATTR void SPREFIX##NAME##CopyTo(LPREFIX##NAME me, const LPREFIX##NAME dst); \
+    ATTR void SPREFIX##NAME##CopyTo(LPREFIX##NAME me, const LPREFIX##NAME src); \
     ATTR LPREFIX##NAME SPREFIX##NAME##Move(const LPREFIX##NAME src); \
-    ATTR void SPREFIX##NAME##MoveTo(LPREFIX##NAME me, const LPREFIX##NAME dst); \
+    ATTR void SPREFIX##NAME##MoveTo(LPREFIX##NAME me, const LPREFIX##NAME src); \
     ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me); \
     /* 属性 */ \
     ATTR TYPE* SPREFIX##NAME##Data(LPREFIX##NAME me); \
@@ -74,25 +73,18 @@
         TYPE* data; \
         size_t size; \
         size_t capacity; \
-        LPREFIX##NAME##Signal insertSignal; \
-        LPREFIX##NAME##Signal removeSignal; \
     } LPREFIX##NAME##_T; \
-    /* 定义类 */ \
     typedef struct LPREFIX##NAME##Def \
     { \
         size_t size; \
         size_t capacity; \
         TYPE initial; \
-        LPREFIX##NAME##Signal insertSignal; \
-        LPREFIX##NAME##Signal removeSignal; \
     } LPREFIX##NAME##Def; \
     static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void) \
     { \
         LPREFIX##NAME##Def def; \
         def.size = 0; \
         def.capacity = 0; \
-        def.insertSignal = NULL; \
-        def.removeSignal = NULL; \
         return def; \
     }
 #pragma endregion
@@ -106,19 +98,12 @@
         me->data = NULL; \
         me->size = 0; \
         me->capacity = 0; \
-        me->insertSignal = def ? def->insertSignal : NULL; \
-        me->removeSignal = def ? def->removeSignal : NULL; \
-        if (def && def->capacity > 0) \
-            SPREFIX##NAME##Reserve(me, def->capacity); \
+        if (def && def->capacity > 0) SPREFIX##NAME##Reserve(me, def->capacity); \
         if (def && def->size > 0) \
         { \
-            if (me->capacity < def->size) \
-                SPREFIX##NAME##Reserve(me, def->size); \
+            if (me->capacity < def->size) SPREFIX##NAME##Reserve(me, def->size); \
             for (size_t i = 0; i < def->size; i++) \
-            { \
                 me->data[i] = def->initial; \
-                if (me->insertSignal) me->insertSignal(me, &me->data[i]); \
-            } \
             me->size = def->size; \
         } \
         return me; \
@@ -131,10 +116,7 @@
         me->data = NULL; \
         me->size = 0; \
         me->capacity = 0; \
-        me->insertSignal = src->insertSignal; \
-        me->removeSignal = src->removeSignal; \
-        if (src->capacity > 0) \
-            SPREFIX##NAME##Reserve(me, src->capacity); \
+        if (src->capacity > 0) SPREFIX##NAME##Reserve(me, src->capacity); \
         if (src->size > 0) \
         { \
             me->size = src->size; \
@@ -147,10 +129,7 @@
     { \
         if (src == NULL || me == src) return; \
         SPREFIX##NAME##Clear(me); \
-        if (src->capacity > 0) \
-            SPREFIX##NAME##Reserve(me, src->capacity); \
-        me->insertSignal = src->insertSignal; \
-        me->removeSignal = src->removeSignal; \
+        if (src->capacity > 0) SPREFIX##NAME##Reserve(me, src->capacity); \
         if (src->size > 0) \
             for (size_t i = 0; i < src->size; i++) \
                 me->data[i] = src->data[i]; \
@@ -164,13 +143,9 @@
         me->data = src->data; \
         me->size = src->size; \
         me->capacity = src->capacity; \
-        me->insertSignal = src->insertSignal; \
-        me->removeSignal = src->removeSignal; \
         src->data = NULL; \
         src->size = 0; \
         src->capacity = 0; \
-        src->insertSignal = NULL; \
-        src->removeSignal = NULL; \
         return me; \
     } \
     ATTR void SPREFIX##NAME##MoveTo(LPREFIX##NAME me, const LPREFIX##NAME src) \
@@ -180,19 +155,12 @@
         me->data = src->data; \
         me->size = src->size; \
         me->capacity = src->capacity; \
-        me->insertSignal = src->insertSignal; \
-        me->removeSignal = src->removeSignal; \
         src->data = NULL; \
         src->size = 0; \
         src->capacity = 0; \
-        src->insertSignal = NULL; \
-        src->removeSignal = NULL; \
     } \
     ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me) \
     { \
-        if (me->data != NULL && me->removeSignal != NULL) \
-            for (size_t i = 0; i < me->size; i++) \
-                me->removeSignal(me, &me->data[i]); \
         if (me->data != NULL) \
         { \
             (ALLOCATOR)->free((ALLOCATOR)->context, me->data); \
@@ -289,11 +257,8 @@
     } \
     ATTR void SPREFIX##NAME##EraseRange(LPREFIX##NAME me, size_t index, size_t count) \
     { \
-        if (count == 0) return; \
+        if (count == 0 || index >= me->size) return; \
         if (count > me->size - index) count = me->size - index; \
-        if (me->removeSignal != NULL) \
-            for (size_t i = 0; i < count; i++) \
-                me->removeSignal(me, &me->data[index + i]); \
         size_t tail = me->size - (index + count); \
         if (tail > 0) \
             memmove(&me->data[index], &me->data[index + count], tail * sizeof(TYPE)); \
@@ -304,13 +269,8 @@
         size_t write = 0; \
         for (size_t read = 0; read < me->size; read++) \
         { \
-            if (predicate(&me->data[read])) \
-            { \
-                if (me->removeSignal != NULL) me->removeSignal(me, &me->data[read]); \
-                continue; \
-            } \
-            if (write != read) \
-                me->data[write] = me->data[read]; \
+            if (predicate(&me->data[read])) continue; \
+            if (write != read) me->data[write] = me->data[read]; \
             write++; \
         } \
         me->size = write; \
@@ -326,7 +286,7 @@
             visitor(&me->data[i - 1]); \
     } \
     /* 排序 */ \
-    ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator) \
+    ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator comparator) \
     { \
         if (me->size < 2) return; \
         for (size_t i = 0; i < me->size - 1; i++) \
@@ -346,8 +306,7 @@
             me->data = (TYPE*)(ALLOCATOR)->malloc((ALLOCATOR)->context, capacity * sizeof(TYPE)); \
         else \
             me->data = (TYPE*)(ALLOCATOR)->realloc((ALLOCATOR)->context, me->data, capacity * sizeof(TYPE)); \
-        if (me->data != NULL) \
-            me->capacity = capacity; \
+        if (me->data != NULL) me->capacity = capacity; \
     } \
     ATTR void SPREFIX##NAME##Resize(LPREFIX##NAME me, size_t size) \
     { \
@@ -360,16 +319,7 @@
         if (size > me->size) \
         { \
             for (size_t i = me->size; i < size; i++) \
-            { \
                 me->data[i] = (TYPE){}; \
-                if (me->insertSignal) me->insertSignal(me, &me->data[i]); \
-            } \
-        } \
-        else if (size < me->size) \
-        { \
-            if (me->removeSignal != NULL) \
-                for (size_t i = size; i < me->size; i++) \
-                    me->removeSignal(me, &me->data[i]); \
         } \
         me->size = size; \
     } \
@@ -392,9 +342,6 @@
     } \
     ATTR void SPREFIX##NAME##Clear(LPREFIX##NAME me) \
     { \
-        if (me->removeSignal != NULL && me->data != NULL) \
-            for (size_t i = 0; i < me->size; i++) \
-                me->removeSignal(me, &me->data[i]); \
         me->size = 0; \
     } \
     /* 增删改 */ \
@@ -421,14 +368,11 @@
     ATTR size_t SPREFIX##NAME##PushLiteral(LPREFIX##NAME me, TYPE literal) { return SPREFIX##NAME##Push(me, &literal); } \
     ATTR void SPREFIX##NAME##Pop(LPREFIX##NAME me) \
     { \
+        if (me->size == 0) return; \
         me->size -= 1; \
-        if (me->removeSignal != NULL) \
-            me->removeSignal(me, &me->data[me->size]); \
     } \
     ATTR void SPREFIX##NAME##Set(LPREFIX##NAME me, size_t index, const TYPE* element) \
     { \
-        if (me->removeSignal != NULL) \
-            me->removeSignal(me, &me->data[index]); \
         me->data[index] = *element; \
     } \
     ATTR void SPREFIX##NAME##SetLiteral(LPREFIX##NAME me, size_t index, TYPE literal) { SPREFIX##NAME##Set(me, index, &literal); } \
@@ -438,18 +382,12 @@
         TYPE* tempData = me->data; \
         size_t tempSize = me->size; \
         size_t tempCapacity = me->capacity; \
-        LPREFIX##NAME##Signal tempInsertSignal = me->insertSignal; \
-        LPREFIX##NAME##Signal tempRemoveSignal = me->removeSignal; \
         me->data = other->data; \
         me->size = other->size; \
         me->capacity = other->capacity; \
-        me->insertSignal = other->insertSignal; \
-        me->removeSignal = other->removeSignal; \
         other->data = tempData; \
         other->size = tempSize; \
         other->capacity = tempCapacity; \
-        other->insertSignal = tempInsertSignal; \
-        other->removeSignal = tempRemoveSignal; \
     }
 #pragma endregion
 #pragma region Sugar

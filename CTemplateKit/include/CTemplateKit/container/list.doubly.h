@@ -57,20 +57,14 @@
 		TYPE* head; \
 		TYPE* tail; \
 		size_t size; \
-		LPREFIX##NAME##Signal insertSignal; \
-		LPREFIX##NAME##Signal removeSignal; \
 	} LPREFIX##NAME##_T; \
     /* 定义类 */ \
 	typedef struct LPREFIX##NAME##Def \
 	{ \
-		LPREFIX##NAME##Signal insertSignal; \
-		LPREFIX##NAME##Signal removeSignal; \
 	} LPREFIX##NAME##Def; \
 	static inline LPREFIX##NAME##Def SPREFIX##Null##NAME##Def(void) \
 	{ \
 		LPREFIX##NAME##Def def; \
-		def.insertSignal = NULL; \
-		def.removeSignal = NULL; \
 		return def; \
 	};
 #pragma endregion
@@ -86,8 +80,6 @@
 		me->head = NULL; \
 		me->tail = NULL; \
 		me->size = 0; \
-		me->insertSignal = def ? def->insertSignal : NULL; \
-		me->removeSignal = def ? def->removeSignal : NULL; \
 		return me; \
 	} \
 	ATTR void SPREFIX##NAME##Destroy(LPREFIX##NAME me) \
@@ -111,7 +103,6 @@
 		me->head = element; \
 		if (me->tail == NULL) me->tail = element; \
 		me->size += 1; \
-		if (me->insertSignal) me->insertSignal(me, element); \
 		return me->size - 1; \
 	} \
 	ATTR size_t SPREFIX##NAME##PushBack(LPREFIX##NAME me, TYPE* element) \
@@ -123,7 +114,6 @@
 		me->tail = element; \
 		if (me->head == NULL) me->head = element; \
 		me->size += 1; \
-		if (me->insertSignal) me->insertSignal(me, element); \
 		return me->size - 1; \
 	} \
 	ATTR void SPREFIX##NAME##PopFront(LPREFIX##NAME me) \
@@ -131,7 +121,6 @@
 		if (me->head == NULL) return; \
 		TYPE* old = me->head; \
 		TYPE* next = SPREFIX##NAME##_GetNode(old)->next; \
-		if (me->removeSignal) me->removeSignal(me, old); \
 		if (next) SPREFIX##NAME##_GetNode(next)->prev = NULL; \
 		me->head = next; \
 		if (me->head == NULL) me->tail = NULL; \
@@ -142,7 +131,6 @@
 		if (me->tail == NULL) return; \
 		TYPE* old = me->tail; \
 		TYPE* prev = SPREFIX##NAME##_GetNode(old)->prev; \
-		if (me->removeSignal) me->removeSignal(me, old); \
 		if (prev) SPREFIX##NAME##_GetNode(prev)->next = NULL; \
 		me->tail = prev; \
 		if (me->tail == NULL) me->head = NULL; \
@@ -158,7 +146,6 @@
 		SPREFIX##NAME##_GetNode(index)->next = element; \
 		SPREFIX##NAME##_GetNode(next)->prev = element; \
 		me->size += 1; \
-		if (me->insertSignal) me->insertSignal(me, element); \
 	} \
 	ATTR void SPREFIX##NAME##InsertBefore(LPREFIX##NAME me, TYPE* index, TYPE* element) \
 	{ \
@@ -170,14 +157,12 @@
 		SPREFIX##NAME##_GetNode(prev)->next = element; \
 		SPREFIX##NAME##_GetNode(index)->prev = element; \
 		me->size += 1; \
-		if (me->insertSignal) me->insertSignal(me, element); \
 	} \
 	ATTR void SPREFIX##NAME##Erase(LPREFIX##NAME me, TYPE* element) \
 	{ \
 		if (element == NULL) return; \
 		TYPE* prev = SPREFIX##NAME##_GetNode(element)->prev; \
 		TYPE* next = SPREFIX##NAME##_GetNode(element)->next; \
-		if (me->removeSignal) me->removeSignal(me, element); \
 		if (prev) SPREFIX##NAME##_GetNode(prev)->next = next; \
 		if (next) SPREFIX##NAME##_GetNode(next)->prev = prev; \
 		if (me->head == element) me->head = next; \
@@ -221,7 +206,6 @@
 		while (it != NULL) \
 		{ \
 			TYPE* next = SPREFIX##NAME##_GetNode(it)->next; \
-			if (me->removeSignal) me->removeSignal(me, it); \
 			SPREFIX##NAME##_GetNode(it)->next = NULL; \
 			SPREFIX##NAME##_GetNode(it)->prev = NULL; \
 			it = next; \
@@ -236,10 +220,8 @@
 		TYPE* t_head = me->head; \
 		TYPE* t_tail = me->tail; \
 		size_t t_size = me->size; \
-		LPREFIX##NAME##Signal t_ins = me->insertSignal; \
-		LPREFIX##NAME##Signal t_rem = me->removeSignal; \
-		me->head = other->head; me->tail = other->tail; me->size = other->size; me->insertSignal = other->insertSignal; me->removeSignal = other->removeSignal; \
-		other->head = t_head; other->tail = t_tail; other->size = t_size; other->insertSignal = t_ins; other->removeSignal = t_rem; \
+		me->head = other->head; me->tail = other->tail; me->size = other->size; \
+		other->head = t_head; other->tail = t_tail; other->size = t_size; \
 	}
 #pragma endregion
 #pragma region Sugar
