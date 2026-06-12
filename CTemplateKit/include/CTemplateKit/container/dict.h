@@ -6,13 +6,6 @@
 #include <stddef.h>
 
 #pragma region Dec
-/*
- * Intrusive unordered dictionary template.
- * Requirements for element type (ELEM):
- * - contains a node field named NODE_NAME (structure with a pointer `next`),
- * - contains members `key` (of type KEY) and `value` (of type VALUE).
- * Hash function for KEY must be provided in Def.
- */
 #define C_TEMPLATE_DECL_DICT(ATTR, SPREFIX, LPREFIX, NAME, ELEM, NODE_NAME, KEY, VALUE) \
 	typedef struct LPREFIX##NAME##_T LPREFIX##NAME##_T; \
 	typedef LPREFIX##NAME##_T* LPREFIX##NAME; \
