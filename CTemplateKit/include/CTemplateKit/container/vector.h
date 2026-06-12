@@ -49,7 +49,7 @@
     ATTR void SPREFIX##NAME##Foreach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor); \
     ATTR void SPREFIX##NAME##RForeach(LPREFIX##NAME me, LPREFIX##NAME##Visitor visitor); \
     /* 排序 */ \
-    ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator  comparator); \
+    ATTR void SPREFIX##NAME##BubbleSort(LPREFIX##NAME me, LPREFIX##NAME##Comparator comparator); \
     /* 容量 */ \
     ATTR void SPREFIX##NAME##Reserve(LPREFIX##NAME me, size_t capacity); \
     ATTR void SPREFIX##NAME##Resize(LPREFIX##NAME me, size_t size); \
