@@ -53,7 +53,7 @@
     /* 容量 */ \
     ATTR void SPREFIX##NAME##Reserve(LPREFIX##NAME me, size_t capacity); \
     ATTR void SPREFIX##NAME##Resize(LPREFIX##NAME me, size_t size); \
-    ATTR void SPREFIX##NAME##ShripnxToFit(LPREFIX##NAME me); \
+    ATTR void SPREFIX##NAME##ShriToFit(LPREFIX##NAME me); \
     ATTR void SPREFIX##NAME##Clear(LPREFIX##NAME me); \
     /* 增删改 */ \
     ATTR void SPREFIX##NAME##Insert(LPREFIX##NAME me, size_t index, const TYPE* element); \
@@ -373,7 +373,7 @@
         } \
         me->size = size; \
     } \
-    ATTR void SPREFIX##NAME##ShripnxToFit(LPREFIX##NAME me) \
+    ATTR void SPREFIX##NAME##ShriToFit(LPREFIX##NAME me) \
     { \
         if (me->size == me->capacity) return; \
         if (me->size == 0) \

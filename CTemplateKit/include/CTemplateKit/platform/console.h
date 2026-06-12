@@ -1,14 +1,14 @@
 #ifndef C_TEMPLATE_PLATFORM_CONSOLE_H
 #define C_TEMPLATE_PLATFORM_CONSOLE_H
 
-void pnxSetConsoleOutputCP_UTF8();
-void pnxGetChar();
+void kuaSetConsoleOutputCP_UTF8();
+void kuaGetChar();
 
 #ifdef C_TEMPLATE_IMPL_FILE
 
 #include "kua.h"
 
-void pnxSetConsoleOutputCP_UTF8()
+void kuaSetConsoleOutputCP_UTF8()
 {
 #if C_TEMPLATE_PLATFORM_WINDOWS
     SetConsoleOutputCP(CP_UTF8);
@@ -17,7 +17,7 @@ void pnxSetConsoleOutputCP_UTF8()
 #else
 #endif
 }
-void pnxGetChar()
+void kuaGetChar()
 {
 #if C_TEMPLATE_PLATFORM_WINDOWS
     _getch();

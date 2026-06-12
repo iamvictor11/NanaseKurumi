@@ -19,7 +19,7 @@ C_TEMPLATE_IMPL_RANDOM_GEN(static inline, test, Test, RandomGen, TestUUID, &allo
 
 int main()
 {
-    pnxSetConsoleOutputCP_UTF8();
+    kuaSetConsoleOutputCP_UTF8();
 
     allocator = testDefaultAllocator();
 
@@ -34,6 +34,6 @@ int main()
     printf("uuidmk: %s = {%zu, %zu}\n", testUUIDToCstr(uuidmk), uuidmk.high, uuidmk.low);
     testRandomGenDestroy(randomGen);
 
-    pnxGetChar();
+    kuaGetChar();
     return EXIT_SUCCESS;
 }

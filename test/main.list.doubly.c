@@ -20,7 +20,7 @@ C_TEMPLATE_IMPL_DLIST(static inline, test, Test, List, TestItem, node, &allocato
 
 int main()
 {
-    pnxSetConsoleOutputCP_UTF8();
+    kuaSetConsoleOutputCP_UTF8();
 
     allocator = testDefaultAllocator();
 
@@ -39,6 +39,6 @@ int main()
     testListClear(list);
     testListDestroy(list);
 
-    pnxGetChar();
+    kuaGetChar();
     return EXIT_SUCCESS;
 }
