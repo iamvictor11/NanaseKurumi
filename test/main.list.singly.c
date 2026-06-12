@@ -20,7 +20,7 @@ C_TEMPLATE_IMPL_SLIST(static inline, test, Test, List, TestItem, node, &allocato
 
 int main()
 {
-    kuaSetConsoleOutputCP_UTF8();
+    osSetConsoleOutputCP_UTF8();
 
     allocator = testDefaultAllocator();
 
@@ -39,6 +39,6 @@ int main()
     testListClear(list);
     testListDestroy(list);
 
-    kuaGetChar();
+    osGetChar();
     return EXIT_SUCCESS;
 }

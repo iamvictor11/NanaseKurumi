@@ -24,7 +24,7 @@ static inline void testRandomGenClampor_MOD(uint64_t* value, uint64_t min, uint6
 
 int main()
 {
-    kuaSetConsoleOutputCP_UTF8();
+    osSetConsoleOutputCP_UTF8();
 
     allocator = testDefaultAllocator();
 
@@ -42,6 +42,6 @@ int main()
         printf("%zu\n", randoms[i]);
     testRandomGenDestroy(randomGen);
 
-    kuaGetChar();
+    osGetChar();
     return EXIT_SUCCESS;
 }

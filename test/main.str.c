@@ -17,7 +17,7 @@ C_TEMPLATE_IMPL_STRING(static inline, test, Test, String, &allocator)
 
 int main()
 {
-    kuaSetConsoleOutputCP_UTF8();
+    osSetConsoleOutputCP_UTF8();
 
     allocator = testDefaultAllocator();
 
@@ -34,6 +34,6 @@ int main()
     printf("\n");
     testStringDestroy(str);
 
-    kuaGetChar();
+    osGetChar();
     return EXIT_SUCCESS;
 }
