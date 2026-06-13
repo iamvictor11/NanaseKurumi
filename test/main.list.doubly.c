@@ -3,7 +3,7 @@
 #include "c_template/container/list.doubly.h"
 
 C_TEMPLATE_DECL_ALLOCATOR(static inline, test, Test)
-C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test)
+C_TEMPLATE_DEFN_ALLOCATOR(static inline, test, Test,)
 C_TEMPLATE_IMPL_ALLOCATOR(static inline, test, Test)
 
 TestAllocator allocator;
