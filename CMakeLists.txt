@@ -13,3 +13,4 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${INT_DIR})
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/c_template")
 add_subdirectory("${CMAKE_SOURCE_DIR}/test")
+add_subdirectory("${CMAKE_SOURCE_DIR}/quine")

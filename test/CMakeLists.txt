@@ -5,6 +5,12 @@ add_executable(random "main.random.c")
 add_executable(uuid "main.uuid.c")
 
 function(setup_target TARGET_NAME)
+    set_target_properties(${TARGET_NAME}
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/test"
+        CMAKE_LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_DIR}/test"
+        CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${INT_DIR}/test"
+    )
     target_compile_definitions(${TARGET_NAME}
     PRIVATE
         TEST_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
