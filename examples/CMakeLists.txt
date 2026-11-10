@@ -1,16 +1,15 @@
-add_executable(aa "aa.c")
-
-function(setup_target TARGET_NAME)
+function(target_setup TARGET_NAME)
+    add_executable(${TARGET_NAME} "main/${TARGET_NAME}.c")
     set_target_properties(${TARGET_NAME}
     PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/quine"
-        CMAKE_LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_DIR}/quine"
-        CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${INT_DIR}/quine"
+        RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIR}/examples"
+        CMAKE_LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_DIR}/examples"
+        CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${INT_DIR}/examples"
     )
     target_compile_definitions(${TARGET_NAME}
     PRIVATE
-        TEST_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
-        TEST_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
+        EXAM_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
+        EXAM_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
     )
     target_include_directories(${TARGET_NAME}
     PUBLIC
@@ -19,9 +18,11 @@ function(setup_target TARGET_NAME)
     )
     target_sources(${TARGET_NAME}
     PRIVATE
+        # "${CMAKE_CURRENT_SOURCE_DIR}/src/stl.impl.c"
     )
     target_link_libraries(${TARGET_NAME}
     PUBLIC
+        stl
     )
     set_property(TARGET ${TARGET_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
     target_compile_options(${TARGET_NAME}
@@ -49,4 +50,4 @@ function(setup_target TARGET_NAME)
     )
 endfunction()
 
-setup_target(aa)
+target_setup(01_vector)

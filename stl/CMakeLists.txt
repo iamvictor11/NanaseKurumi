@@ -1,15 +1,10 @@
-add_library(c_template INTERFACE)
+add_library(stl INTERFACE)
 
-target_compile_definitions(c_template
-INTERFACE
-    C_TEMPLATE_BUILD_DEBUG=$<IF:$<CONFIG:Debug>,1,0>
-    C_TEMPLATE_BUILD_RELEASE=$<IF:$<CONFIG:Release>,1,0>
-)
-target_include_directories(c_template
+target_include_directories(stl
 INTERFACE
     "include"
 )
-target_compile_options(c_template
+target_compile_options(stl
 INTERFACE
     $<$<CONFIG:Debug>:
         -O0
@@ -24,7 +19,7 @@ INTERFACE
         -fdata-sections
     >
 )
-target_link_options(c_template
+target_link_options(stl
 INTERFACE
     $<$<CONFIG:Release>:
         -s
