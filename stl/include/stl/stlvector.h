@@ -25,7 +25,7 @@
 #define STL_VECTOR_ABORT abort
 #endif
 
-#define STL_VECTOR_INTERNAL(ME, P, N) \
+#define STL_VECTOR_OVERLAPPING(ME, P, N) \
     ((ME)->data != NULL && \
     (uintptr_t)(P) < (uintptr_t)((ME)->data) + (ME)->size * sizeof(*(ME)->data) && \
     (uintptr_t)(P) + (uintptr_t)(N) * sizeof(*(ME)->data) > (uintptr_t)((ME)->data))
@@ -184,7 +184,7 @@
         if (n == 0) return; \
         if (n > (size_t)-1 - me->size) STL_VECTOR_ABORT(); \
         T* tmp = NULL; \
-        if (STL_VECTOR_INTERNAL(me, p, n)) \
+        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T* )STL_VECTOR_REALLOC(NULL, n * sizeof(T)); \
             if (!tmp) STL_VECTOR_ABORT(); \
@@ -265,7 +265,7 @@
         if (n == 0) return; \
         if (n > (size_t)-1 - me->size) STL_VECTOR_ABORT(); \
         T* tmp = NULL; \
-        if (STL_VECTOR_INTERNAL(me, p, n)) \
+        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T* )STL_VECTOR_REALLOC(NULL, n * sizeof(T)); \
             if (!tmp) STL_VECTOR_ABORT(); \
@@ -298,7 +298,7 @@
         if (n == 0) return; \
         if (n > (size_t)-1 - i) STL_VECTOR_ABORT(); \
         T* tmp = NULL; \
-        if (STL_VECTOR_INTERNAL(me, p, n)) \
+        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T* )STL_VECTOR_REALLOC(NULL, n * sizeof(T)); \
             if (!tmp) STL_VECTOR_ABORT(); \
@@ -322,7 +322,7 @@
             return; \
         } \
         T* tmp = NULL; \
-        if (STL_VECTOR_INTERNAL(me, p, n)) \
+        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T* )STL_VECTOR_REALLOC(NULL, n * sizeof(T)); \
             if (!tmp) STL_VECTOR_ABORT(); \
@@ -401,8 +401,8 @@
 #define stlvectorforeach_const(T, ME, IT) \
     for (const T* IT = (ME)->data; IT != (ME)->data + (ME)->size; ++IT)
 #define stlvectorrforeach(T, ME, IT) \
-    for (T* IT = (ME)->data + (ME)->size; IT-- != (ME)->data; )
+    for (T* IT = (ME)->data + (ME)->size; IT-- != (ME)->data;)
 #define stlvectorrforeach_const(T, ME, IT) \
-    for (const T* IT = (ME)->data + (ME)->size; IT-- != (ME)->data; )
+    for (const T* IT = (ME)->data + (ME)->size; IT-- != (ME)->data;)
 
 #endif
