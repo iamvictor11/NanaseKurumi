@@ -20,8 +20,8 @@
 #endif
 
 #ifndef STL_CAT
-#define STL_CAT_(a, b) a##b
-#define STL_CAT(a, b)  STL_CAT_(a, b)
+#define STL_CAT_(a, b)  a##b
+#define STL_CAT(a, b)   STL_CAT_(a, b)
 #endif
 
 #define STL_PRIVATE_BITSET_WORD_WIDTH       (sizeof(STL_BITSET_WORD) * 8)

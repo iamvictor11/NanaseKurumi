@@ -6,11 +6,11 @@
 
 
 #ifndef STL_CAT
-#define STL_CAT_(a, b) a##b
-#define STL_CAT(a, b)  STL_CAT_(a, b)
+#define STL_CAT_(a, b)  a##b
+#define STL_CAT(a, b)   STL_CAT_(a, b)
 #endif
 
-#define stlequal(T) STL_CAT(stl_GLOBAL_equal_T_, T)
+#define stlequal(T) STL_CAT(stl_GLOBAL_equal_, T)
 
 #include <stdbool.h>
 static inline bool stlequal(bool)(bool a, bool b) { return a == b; }
@@ -21,11 +21,11 @@ static inline bool stlequal(long)(long a, long b) { return a == b; }
 static inline bool stlequal(float)(float a, float b) { return a == b; }
 static inline bool stlequal(double)(double a, double b) { return a == b; }
 #include <stdint.h>
-static inline bool stlequal(int8_t) (int8_t a, int8_t b) { return a == b; }
-static inline bool stlequal(int16_t) (int16_t a, int16_t b) { return a == b; }
-static inline bool stlequal(int32_t) (int32_t a, int32_t b) { return a == b; }
-static inline bool stlequal(int64_t) (int64_t a, int64_t b) { return a == b; }
-static inline bool stlequal(uint8_t) (uint8_t a, uint8_t b) { return a == b; }
+static inline bool stlequal(int8_t)(int8_t a, int8_t b) { return a == b; }
+static inline bool stlequal(int16_t)(int16_t a, int16_t b) { return a == b; }
+static inline bool stlequal(int32_t)(int32_t a, int32_t b) { return a == b; }
+static inline bool stlequal(int64_t)(int64_t a, int64_t b) { return a == b; }
+static inline bool stlequal(uint8_t)(uint8_t a, uint8_t b) { return a == b; }
 static inline bool stlequal(uint16_t)(uint16_t a, uint16_t b) { return a == b; }
 static inline bool stlequal(uint32_t)(uint32_t a, uint32_t b) { return a == b; }
 static inline bool stlequal(uint64_t)(uint64_t a, uint64_t b) { return a == b; }
