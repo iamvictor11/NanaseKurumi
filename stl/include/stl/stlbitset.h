@@ -24,9 +24,9 @@
 #define STL_CAT(a, b)  STL_CAT_(a, b)
 #endif
 
-#define STL_HIDE_BITSET_WORD_WIDTH      (sizeof(STL_BITSET_WORD) * 8)
-#define STL_HIDE_BITSET_WORD_COUNT(N)   (((N) + STL_HIDE_BITSET_WORD_WIDTH - 1) / STL_HIDE_BITSET_WORD_WIDTH)
-#define STL_HIDE_BITSET_FULLWORD        (~(STL_BITSET_WORD)0)
+#define STL_PRIVATE_BITSET_WORD_WIDTH       (sizeof(STL_BITSET_WORD) * 8)
+#define STL_PRIVATE_BITSET_WORD_COUNT(N)    (((N) + STL_PRIVATE_BITSET_WORD_WIDTH - 1) / STL_PRIVATE_BITSET_WORD_WIDTH)
+#define STL_PRIVATE_BITSET_FULLWORD         (~(STL_BITSET_WORD)0)
 
 static inline size_t stl_PRIVATE_bitset_popcount_word(STL_BITSET_WORD w)
 {
@@ -59,12 +59,12 @@ static inline size_t stl_PRIVATE_bitset_popcount_word(STL_BITSET_WORD w)
 }
 static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
 {
-    const size_t W = STL_HIDE_BITSET_WORD_WIDTH;
+    const size_t W = STL_PRIVATE_BITSET_WORD_WIDTH;
     STL_BITSET_WORD left  = (lo == 0)
-        ? STL_HIDE_BITSET_FULLWORD
-        : (STL_HIDE_BITSET_FULLWORD << lo);
+        ? STL_PRIVATE_BITSET_FULLWORD
+        : (STL_PRIVATE_BITSET_FULLWORD << lo);
     STL_BITSET_WORD right = (hi >= W)
-        ? STL_HIDE_BITSET_FULLWORD
+        ? STL_PRIVATE_BITSET_FULLWORD
         : (((STL_BITSET_WORD)1 << hi) - 1);
     return left & right;
 }
@@ -98,7 +98,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
 #define stlbitsetinst(N) \
     struct stlbitset(N) \
     { \
-        STL_BITSET_WORD words[STL_HIDE_BITSET_WORD_COUNT(N) ? STL_HIDE_BITSET_WORD_COUNT(N) : 1]; \
+        STL_BITSET_WORD words[STL_PRIVATE_BITSET_WORD_COUNT(N) ? STL_PRIVATE_BITSET_WORD_COUNT(N) : 1]; \
     };
 
 // MARK: decl
@@ -134,38 +134,38 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     ATTR int stlbitsetget(N)(const stlbitset(N)* me, size_t pos) \
     { \
         stlassert(pos < (N)); \
-        return (int)((me->words[pos / STL_HIDE_BITSET_WORD_WIDTH] \
-                    >> (pos % STL_HIDE_BITSET_WORD_WIDTH)) & 1); \
+        return (int)((me->words[pos / STL_PRIVATE_BITSET_WORD_WIDTH] \
+                    >> (pos % STL_PRIVATE_BITSET_WORD_WIDTH)) & 1); \
     } \
     ATTR void stlbitsetset(N)(stlbitset(N)* me, size_t pos, int val) \
     { \
         stlassert(pos < (N)); \
-        size_t w = pos / STL_HIDE_BITSET_WORD_WIDTH; \
-        size_t b = pos % STL_HIDE_BITSET_WORD_WIDTH; \
+        size_t w = pos / STL_PRIVATE_BITSET_WORD_WIDTH; \
+        size_t b = pos % STL_PRIVATE_BITSET_WORD_WIDTH; \
         if (val) me->words[w] |=  ((STL_BITSET_WORD)1 << b); \
         else me->words[w] &= ~((STL_BITSET_WORD)1 << b); \
     } \
     ATTR void stlbitsetreset(N)(stlbitset(N)* me, size_t pos) \
     { \
         stlassert(pos < (N)); \
-        me->words[pos / STL_HIDE_BITSET_WORD_WIDTH] &= ~((STL_BITSET_WORD)1 << (pos % STL_HIDE_BITSET_WORD_WIDTH)); \
+        me->words[pos / STL_PRIVATE_BITSET_WORD_WIDTH] &= ~((STL_BITSET_WORD)1 << (pos % STL_PRIVATE_BITSET_WORD_WIDTH)); \
     } \
     ATTR void stlbitsetflip(N)(stlbitset(N)* me, size_t pos) \
     { \
         stlassert(pos < (N)); \
-        me->words[pos / STL_HIDE_BITSET_WORD_WIDTH] ^= ((STL_BITSET_WORD)1 << (pos % STL_HIDE_BITSET_WORD_WIDTH)); \
+        me->words[pos / STL_PRIVATE_BITSET_WORD_WIDTH] ^= ((STL_BITSET_WORD)1 << (pos % STL_PRIVATE_BITSET_WORD_WIDTH)); \
     } \
     ATTR int stlbitsettest(N)(const stlbitset(N)* me, size_t pos) \
     { \
         stlassert(pos < (N)); \
-        return (int)((me->words[pos / STL_HIDE_BITSET_WORD_WIDTH] >> (pos % STL_HIDE_BITSET_WORD_WIDTH)) & 1); \
+        return (int)((me->words[pos / STL_PRIVATE_BITSET_WORD_WIDTH] >> (pos % STL_PRIVATE_BITSET_WORD_WIDTH)) & 1); \
     } \
     ATTR void stlbitsetsetall(N)(stlbitset(N)* me) \
     { \
         memset(me->words, 0xFF, sizeof(me->words)); \
-        size_t rem = (N) % STL_HIDE_BITSET_WORD_WIDTH; \
+        size_t rem = (N) % STL_PRIVATE_BITSET_WORD_WIDTH; \
         if (rem != 0) \
-            me->words[STL_HIDE_BITSET_WORD_COUNT(N) - 1] &= stl_PRIVATE_bitset_mask(0, rem); \
+            me->words[STL_PRIVATE_BITSET_WORD_COUNT(N) - 1] &= stl_PRIVATE_bitset_mask(0, rem); \
     } \
     ATTR void stlbitsetresetall(N)(stlbitset(N)* me) \
     { \
@@ -173,35 +173,35 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     } \
     ATTR void stlbitsetflipall(N)(stlbitset(N)* me) \
     { \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i < nw; ++i) \
             me->words[i] = ~me->words[i]; \
-        size_t rem = (N) % STL_HIDE_BITSET_WORD_WIDTH; \
+        size_t rem = (N) % STL_PRIVATE_BITSET_WORD_WIDTH; \
         if (rem != 0) \
             me->words[nw - 1] &= stl_PRIVATE_bitset_mask(0, rem); \
     } \
     ATTR int stlbitsetall(N)(const stlbitset(N)* me) \
     { \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i + 1 < nw; ++i) \
-            if (me->words[i] != STL_HIDE_BITSET_FULLWORD) return 0; \
+            if (me->words[i] != STL_PRIVATE_BITSET_FULLWORD) return 0; \
         if (nw > 0) \
         { \
-            size_t rem = (N) % STL_HIDE_BITSET_WORD_WIDTH; \
-            STL_BITSET_WORD mask = stl_PRIVATE_bitset_mask(0, rem ? rem : STL_HIDE_BITSET_WORD_WIDTH); \
+            size_t rem = (N) % STL_PRIVATE_BITSET_WORD_WIDTH; \
+            STL_BITSET_WORD mask = stl_PRIVATE_bitset_mask(0, rem ? rem : STL_PRIVATE_BITSET_WORD_WIDTH); \
             if ((me->words[nw - 1] & mask) != mask) return 0; \
         } \
         return 1; \
     } \
     ATTR int stlbitsetany(N)(const stlbitset(N)* me) \
     { \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i + 1 < nw; ++i) \
             if (me->words[i]) return 1; \
         if (nw > 0) \
         { \
-            size_t rem = (N) % STL_HIDE_BITSET_WORD_WIDTH; \
-            STL_BITSET_WORD mask = stl_PRIVATE_bitset_mask(0, rem ? rem : STL_HIDE_BITSET_WORD_WIDTH); \
+            size_t rem = (N) % STL_PRIVATE_BITSET_WORD_WIDTH; \
+            STL_BITSET_WORD mask = stl_PRIVATE_bitset_mask(0, rem ? rem : STL_PRIVATE_BITSET_WORD_WIDTH); \
             if (me->words[nw - 1] & mask) return 1; \
         } \
         return 0; \
@@ -213,13 +213,13 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     ATTR size_t stlbitsetcount(N)(const stlbitset(N)* me) \
     { \
         size_t total = 0; \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i + 1 < nw; ++i) \
             total += stl_PRIVATE_bitset_popcount_word(me->words[i]); \
         if (nw > 0) \
         { \
-            size_t rem = (N) % STL_HIDE_BITSET_WORD_WIDTH; \
-            STL_BITSET_WORD mask = stl_PRIVATE_bitset_mask(0, rem ? rem : STL_HIDE_BITSET_WORD_WIDTH); \
+            size_t rem = (N) % STL_PRIVATE_BITSET_WORD_WIDTH; \
+            STL_BITSET_WORD mask = stl_PRIVATE_bitset_mask(0, rem ? rem : STL_PRIVATE_BITSET_WORD_WIDTH); \
             total += stl_PRIVATE_bitset_popcount_word(me->words[nw - 1] & mask); \
         } \
         return total; \
@@ -239,13 +239,13 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
         if (start >= (N)) return; \
         if (end > (N)) end = (N); \
         if (start >= end) return; \
-        const size_t W = STL_HIDE_BITSET_WORD_WIDTH; \
+        const size_t W = STL_PRIVATE_BITSET_WORD_WIDTH; \
         size_t sw = start / W, sb = start % W; \
         size_t ew = (end - 1) / W, eb = (end - 1) % W + 1; \
         if (sw == ew) { me->words[sw] |= stl_PRIVATE_bitset_mask(sb, eb); return; } \
         me->words[sw] |= stl_PRIVATE_bitset_mask(sb, W); \
         for (size_t i = sw + 1; i < ew; ++i) \
-            me->words[i] = STL_HIDE_BITSET_FULLWORD; \
+            me->words[i] = STL_PRIVATE_BITSET_FULLWORD; \
         me->words[ew] |= stl_PRIVATE_bitset_mask(0, eb); \
     } \
     ATTR void stlbitsetresetrange(N)(stlbitset(N)* me, size_t start, size_t end) \
@@ -253,7 +253,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
         if (start >= (N)) return; \
         if (end > (N)) end = (N); \
         if (start >= end) return; \
-        const size_t W = STL_HIDE_BITSET_WORD_WIDTH; \
+        const size_t W = STL_PRIVATE_BITSET_WORD_WIDTH; \
         size_t sw = start / W, sb = start % W; \
         size_t ew = (end - 1) / W, eb = (end - 1) % W + 1; \
         if (sw == ew) { me->words[sw] &= ~stl_PRIVATE_bitset_mask(sb, eb); return; } \
@@ -267,7 +267,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
         if (start >= (N)) return; \
         if (end > (N)) end = (N); \
         if (start >= end) return; \
-        const size_t W = STL_HIDE_BITSET_WORD_WIDTH; \
+        const size_t W = STL_PRIVATE_BITSET_WORD_WIDTH; \
         size_t sw = start / W, sb = start % W; \
         size_t ew = (end - 1) / W, eb = (end - 1) % W + 1; \
         if (sw == ew) { me->words[sw] ^= stl_PRIVATE_bitset_mask(sb, eb); return; } \
@@ -281,7 +281,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     { \
         stlbitset(N) r; \
         memset(&r, 0, sizeof r); \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i < nw; ++i) \
             r.words[i] = a->words[i] & b->words[i]; \
         return r; \
@@ -291,7 +291,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     { \
         stlbitset(N) r; \
         memset(&r, 0, sizeof r); \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i < nw; ++i) \
             r.words[i] = a->words[i] | b->words[i]; \
         return r; \
@@ -301,7 +301,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     { \
         stlbitset(N) r; \
         memset(&r, 0, sizeof r); \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i < nw; ++i) \
             r.words[i] = a->words[i] ^ b->words[i]; \
         return r; \
@@ -310,10 +310,10 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     { \
         stlbitset(N) r; \
         memset(&r, 0, sizeof r); \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         for (size_t i = 0; i < nw; ++i) \
             r.words[i] = ~a->words[i]; \
-        size_t rem = (N) % STL_HIDE_BITSET_WORD_WIDTH; \
+        size_t rem = (N) % STL_PRIVATE_BITSET_WORD_WIDTH; \
         if (rem != 0) \
             r.words[nw - 1] &= stl_PRIVATE_bitset_mask(0, rem); \
         return r; \
@@ -322,11 +322,11 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     { \
         stlbitset(N) r; \
         memset(&r, 0, sizeof r); \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         if (k == 0) { memcpy(&r, me, sizeof r); return r; } \
         if (k >= (N)) return r; \
-        size_t ws = k / STL_HIDE_BITSET_WORD_WIDTH; \
-        size_t bs = k % STL_HIDE_BITSET_WORD_WIDTH; \
+        size_t ws = k / STL_PRIVATE_BITSET_WORD_WIDTH; \
+        size_t bs = k % STL_PRIVATE_BITSET_WORD_WIDTH; \
         for (size_t i = 0; i < nw; ++i) \
         { \
             STL_BITSET_WORD v = 0; \
@@ -335,11 +335,11 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
                 size_t src = i - ws; \
                 v = me->words[src] << bs; \
                 if (bs > 0 && src > 0) \
-                    v |= me->words[src - 1] >> (STL_HIDE_BITSET_WORD_WIDTH - bs); \
+                    v |= me->words[src - 1] >> (STL_PRIVATE_BITSET_WORD_WIDTH - bs); \
             } \
             r.words[i] = v; \
         } \
-        size_t rem = (N) % STL_HIDE_BITSET_WORD_WIDTH; \
+        size_t rem = (N) % STL_PRIVATE_BITSET_WORD_WIDTH; \
         if (rem != 0) \
             r.words[nw - 1] &= stl_PRIVATE_bitset_mask(0, rem); \
         return r; \
@@ -348,11 +348,11 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     { \
         stlbitset(N) r; \
         memset(&r, 0, sizeof r); \
-        size_t nw = STL_HIDE_BITSET_WORD_COUNT(N); \
+        size_t nw = STL_PRIVATE_BITSET_WORD_COUNT(N); \
         if (k == 0) { memcpy(&r, me, sizeof r); return r; } \
         if (k >= (N)) return r; \
-        size_t ws = k / STL_HIDE_BITSET_WORD_WIDTH; \
-        size_t bs = k % STL_HIDE_BITSET_WORD_WIDTH; \
+        size_t ws = k / STL_PRIVATE_BITSET_WORD_WIDTH; \
+        size_t bs = k % STL_PRIVATE_BITSET_WORD_WIDTH; \
         for (size_t i = 0; i < nw; ++i) \
         { \
             STL_BITSET_WORD v = 0; \
@@ -361,7 +361,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
             { \
                 v = me->words[src] >> bs; \
                 if (bs > 0 && src + 1 < nw) \
-                    v |= me->words[src + 1] << (STL_HIDE_BITSET_WORD_WIDTH - bs); \
+                    v |= me->words[src + 1] << (STL_PRIVATE_BITSET_WORD_WIDTH - bs); \
             } \
             r.words[i] = v; \
         } \

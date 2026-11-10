@@ -10,9 +10,9 @@
 #include <string.h>
 #include <assert.h>
 
-#define STL_VECTOR_MIN_CAPACITY 8
+#define STL_PRIVATE_VECTOR_MIN_CAPACITY 8
 
-#define STL_VECTOR_OVERLAPPING(ME, P, N) \
+#define STL_PRIVATE_VECTOR_OVERLAPPING(ME, P, N) \
     ((ME)->data != NULL && \
     (uintptr_t)(P) < (uintptr_t)((ME)->data) + (ME)->size * sizeof(*(ME)->data) && \
     (uintptr_t)(P) + (uintptr_t)(N) * sizeof(*(ME)->data) > (uintptr_t)((ME)->data))
@@ -126,7 +126,7 @@
         if (cap > maxcap) stlabort(); \
         size_t nc = me->capacity \
             ? me->capacity \
-            : (cap < STL_VECTOR_MIN_CAPACITY ? STL_VECTOR_MIN_CAPACITY : cap); \
+            : (cap < STL_PRIVATE_VECTOR_MIN_CAPACITY ? STL_PRIVATE_VECTOR_MIN_CAPACITY : cap); \
         if (nc < cap) \
         { \
             if (nc > maxcap / 2) nc = cap; \
@@ -184,7 +184,7 @@
         if (n > (size_t)-1 / sizeof(T) || n > (size_t)-1 - me->size) \
             stlabort(); \
         T* tmp = NULL; \
-        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
+        if (STL_PRIVATE_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T*)stlrealloc(NULL, n * sizeof(T)); \
             if (!tmp) stlabort(); \
@@ -266,7 +266,7 @@
         if (n > (size_t)-1 / sizeof(T) || n > (size_t)-1 - me->size) \
             stlabort(); \
         T* tmp = NULL; \
-        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
+        if (STL_PRIVATE_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T*)stlrealloc(NULL, n * sizeof(T)); \
             if (!tmp) stlabort(); \
@@ -302,7 +302,7 @@
         if (n > (size_t)-1 / sizeof(T) || n > (size_t)-1 - i) \
             stlabort(); \
         T* tmp = NULL; \
-        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
+        if (STL_PRIVATE_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T*)stlrealloc(NULL, n * sizeof(T)); \
             if (!tmp) stlabort(); \
@@ -327,7 +327,7 @@
         } \
         if (n > (size_t)-1 / sizeof(T)) stlabort(); \
         T* tmp = NULL; \
-        if (STL_VECTOR_OVERLAPPING(me, p, n)) \
+        if (STL_PRIVATE_VECTOR_OVERLAPPING(me, p, n)) \
         { \
             tmp = (T*)stlrealloc(NULL, n * sizeof(T)); \
             if (!tmp) stlabort(); \

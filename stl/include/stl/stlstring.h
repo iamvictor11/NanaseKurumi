@@ -18,7 +18,7 @@ typedef struct stlstring
     size_t capacity;
 } stlstring;
 
-#define STL_VECTOR_OVERLAPPING(ME, P, N) \
+#define STL_PRIVATE_STRING_OVERLAPPING(ME, P, N) \
     ((ME)->data != NULL && \
     (uintptr_t)(P) < (uintptr_t)((ME)->data) + (ME)->size * sizeof(*(ME)->data) && \
     (uintptr_t)(P) + (uintptr_t)(N) * sizeof(*(ME)->data) > (uintptr_t)((ME)->data))
