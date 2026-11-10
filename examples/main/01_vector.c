@@ -12,6 +12,9 @@ int main(int argc, char* argv[])
     stlvector(int) intv = {};
     stlvectorinit(int)(&intv, 10);
     
+    for (int i = 0; i < stlvectorcapacity(int)(&intv); ++i)
+        stlvectorpush(int)(&intv, i);
+    
     stlvectorforeach(int, &intv, e)
         printf("%d, ", *e);
     
