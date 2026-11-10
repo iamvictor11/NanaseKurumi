@@ -1,16 +1,14 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef STL_VECTOR_H
-#define STL_VECTOR_H
+#ifndef STL_STLVECTOR_H
+#define STL_STLVECTOR_H
 
-#include <stddef.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <assert.h>
 #include "stl/stlconf.h"
 #include "stl/stlequal.h"
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 
 #ifndef STL_VECTOR_MIN_CAPACITY
 #define STL_VECTOR_MIN_CAPACITY 8

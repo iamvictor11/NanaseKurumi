@@ -1,26 +1,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef STL_STRING_H
-#define STL_STRING_H
+#ifndef STL_STLSTRING_H
+#define STL_STLSTRING_H
 
+#include "stl/stlconf.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
-
-#ifndef STL_STRING_REALLOC
-#define STL_STRING_REALLOC realloc
-#endif
-
-#ifndef STL_STRING_FREE
-#define STL_STRING_FREE free
-#endif
-
-#ifndef STL_STRING_ABORT
-#define STL_STRING_ABORT abort
-#endif
 
 typedef struct stlstring
 {
@@ -36,15 +25,15 @@ typedef struct stlstring
 
 static inline void stlstringinit(stlstring* me, size_t cap)
 {
-    me->data = (char*)STL_STRING_REALLOC(NULL, cap + 1);
-    if (!me->data) STL_STRING_ABORT();
+    me->data = (char*)stlrealloc(NULL, cap + 1);
+    if (!me->data) stlabort();
     me->data[0] = 0;
     me->size = 0;
     me->capacity = cap;
 }
 static inline void stlstringfree(stlstring* me)
 {
-    STL_STRING_FREE(me->data);
+    stlfree(me->data);
     me->data = NULL;
     me->size = 0;
     me->capacity = 0;
@@ -62,8 +51,8 @@ static inline void stlstringreserve(stlstring* me, size_t cap)
         }
         nc *= 2;
     }
-    char* p = (char*)STL_STRING_REALLOC(me->data, nc + 1);
-    if (!p) STL_STRING_ABORT();
+    char* p = (char*)stlrealloc(me->data, nc + 1);
+    if (!p) stlabort();
     me->data = p;
     me->capacity = nc;
     me->data[me->size] = 0;
@@ -80,8 +69,8 @@ static inline void stlstringresize(stlstring* me, size_t n)
 static inline void stlstringshrink(stlstring* me)
 {
     if (me->size == me->capacity) return;
-    char* p = (char*)STL_STRING_REALLOC(me->data, me->size + 1);
-    if (!p) STL_STRING_ABORT();
+    char* p = (char*)stlrealloc(me->data, me->size + 1);
+    if (!p) stlabort();
     me->data = p;
     me->capacity = me->size;
     me->data[me->size] = 0;
@@ -96,12 +85,12 @@ static inline void stlstringpush(stlstring* me, char e)
 static inline void stlstringappend(stlstring* me, const char* p, size_t n)
 {
     if (n == 0) return;
-    if (n > (size_t)-1 - me->size) STL_STRING_ABORT();
+    if (n > (size_t)-1 - me->size) stlabort();
     char* tmp = NULL;
     if (STL_STRING_OVERLAPPING(me, p, n))
     {
-        tmp = (char*)STL_STRING_REALLOC(NULL, n);
-        if (!tmp) STL_STRING_ABORT();
+        tmp = (char*)stlrealloc(NULL, n);
+        if (!tmp) stlabort();
         memcpy(tmp, p, n);
         p = tmp;
     }
@@ -110,7 +99,7 @@ static inline void stlstringappend(stlstring* me, const char* p, size_t n)
     memcpy(me->data + me->size, p, n);
     me->size += n;
     me->data[me->size] = 0;
-    if (tmp) STL_STRING_FREE(tmp);
+    if (tmp) stlfree(tmp);
 }
 static inline void stlstringappend_cstr(stlstring* me, const char* p)
 {
@@ -180,12 +169,12 @@ static inline void stlstringsplice(stlstring* me, size_t i, const char* p, size_
 {
     assert(i <= me->size);
     if (n == 0) return;
-    if (n > (size_t)-1 - me->size) STL_STRING_ABORT();
+    if (n > (size_t)-1 - me->size) stlabort();
     char* tmp = NULL;
     if (STL_STRING_OVERLAPPING(me, p, n))
     {
-        tmp = (char*)STL_STRING_REALLOC(NULL, n);
-        if (!tmp) STL_STRING_ABORT();
+        tmp = (char*)stlrealloc(NULL, n);
+        if (!tmp) stlabort();
         memcpy(tmp, p, n);
         p = tmp;
     }
@@ -195,7 +184,7 @@ static inline void stlstringsplice(stlstring* me, size_t i, const char* p, size_
     memcpy(&me->data[i], p, n);
     me->size += n;
     me->data[me->size] = 0;
-    if (tmp) STL_STRING_FREE(tmp);
+    if (tmp) stlfree(tmp);
 }
 static inline void stlstringerase(stlstring* me, size_t i)
 {
@@ -216,12 +205,12 @@ static inline void stlstringcutout(stlstring* me, size_t i, size_t n)
 static inline void stlstringoverwrite(stlstring* me, size_t i, const char* p, size_t n)
 {
     if (n == 0) return;
-    if (n > (size_t)-1 - i) STL_STRING_ABORT();
+    if (n > (size_t)-1 - i) stlabort();
     char* tmp = NULL;
     if (STL_STRING_OVERLAPPING(me, p, n))
     {
-        tmp = (char*)STL_STRING_REALLOC(NULL, n);
-        if (!tmp) STL_STRING_ABORT();
+        tmp = (char*)stlrealloc(NULL, n);
+        if (!tmp) stlabort();
         memcpy(tmp, p, n);
         p = tmp;
     }
@@ -229,7 +218,7 @@ static inline void stlstringoverwrite(stlstring* me, size_t i, const char* p, si
         stlstringresize(me, i + n);
     memmove(&me->data[i], p, n);
     me->data[me->size] = 0;
-    if (tmp) STL_STRING_FREE(tmp);
+    if (tmp) stlfree(tmp);
 }
 static inline void stlstringclear(stlstring* me)
 {
@@ -246,14 +235,14 @@ static inline void stlstringassign(stlstring* me, const char* p, size_t n)
     char* tmp = NULL;
     if (STL_STRING_OVERLAPPING(me, p, n))
     {
-        tmp = (char*)STL_STRING_REALLOC(NULL, n);
-        if (!tmp) STL_STRING_ABORT();
+        tmp = (char*)stlrealloc(NULL, n);
+        if (!tmp) stlabort();
         memcpy(tmp, p, n);
         p = tmp;
     }
     stlstringclear(me);
     stlstringappend(me, p, n);
-    if (tmp) STL_STRING_FREE(tmp);
+    if (tmp) stlfree(tmp);
 }
 static inline void stlstringcopy(stlstring* dst, const stlstring* src)
 {
@@ -290,12 +279,12 @@ static inline stlstring stlstringsub(const stlstring* me, size_t start, size_t n
 static inline void stlstringmove(stlstring* dst, stlstring* src)
 {
     if (dst == src) return;
-    STL_STRING_FREE(dst->data);
+    stlfree(dst->data);
     dst->data = src->data;
     dst->size = src->size;
     dst->capacity = src->capacity;
-    src->data = (char*)STL_STRING_REALLOC(NULL, 1);
-    if (!src->data) STL_STRING_ABORT();
+    src->data = (char*)stlrealloc(NULL, 1);
+    if (!src->data) stlabort();
     src->data[0] = 0;
     src->size = 0;
     src->capacity = 0;
@@ -349,7 +338,7 @@ static inline size_t stlstringcapacity(const stlstring* me) { return me->capacit
 static inline int stlstringempty(const stlstring* me) { return me->size == 0; }
 static inline stlstring stlstringconcat(const stlstring* a, const stlstring* b)
 {
-    if (a->size > (size_t)-1 - b->size) STL_STRING_ABORT();
+    if (a->size > (size_t)-1 - b->size) stlabort();
     size_t total = a->size + b->size;
     stlstring r;
     stlstringinit(&r, total);

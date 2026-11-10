@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef STL_CONF_H
-#define STL_CONF_H
+#ifndef STL_STLCONF_H
+#define STL_STLCONF_H
 
 #ifndef stlrealloc
 #define stlrealloc  realloc

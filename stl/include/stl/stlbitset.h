@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef STL_BITSET_H
-#define STL_BITSET_H
+#ifndef STL_STLBITSET_H
+#define STL_STLBITSET_H
 
+#include "stl/stlconf.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "stl/stlconf.h"
 
 #ifndef STL_BITSET_WORD
 #define STL_BITSET_WORD uint64_t
