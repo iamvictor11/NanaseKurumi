@@ -9,7 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "stlconf.h"
+#include "stl/stlconf.h"
 
 #ifndef STL_BITSET_WORD
 #define STL_BITSET_WORD uint64_t

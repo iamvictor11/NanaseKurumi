@@ -19,16 +19,16 @@ static inline bool stlequal(short)(short a, short b) { return a == b; }
 static inline bool stlequal(int)(int a, int b) { return a == b; }
 static inline bool stlequal(long)(long a, long b) { return a == b; }
 static inline bool stlequal(float)(float a, float b) { return a == b; }
-static inline bool stlequal(double)(double a, double b){ return a == b; }
+static inline bool stlequal(double)(double a, double b) { return a == b; }
 #include <stdint.h>
 static inline bool stlequal(int8_t) (int8_t a, int8_t b) { return a == b; }
 static inline bool stlequal(int16_t) (int16_t a, int16_t b) { return a == b; }
 static inline bool stlequal(int32_t) (int32_t a, int32_t b) { return a == b; }
 static inline bool stlequal(int64_t) (int64_t a, int64_t b) { return a == b; }
 static inline bool stlequal(uint8_t) (uint8_t a, uint8_t b) { return a == b; }
-static inline bool stlequal(uint16_t)(uint16_t a, uint16_t b){ return a == b; }
-static inline bool stlequal(uint32_t)(uint32_t a, uint32_t b){ return a == b; }
-static inline bool stlequal(uint64_t)(uint64_t a, uint64_t b){ return a == b; }
+static inline bool stlequal(uint16_t)(uint16_t a, uint16_t b) { return a == b; }
+static inline bool stlequal(uint32_t)(uint32_t a, uint32_t b) { return a == b; }
+static inline bool stlequal(uint64_t)(uint64_t a, uint64_t b) { return a == b; }
 static inline bool stlequal(intptr_t)(intptr_t a, intptr_t b) { return a == b; }
 static inline bool stlequal(uintptr_t)(uintptr_t a, uintptr_t b) { return a == b; }
 static inline bool stlequal(intmax_t)(intmax_t a, intmax_t b) { return a == b; }
@@ -51,7 +51,7 @@ static inline bool stlequal(uint_fast32_t)(uint_fast32_t a, uint_fast32_t b) { r
 static inline bool stlequal(uint_fast64_t)(uint_fast64_t a, uint_fast64_t b) { return a == b; }
 #include <stddef.h>
 static inline bool stlequal(size_t)(size_t a, size_t b) { return a == b; }
-static inline bool stlequal(ptrdiff_t)(ptrdiff_t a, ptrdiff_t b){ return a == b; }
+static inline bool stlequal(ptrdiff_t)(ptrdiff_t a, ptrdiff_t b) { return a == b; }
 static inline bool stlequal(wchar_t)(wchar_t a, wchar_t b) { return a == b; }
 
 #endif

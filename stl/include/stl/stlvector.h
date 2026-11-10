@@ -9,8 +9,8 @@
 #include <string.h>
 #include <stdint.h>
 #include <assert.h>
-#include "stlconf.h"
-#include "stleval.h"
+#include "stl/stlconf.h"
+#include "stl/stlequal.h"
 
 #ifndef STL_VECTOR_MIN_CAPACITY
 #define STL_VECTOR_MIN_CAPACITY 8
