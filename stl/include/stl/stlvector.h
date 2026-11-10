@@ -30,7 +30,7 @@
     (uintptr_t)(P) < (uintptr_t)((ME)->data) + (ME)->size * sizeof(*(ME)->data) && \
     (uintptr_t)(P) + (uintptr_t)(N) * sizeof(*(ME)->data) > (uintptr_t)((ME)->data))
 
-#define stlvector(T)            STL_VECTOR_CAT(stl_PUBLIC_vector_T_, T)
+#define stlvector(T)            STL_VECTOR_CAT(stl_vector_T_, T)
 #define stlvectorinit(T)        STL_VECTOR_CAT(stl_PUBLIC_vector_init_, T)
 #define stlvectorfree(T)        STL_VECTOR_CAT(stl_PUBLIC_vector_free_, T)
 #define stlvectorreserve(T)     STL_VECTOR_CAT(stl_PUBLIC_vector_reserve_, T)
