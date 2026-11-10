@@ -10,9 +10,7 @@
 #include <string.h>
 #include <assert.h>
 
-#ifndef STL_VECTOR_MIN_CAPACITY
 #define STL_VECTOR_MIN_CAPACITY 8
-#endif
 
 #define STL_VECTOR_OVERLAPPING(ME, P, N) \
     ((ME)->data != NULL && \
