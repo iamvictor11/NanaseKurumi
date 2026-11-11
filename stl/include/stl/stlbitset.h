@@ -69,7 +69,7 @@ static inline STL_BITSET_WORD stl_PRIVATE_bitset_mask(size_t lo, size_t hi)
     return left & right;
 }
 
-#define stlbitset(N)            STL_CAT(stl_bitset_T_, N)
+#define stlbitset(N)            STL_CAT(stl_DETAIL_bitset_, N)
 #define stlbitsetget(N)         STL_CAT(stl_PUBLIC_bitset_get_, N)
 #define stlbitsetset(N)         STL_CAT(stl_PUBLIC_bitset_set_, N)
 #define stlbitsetreset(N)       STL_CAT(stl_PUBLIC_bitset_reset_, N)

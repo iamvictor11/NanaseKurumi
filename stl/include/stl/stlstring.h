@@ -7,6 +7,7 @@
 #include "stlconf.h"
 #include "stlequal.h"
 #include "stlhash.h"
+#include "stlcompare.h"
 #include <stdlib.h>
 #include <assert.h>
 
@@ -352,6 +353,11 @@ static inline bool stlequal(stlstring)(stlstring a, stlstring b)
 {
     if (a.size != b.size) return false;
     return a.size == 0 || memcmp(a.data, b.data, a.size) == 0;
+}
+static inline int stlcompare(stlstring)(stlstring a, stlstring b)
+{
+    int r = stlstringcompare(&a, &b);
+    return (r > 0) - (r < 0);
 }
 static inline size_t stlhash(stlstring)(stlstring v)
 {
