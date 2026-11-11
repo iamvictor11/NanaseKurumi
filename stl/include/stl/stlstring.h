@@ -5,10 +5,8 @@
 #define STL_STLSTRING_H
 
 #include "stl/stlconf.h"
-#include <stddef.h>
+#include "stl/stlhash.h"
 #include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
 #include <assert.h>
 
 typedef struct stlstring
@@ -347,6 +345,20 @@ static inline stlstring stlstringconcat(const stlstring* a, const stlstring* b)
     r.size = total;
     r.data[r.size] = 0;
     return r;
+}
+
+static inline size_t stlhash(stlstring)(stlstring v)
+{
+    constexpr uint64_t FNV_OFFSET = 0xCBF29CE484222325ull;
+    constexpr uint64_t FNV_PRIME  = 0x100000001B3ull;
+
+    uint64_t h = FNV_OFFSET ^ (uint64_t)v.size;
+    for (size_t i = 0; i < v.size; ++i)
+    {
+        h ^= (uint8_t)v.data[i];
+        h *= FNV_PRIME;
+    }
+    return stl_PRIVATE_hash_mix64(h);
 }
 
 #endif
