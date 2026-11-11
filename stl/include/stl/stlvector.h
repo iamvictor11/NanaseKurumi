@@ -4,8 +4,8 @@
 #ifndef STL_STLVECTOR_H
 #define STL_STLVECTOR_H
 
-#include "stl/stlconf.h"
-#include "stl/stlequal.h"
+#include "stlconf.h"
+#include "stlequal.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>

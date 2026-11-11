@@ -4,7 +4,7 @@
 #ifndef STL_STLBITSET_H
 #define STL_STLBITSET_H
 
-#include "stl/stlconf.h"
+#include "stlconf.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>

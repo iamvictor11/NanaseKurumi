@@ -4,8 +4,9 @@
 #ifndef STL_STLSTRING_H
 #define STL_STLSTRING_H
 
-#include "stl/stlconf.h"
-#include "stl/stlhash.h"
+#include "stlconf.h"
+#include "stlequal.h"
+#include "stlhash.h"
 #include <stdlib.h>
 #include <assert.h>
 
@@ -347,6 +348,11 @@ static inline stlstring stlstringconcat(const stlstring* a, const stlstring* b)
     return r;
 }
 
+static inline bool stlequal(stlstring)(stlstring a, stlstring b)
+{
+    if (a.size != b.size) return false;
+    return a.size == 0 || memcmp(a.data, b.data, a.size) == 0;
+}
 static inline size_t stlhash(stlstring)(stlstring v)
 {
     constexpr uint64_t FNV_OFFSET = 0xCBF29CE484222325ull;

@@ -1,4 +1,4 @@
-#include "stl/stlvector.h"
+#include "stlvector.h"
 #include <stdio.h>
 
 stlvectorinst(int)
