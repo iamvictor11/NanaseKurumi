@@ -62,19 +62,14 @@ static inline void xklistheadinit(xklistnode* me)
 #define xklistentry_const(T, NODE, PTR) \
     ((const T*)((const char*)(PTR) - offsetof(T, NODE)))
 
-// MARK: inst
-#define xklistinst(T, NODE) \
-    struct xklist(T, NODE) \
+// MARK: decl
+#define xklistdecl(T, NODE, ATTR) \
+    typedef struct xklist(T, NODE) \
     { \
         xklistnode* head; \
         xklistnode* tail; \
         size_t size; \
-    };
-
-// MARK: decl
-#define xklistdecl(T, NODE, ATTR) \
-    struct xklist(T, NODE); \
-    typedef struct xklist(T, NODE) xklist(T, NODE); \
+    } xklist(T, NODE); \
     ATTR void xklistinit(T, NODE)(xklist(T, NODE)* me); \
     ATTR void xklistfree(T, NODE)(xklist(T, NODE)* me); \
     ATTR void xklistclear(T, NODE)(xklist(T, NODE)* me); \

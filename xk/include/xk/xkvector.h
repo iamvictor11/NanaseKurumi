@@ -54,19 +54,14 @@
 #define xkvectorcapacity(T)     XK_CAT(xk_PUBLIC_vector_capacity_, T)
 #define xkvectorempty(T)        XK_CAT(xk_PUBLIC_vector_empty_, T)
 
-// MARK: inst
-#define xkvectorinst(T) \
-    struct xkvector(T) \
+// MARK: decl
+#define xkvectordecl(T, ATTR) \
+    typedef struct xkvector(T) \
     { \
         T* data; \
         size_t size; \
         size_t capacity; \
-    };
-
-// MARK: decl
-#define xkvectordecl(T, ATTR) \
-    struct xkvector(T); \
-    typedef struct xkvector(T) xkvector(T); \
+    } xkvector(T); \
     ATTR void xkvectorinit(T)(xkvector(T)* me, size_t cap); \
     ATTR void xkvectorfree(T)(xkvector(T)* me); \
     ATTR void xkvectorreserve(T)(xkvector(T)* me, size_t cap); \

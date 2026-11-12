@@ -1,7 +1,6 @@
 #include "xk/xkvector.h"
 #include <stdio.h>
 
-xkvectorinst(int)
 xkvectordecl(int, inline static)
 xkvectorimpl(int, inline static)
 

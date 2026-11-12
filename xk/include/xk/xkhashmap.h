@@ -46,29 +46,22 @@
 #define xkhashmapcapacity(K, V)     XK_PRIVATE_HASHMAP_NAME(xk_PUBLIC_hashmap_capacity_, K, V)
 #define xkhashmapempty(K, V)        XK_PRIVATE_HASHMAP_NAME(xk_PUBLIC_hashmap_empty_, K, V)
 
-// MARK: inst
-#define xkhashmapinst(K, V) \
-    struct xkhashmapentry(K, V) \
+// MARK: decl
+#define xkhashmapdecl(K, V, ATTR) \
+    typedef struct xkhashmapentry(K, V) \
     { \
         size_t hash; \
         K key; \
         V value; \
         unsigned char state; \
-    }; \
-    struct xkhashmap(K, V) \
+    } xkhashmapentry(K, V); \
+    typedef struct xkhashmap(K, V) \
     { \
-        struct xkhashmapentry(K, V)* slots; \
+        xkhashmapentry(K, V)* slots; \
         size_t size; \
         size_t capacity; \
         size_t dead; \
-    };
-
-// MARK: decl
-#define xkhashmapdecl(K, V, ATTR) \
-    struct xkhashmapentry(K, V); \
-    typedef struct xkhashmapentry(K, V) xkhashmapentry(K, V); \
-    struct xkhashmap(K, V); \
-    typedef struct xkhashmap(K, V) xkhashmap(K, V); \
+    } xkhashmap(K, V); \
     ATTR void xkhashmapinit(K, V)(xkhashmap(K, V)* me, size_t cap); \
     ATTR void xkhashmapfree(K, V)(xkhashmap(K, V)* me); \
     ATTR void xkhashmapreserve(K, V)(xkhashmap(K, V)* me, size_t cap); \

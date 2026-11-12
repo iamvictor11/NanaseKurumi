@@ -42,26 +42,19 @@
 #define xkflatmapcapacity(K, V)     XK_PRIVATE_FLATMAP_NAME(xk_PUBLIC_flatmap_capacity_, K, V)
 #define xkflatmapempty(K, V)        XK_PRIVATE_FLATMAP_NAME(xk_PUBLIC_flatmap_empty_, K, V)
 
-// MARK: inst
-#define xkflatmapinst(K, V) \
-    struct xkflatmapentry(K, V) \
+// MARK: decl
+#define xkflatmapdecl(K, V, ATTR) \
+    typedef struct xkflatmapentry(K, V) \
     { \
         K key; \
         V value; \
-    }; \
-    struct xkflatmap(K, V) \
+    } xkflatmapentry(K, V); \
+    typedef struct xkflatmap(K, V) \
     { \
-        struct xkflatmapentry(K, V)* data; \
+        xkflatmapentry(K, V)* data; \
         size_t size; \
         size_t capacity; \
-    };
-
-// MARK: decl
-#define xkflatmapdecl(K, V, ATTR) \
-    struct xkflatmapentry(K, V); \
-    typedef struct xkflatmapentry(K, V) xkflatmapentry(K, V); \
-    struct xkflatmap(K, V); \
-    typedef struct xkflatmap(K, V) xkflatmap(K, V); \
+    } xkflatmap(K, V); \
     ATTR void xkflatmapinit(K, V)(xkflatmap(K, V)* me, size_t cap); \
     ATTR void xkflatmapfree(K, V)(xkflatmap(K, V)* me); \
     ATTR void xkflatmapreserve(K, V)(xkflatmap(K, V)* me, size_t cap); \

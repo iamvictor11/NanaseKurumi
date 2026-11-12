@@ -94,17 +94,12 @@ static inline XK_BITSET_WORD xk_PRIVATE_bitset_mask(size_t lo, size_t hi)
 #define xkbitsetshl(N)          XK_CAT(xk_PUBLIC_bitset_shl_, N)
 #define xkbitsetshr(N)          XK_CAT(xk_PUBLIC_bitset_shr_, N)
 
-// MARK: inst
-#define xkbitsetinst(N) \
-    struct xkbitset(N) \
-    { \
-        XK_BITSET_WORD words[XK_PRIVATE_BITSET_WORD_COUNT(N) ? XK_PRIVATE_BITSET_WORD_COUNT(N) : 1]; \
-    };
-
 // MARK: decl
 #define xkbitsetdecl(N, ATTR) \
-    struct xkbitset(N); \
-    typedef struct xkbitset(N) xkbitset(N); \
+    typedef struct xkbitset(N) \
+    { \
+        XK_BITSET_WORD words[XK_PRIVATE_BITSET_WORD_COUNT(N) ? XK_PRIVATE_BITSET_WORD_COUNT(N) : 1]; \
+    } xkbitset(N); \
     ATTR int xkbitsetget(N)(const xkbitset(N)* me, size_t pos); \
     ATTR void xkbitsetset(N)(xkbitset(N)* me, size_t pos, int val); \
     ATTR void xkbitsetreset(N)(xkbitset(N)* me, size_t pos); \
