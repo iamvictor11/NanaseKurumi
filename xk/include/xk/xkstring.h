@@ -17,6 +17,16 @@ typedef struct xkstring
     size_t size;
     size_t capacity;
 } xkstring;
+typedef struct xkstrview
+{
+    const char* data;
+    size_t length;
+} xkstringview;
+typedef struct xkstrspan
+{
+    char* data;
+    size_t length;
+} xkstringspan;
 
 #define XK_PRIVATE_STRING_OVERLAPPING(ME, P, N) \
     ((ME)->data != NULL && \
@@ -337,6 +347,16 @@ static inline xkstring xkstringconcat(const xkstring* a, const xkstring* b)
     if (b->size) memcpy(r.data + a->size, b->data, b->size);
     r.size = total;
     r.data[r.size] = 0;
+    return r;
+}
+static inline xkstrview xkstringview(const xkstring* me)
+{
+    xkstrview r = { me->data, me->size };
+    return r;
+}
+static inline xkstrspan xkstringspan(xkstring* me)
+{
+    xkstrspan r = { me->data, me->size };
     return r;
 }
 

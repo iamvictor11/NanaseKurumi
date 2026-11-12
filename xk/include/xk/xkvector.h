@@ -18,6 +18,8 @@
     (uintptr_t)(P) + (uintptr_t)(N) * sizeof(*(ME)->data) > (uintptr_t)((ME)->data))
 
 #define xkvector(T)             XK_CAT(xk_DETAIL_vector_, T)
+#define xkview(T)               XK_CAT(xk_DETAIL_view_, T)
+#define xkspan(T)               XK_CAT(xk_DETAIL_span_, T)
 #define xkvectorinit(T)         XK_CAT(xk_PUBLIC_vector_init_, T)
 #define xkvectorfree(T)         XK_CAT(xk_PUBLIC_vector_free_, T)
 #define xkvectorreserve(T)      XK_CAT(xk_PUBLIC_vector_reserve_, T)
@@ -53,6 +55,8 @@
 #define xkvectorsize(T)         XK_CAT(xk_PUBLIC_vector_size_, T)
 #define xkvectorcapacity(T)     XK_CAT(xk_PUBLIC_vector_capacity_, T)
 #define xkvectorempty(T)        XK_CAT(xk_PUBLIC_vector_empty_, T)
+#define xkvectorview(T)         XK_CAT(xk_PUBLIC_vector_view_, T)
+#define xkvectorspan(T)         XK_CAT(xk_PUBLIC_vector_span_, T)
 
 // MARK: decl
 #define xkvectordecl(T, ATTR) \
@@ -62,6 +66,16 @@
         size_t size; \
         size_t capacity; \
     } xkvector(T); \
+    typedef struct xkview(T) \
+    { \
+        const T* data; \
+        size_t size; \
+    } xkview(T); \
+    typedef struct xkspan(T) \
+    { \
+        T* data; \
+        size_t size; \
+    } xkspan(T); \
     ATTR void xkvectorinit(T)(xkvector(T)* me, size_t cap); \
     ATTR void xkvectorfree(T)(xkvector(T)* me); \
     ATTR void xkvectorreserve(T)(xkvector(T)* me, size_t cap); \
@@ -96,7 +110,9 @@
     ATTR int xkvectorcontains(T)(const xkvector(T)* me, T e); \
     ATTR size_t xkvectorsize(T)(const xkvector(T)* me); \
     ATTR size_t xkvectorcapacity(T)(const xkvector(T)* me); \
-    ATTR int xkvectorempty(T)(const xkvector(T)* me);
+    ATTR int xkvectorempty(T)(const xkvector(T)* me); \
+    ATTR xkview(T) xkvectorview(T)(const xkvector(T)* me); \
+    ATTR xkspan(T) xkvectorspan(T)(xkvector(T)* me);
 
 // MARK: impl
 #define xkvectorimpl(T, ATTR) \
@@ -393,6 +409,16 @@
     ATTR int xkvectorempty(T)(const xkvector(T)* me) \
     { \
         return me->size == 0; \
+    } \
+    ATTR xkview(T) xkvectorview(T)(const xkvector(T)* me) \
+    { \
+        xkview(T) r = { me->data, me->size }; \
+        return r; \
+    } \
+    ATTR xkspan(T) xkvectorspan(T)(xkvector(T)* me) \
+    { \
+        xkspan(T) r = { me->data, me->size }; \
+        return r; \
     }
 
 // MARK: sugar
