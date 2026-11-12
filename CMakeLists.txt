@@ -13,5 +13,5 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${INT_DIR})
 
-add_subdirectory("${CMAKE_SOURCE_DIR}/stl")
+add_subdirectory("${CMAKE_SOURCE_DIR}/xk")
 add_subdirectory("${CMAKE_SOURCE_DIR}/examples")

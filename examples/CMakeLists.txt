@@ -18,11 +18,11 @@ function(target_setup TARGET_NAME)
     )
     target_sources(${TARGET_NAME}
     PRIVATE
-        # "${CMAKE_CURRENT_SOURCE_DIR}/src/stl.impl.c"
+        # "${CMAKE_CURRENT_SOURCE_DIR}/src/xk.impl.c"
     )
     target_link_libraries(${TARGET_NAME}
     PUBLIC
-        stl
+        xk
     )
     set_property(TARGET ${TARGET_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
     target_compile_options(${TARGET_NAME}
