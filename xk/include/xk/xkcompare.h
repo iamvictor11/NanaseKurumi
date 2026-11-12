@@ -4,7 +4,6 @@
 #ifndef XK_XKCOMPARE_H
 #define XK_XKCOMPARE_H
 
-
 #ifndef XK_CAT
 #define XK_CAT_(a, b)   a##b
 #define XK_CAT(a, b)    XK_CAT_(a, b)
