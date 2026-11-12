@@ -107,8 +107,7 @@
         } \
         return cap; \
     } \
-    static inline void XK_PRIVATE_HASHMAP_NAME(xk_PRIVATE_hashmap_rehash_, K, V) \
-        (xkhashmap(K, V)* me, size_t ncap) \
+    static inline void XK_PRIVATE_HASHMAP_NAME(xk_PRIVATE_hashmap_rehash_, K, V)(xkhashmap(K, V)* me, size_t ncap) \
     { \
         if (ncap < XK_PRIVATE_HASHMAP_MIN_CAPACITY) \
             ncap = XK_PRIVATE_HASHMAP_MIN_CAPACITY; \
@@ -133,8 +132,7 @@
         me->capacity = ncap; \
         me->dead = 0; \
     } \
-    static inline xkhashmapentry(K, V)* XK_PRIVATE_HASHMAP_NAME(xk_PRIVATE_hashmap_find_, K, V) \
-        (const xkhashmap(K, V)* me, K key, size_t hash) \
+    static inline xkhashmapentry(K, V)* XK_PRIVATE_HASHMAP_NAME(xk_PRIVATE_hashmap_find_, K, V)(const xkhashmap(K, V)* me, K key, size_t hash) \
     { \
         if (me->capacity == 0) return NULL; \
         size_t mask = me->capacity - 1; \
@@ -150,8 +148,7 @@
         } \
         return NULL; \
     } \
-    static inline void XK_PRIVATE_HASHMAP_NAME(xk_PRIVATE_hashmap_make_room_, K, V) \
-        (xkhashmap(K, V)* me) \
+    static inline void XK_PRIVATE_HASHMAP_NAME(xk_PRIVATE_hashmap_make_room_, K, V)(xkhashmap(K, V)* me) \
     { \
         if (me->capacity == 0) \
         { \
