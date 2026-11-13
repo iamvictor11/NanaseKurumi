@@ -7,43 +7,7 @@
 #include "xkconf.h"
 #include <stddef.h>
 #include <stdlib.h>
-#include <string.h>
 #include <assert.h>
-
-#ifndef XK_CAT
-#define XK_CAT_(a, b)   a##b
-#define XK_CAT(a, b)    XK_CAT_(a, b)
-#endif
-
-#define XK_PRIVATE_LIST_NAME(NAME, T, NODE) \
-    XK_CAT(XK_CAT(NAME, T), XK_CAT(_, NODE))
-
-#define xklist(T, NODE)             XK_PRIVATE_LIST_NAME(xk_DETAIL_list_, T, NODE)
-#define xklistinit(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_init_, T, NODE)
-#define xklistfree(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_free_, T, NODE)
-#define xklistclear(T, NODE)        XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_clear_, T, NODE)
-#define xklistpushfront(T, NODE)    XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_pushfront_, T, NODE)
-#define xklistpushback(T, NODE)     XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_pushback_, T, NODE)
-#define xklistinsertbefore(T, NODE) XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_insertbefore_, T, NODE)
-#define xklistinsertafter(T, NODE)  XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_insertafter_, T, NODE)
-#define xklistpopfront(T, NODE)     XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_popfront_, T, NODE)
-#define xklistpopback(T, NODE)      XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_popback_, T, NODE)
-#define xklisterase(T, NODE)        XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_erase_, T, NODE)
-#define xklistfront(T, NODE)        XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_front_, T, NODE)
-#define xklistfront_const(T, NODE)  XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_front_const_, T, NODE)
-#define xklistback(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_back_, T, NODE)
-#define xklistback_const(T, NODE)   XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_back_const_, T, NODE)
-#define xklistnext(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_next_, T, NODE)
-#define xklistnext_const(T, NODE)   XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_next_const_, T, NODE)
-#define xklistprev(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_prev_, T, NODE)
-#define xklistprev_const(T, NODE)   XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_prev_const_, T, NODE)
-#define xklistconcat(T, NODE)       XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_concat_, T, NODE)
-#define xklistmove(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_move_, T, NODE)
-#define xklistswap(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_swap_, T, NODE)
-#define xklistreverse(T, NODE)      XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_reverse_, T, NODE)
-#define xklistcontains(T, NODE)     XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_contains_, T, NODE)
-#define xklistsize(T, NODE)         XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_size_, T, NODE)
-#define xklistempty(T, NODE)        XK_PRIVATE_LIST_NAME(xk_PUBLIC_list_empty_, T, NODE)
 
 typedef struct xklistnode
 {
@@ -51,274 +15,261 @@ typedef struct xklistnode
     struct xklistnode* next;
 } xklistnode;
 
-static inline void xklistheadinit(xklistnode* me)
+typedef struct xklist
 {
-    me->prev = NULL;
-    me->next = NULL;
+    xklistnode* head;
+    xklistnode* tail;
+    size_t size;
+} xklist;
+
+// MARK: private
+static inline void* xk_PRIVATE_list_offset(void* p, size_t off)
+{
+    return p ? (void*)((char*)p - off) : NULL;
+}
+static inline const void* xk_PRIVATE_list_offset_const(const void* p, size_t off)
+{
+    return p ? (const void*)((const char*)p - off) : NULL;
 }
 
-#define xklistentry(T, NODE, PTR) \
-    ((T*)((char*)(PTR) - offsetof(T, NODE)))
-#define xklistentry_const(T, NODE, PTR) \
-    ((const T*)((const char*)(PTR) - offsetof(T, NODE)))
-
-// MARK: decl
-#define xklistdecl(T, NODE, ATTR) \
-    typedef struct xklist(T, NODE) \
-    { \
-        xklistnode* head; \
-        xklistnode* tail; \
-        size_t size; \
-    } xklist(T, NODE); \
-    ATTR void xklistinit(T, NODE)(xklist(T, NODE)* me); \
-    ATTR void xklistfree(T, NODE)(xklist(T, NODE)* me); \
-    ATTR void xklistclear(T, NODE)(xklist(T, NODE)* me); \
-    ATTR void xklistpushfront(T, NODE)(xklist(T, NODE)* me, T* e); \
-    ATTR void xklistpushback(T, NODE)(xklist(T, NODE)* me, T* e); \
-    ATTR void xklistinsertbefore(T, NODE)(xklist(T, NODE)* me, T* pos, T* e); \
-    ATTR void xklistinsertafter(T, NODE)(xklist(T, NODE)* me, T* pos, T* e); \
-    ATTR T* xklistpopfront(T, NODE)(xklist(T, NODE)* me); \
-    ATTR T* xklistpopback(T, NODE)(xklist(T, NODE)* me); \
-    ATTR void xklisterase(T, NODE)(xklist(T, NODE)* me, T* e); \
-    ATTR T* xklistfront(T, NODE)(xklist(T, NODE)* me); \
-    ATTR const T* xklistfront_const(T, NODE)(const xklist(T, NODE)* me); \
-    ATTR T* xklistback(T, NODE)(xklist(T, NODE)* me); \
-    ATTR const T* xklistback_const(T, NODE)(const xklist(T, NODE)* me); \
-    ATTR T* xklistnext(T, NODE)(T* e); \
-    ATTR const T* xklistnext_const(T, NODE)(const T* e); \
-    ATTR T* xklistprev(T, NODE)(T* e); \
-    ATTR const T* xklistprev_const(T, NODE)(const T* e); \
-    ATTR void xklistconcat(T, NODE)(xklist(T, NODE)* me, xklist(T, NODE)* other); \
-    ATTR void xklistmove(T, NODE)(xklist(T, NODE)* dst, xklist(T, NODE)* src); \
-    ATTR void xklistswap(T, NODE)(xklist(T, NODE)* a, xklist(T, NODE)* b); \
-    ATTR void xklistreverse(T, NODE)(xklist(T, NODE)* me); \
-    ATTR int xklistcontains(T, NODE)(const xklist(T, NODE)* me, const T* e); \
-    ATTR size_t xklistsize(T, NODE)(const xklist(T, NODE)* me); \
-    ATTR int xklistempty(T, NODE)(const xklist(T, NODE)* me);
-
-// MARK: impl
-#define xklistimpl(T, NODE, ATTR) \
-    ATTR void xklistinit(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        me->head = NULL; \
-        me->tail = NULL; \
-        me->size = 0; \
-    } \
-    ATTR void xklistclear(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        xklistnode* n = me->head; \
-        while (n) \
-        { \
-            xklistnode* next = n->next; \
-            n->prev = NULL; \
-            n->next = NULL; \
-            n = next; \
-        } \
-        me->head = NULL; \
-        me->tail = NULL; \
-        me->size = 0; \
-    } \
-    ATTR void xklistfree(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        xklistclear(T, NODE)(me); \
-    } \
-    ATTR void xklistpushfront(T, NODE)(xklist(T, NODE)* me, T* e) \
-    { \
-        xkassert(e != NULL); \
-        xklistnode* n = &e->NODE; \
-        n->prev = NULL; \
-        n->next = me->head; \
-        if (me->head) me->head->prev = n; \
-        else me->tail = n; \
-        me->head = n; \
-        ++me->size; \
-    } \
-    ATTR void xklistpushback(T, NODE)(xklist(T, NODE)* me, T* e) \
-    { \
-        xkassert(e != NULL); \
-        xklistnode* n = &e->NODE; \
-        n->prev = me->tail; \
-        n->next = NULL; \
-        if (me->tail) me->tail->next = n; \
-        else me->head = n; \
-        me->tail = n; \
-        ++me->size; \
-    } \
-    ATTR void xklistinsertbefore(T, NODE)(xklist(T, NODE)* me, T* pos, T* e) \
-    { \
-        xkassert(pos != NULL); \
-        xkassert(e != NULL); \
-        xklistnode* p = &pos->NODE; \
-        xklistnode* n = &e->NODE; \
-        n->prev = p->prev; \
-        n->next = p; \
-        if (p->prev) p->prev->next = n; \
-        else me->head = n; \
-        p->prev = n; \
-        ++me->size; \
-    } \
-    ATTR void xklistinsertafter(T, NODE)(xklist(T, NODE)* me, T* pos, T* e) \
-    { \
-        xkassert(pos != NULL); \
-        xkassert(e != NULL); \
-        xklistnode* p = &pos->NODE; \
-        xklistnode* n = &e->NODE; \
-        n->prev = p; \
-        n->next = p->next; \
-        if (p->next) p->next->prev = n; \
-        else me->tail = n; \
-        p->next = n; \
-        ++me->size; \
-    } \
-    ATTR T* xklistpopfront(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        if (!me->head) return NULL; \
-        xkassert(me->size > 0); \
-        xklistnode* n = me->head; \
-        me->head = n->next; \
-        if (me->head) me->head->prev = NULL; \
-        else me->tail = NULL; \
-        n->prev = NULL; \
-        n->next = NULL; \
-        --me->size; \
-        return xklistentry(T, NODE, n); \
-    } \
-    ATTR T* xklistpopback(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        if (!me->tail) return NULL; \
-        xkassert(me->size > 0); \
-        xklistnode* n = me->tail; \
-        me->tail = n->prev; \
-        if (me->tail) me->tail->next = NULL; \
-        else me->head = NULL; \
-        n->prev = NULL; \
-        n->next = NULL; \
-        --me->size; \
-        return xklistentry(T, NODE, n); \
-    } \
-    ATTR void xklisterase(T, NODE)(xklist(T, NODE)* me, T* e) \
-    { \
-        xkassert(e != NULL); \
-        xkassert(me->size > 0); \
-        xklistnode* n = &e->NODE; \
-        if (n->prev) n->prev->next = n->next; \
-        else me->head = n->next; \
-        if (n->next) n->next->prev = n->prev; \
-        else me->tail = n->prev; \
-        n->prev = NULL; \
-        n->next = NULL; \
-        --me->size; \
-    } \
-    ATTR T* xklistfront(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        return me->head ? xklistentry(T, NODE, me->head) : NULL; \
-    } \
-    ATTR const T* xklistfront_const(T, NODE)(const xklist(T, NODE)* me) \
-    { \
-        return me->head ? xklistentry_const(T, NODE, me->head) : NULL; \
-    } \
-    ATTR T* xklistback(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        return me->tail ? xklistentry(T, NODE, me->tail) : NULL; \
-    } \
-    ATTR const T* xklistback_const(T, NODE)(const xklist(T, NODE)* me) \
-    { \
-        return me->tail ? xklistentry_const(T, NODE, me->tail) : NULL; \
-    } \
-    ATTR T* xklistnext(T, NODE)(T* e) \
-    { \
-        return e && e->NODE.next ? xklistentry(T, NODE, e->NODE.next) : NULL; \
-    } \
-    ATTR const T* xklistnext_const(T, NODE)(const T* e) \
-    { \
-        return e && e->NODE.next ? xklistentry_const(T, NODE, e->NODE.next) : NULL; \
-    } \
-    ATTR T* xklistprev(T, NODE)(T* e) \
-    { \
-        return e && e->NODE.prev ? xklistentry(T, NODE, e->NODE.prev) : NULL; \
-    } \
-    ATTR const T* xklistprev_const(T, NODE)(const T* e) \
-    { \
-        return e && e->NODE.prev ? xklistentry_const(T, NODE, e->NODE.prev) : NULL; \
-    } \
-    ATTR void xklistconcat(T, NODE)(xklist(T, NODE)* me, xklist(T, NODE)* other) \
-    { \
-        if (me == other || other->size == 0) return; \
-        if (me->size == 0) \
-        { \
-            me->head = other->head; \
-            me->tail = other->tail; \
-            me->size = other->size; \
-        } \
-        else \
-        { \
-            me->tail->next = other->head; \
-            other->head->prev = me->tail; \
-            me->tail = other->tail; \
-            me->size += other->size; \
-        } \
-        other->head = NULL; \
-        other->tail = NULL; \
-        other->size = 0; \
-    } \
-    ATTR void xklistmove(T, NODE)(xklist(T, NODE)* dst, xklist(T, NODE)* src) \
-    { \
-        if (dst == src) return; \
-        xklistclear(T, NODE)(dst); \
-        dst->head = src->head; \
-        dst->tail = src->tail; \
-        dst->size = src->size; \
-        xklistinit(T, NODE)(src); \
-    } \
-    ATTR void xklistswap(T, NODE)(xklist(T, NODE)* a, xklist(T, NODE)* b) \
-    { \
-        xklist(T, NODE) tmp = *a; \
-        *a = *b; \
-        *b = tmp; \
-    } \
-    ATTR void xklistreverse(T, NODE)(xklist(T, NODE)* me) \
-    { \
-        xklistnode* n = me->head; \
-        while (n) \
-        { \
-            xklistnode* next = n->next; \
-            n->next = n->prev; \
-            n->prev = next; \
-            n = next; \
-        } \
-        xklistnode* tmp = me->head; \
-        me->head = me->tail; \
-        me->tail = tmp; \
-    } \
-    ATTR int xklistcontains(T, NODE)(const xklist(T, NODE)* me, const T* e) \
-    { \
-        if (!e) return 0; \
-        const xklistnode* n = me->head; \
-        const xklistnode* target = &e->NODE; \
-        while (n) \
-        { \
-            if (n == target) return 1; \
-            n = n->next; \
-        } \
-        return 0; \
-    } \
-    ATTR size_t xklistsize(T, NODE)(const xklist(T, NODE)* me) \
-    { \
-        return me->size; \
-    } \
-    ATTR int xklistempty(T, NODE)(const xklist(T, NODE)* me) \
-    { \
-        return me->size == 0; \
+// MARK: public
+static inline void xklistinit(xklist* me)
+{
+    me->head = NULL;
+    me->tail = NULL;
+    me->size = 0;
+}
+static inline void xklistclear(xklist* me)
+{
+    xkassert(me != NULL);
+    xklistnode* n = me->head;
+    while (n)
+    {
+        xklistnode* next = n->next;
+        n->prev = NULL;
+        n->next = NULL;
+        n = next;
     }
+    me->head = NULL;
+    me->tail = NULL;
+    me->size = 0;
+}
+static inline void xklistfree(xklist* me)
+{
+    xklistclear(me);
+}
+static inline void xklistpushfront(xklist* me, xklistnode* n)
+{
+    xkassert(me != NULL);
+    xkassert(n != NULL);
+    n->prev = NULL;
+    n->next = me->head;
+    if (me->head) me->head->prev = n;
+    else me->tail = n;
+    me->head = n;
+    ++me->size;
+}
+static inline void xklistpushback(xklist* me, xklistnode* n)
+{
+    xkassert(me != NULL);
+    xkassert(n != NULL);
+    n->prev = me->tail;
+    n->next = NULL;
+    if (me->tail) me->tail->next = n;
+    else me->head = n;
+    me->tail = n;
+    ++me->size;
+}
+static inline void xklistinsertbefore(xklist* me, xklistnode* pos, xklistnode* n)
+{
+    xkassert(me != NULL);
+    xkassert(pos != NULL);
+    xkassert(n != NULL);
+    n->prev = pos->prev;
+    n->next = pos;
+    if (pos->prev) pos->prev->next = n;
+    else me->head = n;
+    pos->prev = n;
+    ++me->size;
+}
+static inline void xklistinsertafter(xklist* me, xklistnode* pos, xklistnode* n)
+{
+    xkassert(me != NULL);
+    xkassert(pos != NULL);
+    xkassert(n != NULL);
+    n->prev = pos;
+    n->next = pos->next;
+    if (pos->next) pos->next->prev = n;
+    else me->tail = n;
+    pos->next = n;
+    ++me->size;
+}
+static inline xklistnode* xklistpopfront(xklist* me)
+{
+    xkassert(me != NULL);
+    if (!me->head) return NULL;
+    xkassert(me->size > 0);
+    xklistnode* n = me->head;
+    me->head = n->next;
+    if (me->head) me->head->prev = NULL;
+    else me->tail = NULL;
+    n->prev = NULL;
+    n->next = NULL;
+    --me->size;
+    return n;
+}
+static inline xklistnode* xklistpopback(xklist* me)
+{
+    xkassert(me != NULL);
+    if (!me->tail) return NULL;
+    xkassert(me->size > 0);
+    xklistnode* n = me->tail;
+    me->tail = n->prev;
+    if (me->tail) me->tail->next = NULL;
+    else me->head = NULL;
+    n->prev = NULL;
+    n->next = NULL;
+    --me->size;
+    return n;
+}
+static inline void xklisterase(xklist* me, xklistnode* n)
+{
+    xkassert(me != NULL);
+    xkassert(n != NULL);
+    xkassert(me->size > 0);
+    if (n->prev) n->prev->next = n->next;
+    else me->head = n->next;
+    if (n->next) n->next->prev = n->prev;
+    else me->tail = n->prev;
+    n->prev = NULL;
+    n->next = NULL;
+    --me->size;
+}
+static inline xklistnode* xklistfront(xklist* me)
+{
+    xkassert(me != NULL);
+    return me->head;
+}
+static inline const xklistnode* xklistfront_const(const xklist* me)
+{
+    xkassert(me != NULL);
+    return me->head;
+}
+static inline xklistnode* xklistback(xklist* me)
+{
+    xkassert(me != NULL);
+    return me->tail;
+}
+static inline const xklistnode* xklistback_const(const xklist* me)
+{
+    xkassert(me != NULL);
+    return me->tail;
+}
+static inline xklistnode* xklistnext(xklistnode* n)
+{
+    return n ? n->next : NULL;
+}
+static inline const xklistnode* xklistnext_const(const xklistnode* n)
+{
+    return n ? n->next : NULL;
+}
+static inline xklistnode* xklistprev(xklistnode* n)
+{
+    return n ? n->prev : NULL;
+}
+static inline const xklistnode* xklistprev_const(const xklistnode* n)
+{
+    return n ? n->prev : NULL;
+}
+static inline void xklistconcat(xklist* me, xklist* other)
+{
+    xkassert(me != NULL);
+    xkassert(other != NULL);
+    if (me == other || other->size == 0) return;
+    if (me->size == 0)
+    {
+        me->head = other->head;
+        me->tail = other->tail;
+        me->size = other->size;
+    }
+    else
+    {
+        me->tail->next = other->head;
+        other->head->prev = me->tail;
+        me->tail = other->tail;
+        me->size += other->size;
+    }
+    other->head = NULL;
+    other->tail = NULL;
+    other->size = 0;
+}
+static inline void xklistmove(xklist* dst, xklist* src)
+{
+    xkassert(dst != NULL);
+    xkassert(src != NULL);
+    if (dst == src) return;
+    xklistclear(dst);
+    dst->head = src->head;
+    dst->tail = src->tail;
+    dst->size = src->size;
+    xklistinit(src);
+}
+static inline void xklistswap(xklist* a, xklist* b)
+{
+    xkassert(a != NULL);
+    xkassert(b != NULL);
+    xklist tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+static inline void xklistreverse(xklist* me)
+{
+    xkassert(me != NULL);
+    xklistnode* n = me->head;
+    while (n)
+    {
+        xklistnode* next = n->next;
+        n->next = n->prev;
+        n->prev = next;
+        n = next;
+    }
+    xklistnode* tmp = me->head;
+    me->head = me->tail;
+    me->tail = tmp;
+}
+static inline int xklistcontains(const xklist* me, const xklistnode* n)
+{
+    if (!me || !n) return 0;
+    const xklistnode* p = me->head;
+    while (p)
+    {
+        if (p == n) return 1;
+        p = p->next;
+    }
+    return 0;
+}
+static inline size_t xklistsize(const xklist* me)
+{
+    return me->size;
+}
+static inline int xklistempty(const xklist* me)
+{
+    return me->size == 0;
+}
+
+#define xklisthost(T, NODE, PTR) \
+    ((T*)xk_PRIVATE_list_offset((void*)(PTR), offsetof(T, NODE)))
+#define xklisthost_const(T, NODE, PTR) \
+    ((const T*)xk_PRIVATE_list_offset_const((const void*)(PTR), offsetof(T, NODE)))
 
 // MARK: sugar
 #define xklistforeach(T, NODE, ME, IT) \
-    for (T* IT = xklistfront(T, NODE)(ME); IT != NULL; IT = xklistnext(T, NODE)(IT))
+    for (T* IT = xklisthost(T, NODE, xklistfront(ME)); IT != NULL; IT = xklisthost(T, NODE, xklistnext(&IT->NODE)))
 #define xklistforeach_const(T, NODE, ME, IT) \
-    for (const T* IT = xklistfront_const(T, NODE)(ME); IT != NULL; IT = xklistnext_const(T, NODE)(IT))
+    for (const T* IT = xklisthost_const(T, NODE, xklistfront_const(ME)); IT != NULL; IT = xklisthost_const(T, NODE, xklistnext_const(&IT->NODE)))
 #define xklistrforeach(T, NODE, ME, IT) \
-    for (T* IT = xklistback(T, NODE)(ME); IT != NULL; IT = xklistprev(T, NODE)(IT))
+    for (T* IT = xklisthost(T, NODE, xklistback(ME)); IT != NULL; IT = xklisthost(T, NODE, xklistprev(&IT->NODE)))
 #define xklistrforeach_const(T, NODE, ME, IT) \
-    for (const T* IT = xklistback_const(T, NODE)(ME); IT != NULL; IT = xklistprev_const(T, NODE)(IT))
+    for (const T* IT = xklisthost_const(T, NODE, xklistback_const(ME)); IT != NULL; IT = xklisthost_const(T, NODE, xklistprev_const(&IT->NODE)))
 
 #endif
