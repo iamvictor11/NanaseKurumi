@@ -4,12 +4,10 @@
 #ifndef XK_XKSTRING_H
 #define XK_XKSTRING_H
 
-#include "xkconf.h"
+#include "xkvector.h"
 #include "xkequal.h"
 #include "xkhash.h"
 #include "xkcompare.h"
-#include <stdlib.h>
-#include <assert.h>
 
 typedef struct xkstring
 {
@@ -17,16 +15,6 @@ typedef struct xkstring
     size_t size;
     size_t capacity;
 } xkstring;
-typedef struct xkstrview
-{
-    const char* data;
-    size_t length;
-} xkstringview;
-typedef struct xkstrspan
-{
-    char* data;
-    size_t length;
-} xkstringspan;
 
 #define XK_PRIVATE_STRING_OVERLAPPING(ME, P, N) \
     ((ME)->data != NULL && \
@@ -110,10 +98,6 @@ static inline void xkstringappend(xkstring* me, const char* p, size_t n)
     me->size += n;
     me->data[me->size] = 0;
     if (tmp) xkfree(tmp);
-}
-static inline void xkstringappend_cstr(xkstring* me, const char* p)
-{
-    xkstringappend(me, p, strlen(p));
 }
 static inline char xkstringpop(xkstring* me)
 {
@@ -349,14 +333,14 @@ static inline xkstring xkstringconcat(const xkstring* a, const xkstring* b)
     r.data[r.size] = 0;
     return r;
 }
-static inline xkstrview xkstringview(const xkstring* me)
+static inline xkview(char) xkstringview(const xkstring* me)
 {
-    xkstrview r = { me->data, me->size };
+    xkview(char) r = { me->data, me->size };
     return r;
 }
-static inline xkstrspan xkstringspan(xkstring* me)
+static inline xkspan(char) xkstringspan(xkstring* me)
 {
-    xkstrspan r = { me->data, me->size };
+    xkspan(char) r = { me->data, me->size };
     return r;
 }
 

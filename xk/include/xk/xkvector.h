@@ -5,10 +5,15 @@
 #define XK_XKVECTOR_H
 
 #include "xkconf.h"
-#include "xkequal.h"
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
+#ifndef XK_CAT
+#define XK_CAT_(a, b)   a##b
+#define XK_CAT(a, b)    XK_CAT_(a, b)
+#endif
 
 #define XK_PRIVATE_VECTOR_MIN_CAPACITY 8
 
@@ -50,8 +55,6 @@
 #define xkvectorclone(T)        XK_CAT(xk_PUBLIC_vector_clone_, T)
 #define xkvectormove(T)         XK_CAT(xk_PUBLIC_vector_move_, T)
 #define xkvectorswap(T)         XK_CAT(xk_PUBLIC_vector_swap_, T)
-#define xkvectorfind(T)         XK_CAT(xk_PUBLIC_vector_find_, T)
-#define xkvectorcontains(T)     XK_CAT(xk_PUBLIC_vector_contains_, T)
 #define xkvectorsize(T)         XK_CAT(xk_PUBLIC_vector_size_, T)
 #define xkvectorcapacity(T)     XK_CAT(xk_PUBLIC_vector_capacity_, T)
 #define xkvectorempty(T)        XK_CAT(xk_PUBLIC_vector_empty_, T)
@@ -106,8 +109,6 @@
     ATTR xkvector(T) xkvectorclone(T)(const xkvector(T)* me); \
     ATTR void xkvectormove(T)(xkvector(T)* dst, xkvector(T)* src); \
     ATTR void xkvectorswap(T)(xkvector(T)* a, xkvector(T)* b); \
-    ATTR size_t xkvectorfind(T)(const xkvector(T)* me, T e); \
-    ATTR int xkvectorcontains(T)(const xkvector(T)* me, T e); \
     ATTR size_t xkvectorsize(T)(const xkvector(T)* me); \
     ATTR size_t xkvectorcapacity(T)(const xkvector(T)* me); \
     ATTR int xkvectorempty(T)(const xkvector(T)* me); \
@@ -387,17 +388,6 @@
         *a = *b; \
         *b = tmp; \
     } \
-    ATTR size_t xkvectorfind(T)(const xkvector(T)* me, T e) \
-    { \
-        for (size_t i = 0; i < me->size; ++i) \
-            if (xkequal(T)(me->data[i], e)) \
-                return i; \
-        return (size_t)-1; \
-    } \
-    ATTR int xkvectorcontains(T)(const xkvector(T)* me, T e) \
-    { \
-        return xkvectorfind(T)(me, e) != (size_t)-1; \
-    } \
     ATTR size_t xkvectorsize(T)(const xkvector(T)* me) \
     { \
         return me->size; \
@@ -430,5 +420,85 @@
     for (T* IT##_HIDE_start = (ME)->data, *IT = IT##_HIDE_start + (ME)->size; IT != IT##_HIDE_start && (--IT, 1);)
 #define xkvectorrforeach_const(T, ME, IT) \
     for (const T* IT##_HIDE_start = (ME)->data, *IT = IT##_HIDE_start + (ME)->size; IT != IT##_HIDE_start && (--IT, 1);)
+
+#include <stdbool.h>
+#include <stdint.h>
+xkvectordecl(bool, static inline)
+xkvectorimpl(bool, static inline)
+xkvectordecl(char, static inline)
+xkvectorimpl(char, static inline)
+xkvectordecl(short, static inline)
+xkvectorimpl(short, static inline)
+xkvectordecl(int, static inline)
+xkvectorimpl(int, static inline)
+xkvectordecl(long, static inline)
+xkvectorimpl(long, static inline)
+xkvectordecl(float, static inline)
+xkvectorimpl(float, static inline)
+xkvectordecl(double, static inline)
+xkvectorimpl(double, static inline)
+xkvectordecl(int8_t, static inline)
+xkvectorimpl(int8_t, static inline)
+xkvectordecl(int16_t, static inline)
+xkvectorimpl(int16_t, static inline)
+xkvectordecl(int32_t, static inline)
+xkvectorimpl(int32_t, static inline)
+xkvectordecl(int64_t, static inline)
+xkvectorimpl(int64_t, static inline)
+xkvectordecl(uint8_t, static inline)
+xkvectorimpl(uint8_t, static inline)
+xkvectordecl(uint16_t, static inline)
+xkvectorimpl(uint16_t, static inline)
+xkvectordecl(uint32_t, static inline)
+xkvectorimpl(uint32_t, static inline)
+xkvectordecl(uint64_t, static inline)
+xkvectorimpl(uint64_t, static inline)
+xkvectordecl(intptr_t, static inline)
+xkvectorimpl(intptr_t, static inline)
+xkvectordecl(uintptr_t, static inline)
+xkvectorimpl(uintptr_t, static inline)
+xkvectordecl(intmax_t, static inline)
+xkvectorimpl(intmax_t, static inline)
+xkvectordecl(uintmax_t, static inline)
+xkvectorimpl(uintmax_t, static inline)
+xkvectordecl(int_least8_t, static inline)
+xkvectorimpl(int_least8_t, static inline)
+xkvectordecl(int_least16_t, static inline)
+xkvectorimpl(int_least16_t, static inline)
+xkvectordecl(int_least32_t, static inline)
+xkvectorimpl(int_least32_t, static inline)
+xkvectordecl(int_least64_t, static inline)
+xkvectorimpl(int_least64_t, static inline)
+xkvectordecl(uint_least8_t, static inline)
+xkvectorimpl(uint_least8_t, static inline)
+xkvectordecl(uint_least16_t, static inline)
+xkvectorimpl(uint_least16_t, static inline)
+xkvectordecl(uint_least32_t, static inline)
+xkvectorimpl(uint_least32_t, static inline)
+xkvectordecl(uint_least64_t, static inline)
+xkvectorimpl(uint_least64_t, static inline)
+xkvectordecl(int_fast8_t, static inline)
+xkvectorimpl(int_fast8_t, static inline)
+xkvectordecl(int_fast16_t, static inline)
+xkvectorimpl(int_fast16_t, static inline)
+xkvectordecl(int_fast32_t, static inline)
+xkvectorimpl(int_fast32_t, static inline)
+xkvectordecl(int_fast64_t, static inline)
+xkvectorimpl(int_fast64_t, static inline)
+xkvectordecl(uint_fast8_t, static inline)
+xkvectorimpl(uint_fast8_t, static inline)
+xkvectordecl(uint_fast16_t, static inline)
+xkvectorimpl(uint_fast16_t, static inline)
+xkvectordecl(uint_fast32_t, static inline)
+xkvectorimpl(uint_fast32_t, static inline)
+xkvectordecl(uint_fast64_t, static inline)
+xkvectorimpl(uint_fast64_t, static inline)
+xkvectordecl(size_t, static inline)
+xkvectorimpl(size_t, static inline)
+xkvectordecl(ptrdiff_t, static inline)
+xkvectorimpl(ptrdiff_t, static inline)
+xkvectordecl(wchar_t, static inline)
+xkvectorimpl(wchar_t, static inline)
+
 
 #endif
