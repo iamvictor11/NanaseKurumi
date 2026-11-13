@@ -1,9 +1,6 @@
 #include "xk/xkvector.h"
 #include <stdio.h>
 
-xkvectordecl(int, inline static)
-xkvectorimpl(int, inline static)
-
 int main(int argc, char* argv[])
 {
     printf("\x1b%%G");
@@ -12,7 +9,7 @@ int main(int argc, char* argv[])
     xkvectorinit(int)(&intv, 10);
 
     for (int i = 0; i < xkvectorcapacity(int)(&intv); ++i)
-        xkvectorpush(int)(&intv, i);
+        xkvectorpushback(int)(&intv, i);
 
     xkvectorforeach(int, &intv, e)
         printf("%d, ", *e);

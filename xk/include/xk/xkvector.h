@@ -30,10 +30,13 @@
 #define xkvectorreserve(T)      XK_CAT(xk_PUBLIC_vector_reserve_, T)
 #define xkvectorresize(T)       XK_CAT(xk_PUBLIC_vector_resize_, T)
 #define xkvectorshrink(T)       XK_CAT(xk_PUBLIC_vector_shrink_, T)
-#define xkvectorpush(T)         XK_CAT(xk_PUBLIC_vector_push_, T)
-#define xkvectoremplace(T)      XK_CAT(xk_PUBLIC_vector_empush_, T)
+#define xkvectorpushfront(T)    XK_CAT(xk_PUBLIC_vector_pushfront_, T)
+#define xkvectorpushback(T)     XK_CAT(xk_PUBLIC_vector_pushback_, T)
+#define xkvectoremplacefront(T) XK_CAT(xk_PUBLIC_vector_emplacefront_, T)
+#define xkvectoremplaceback(T)  XK_CAT(xk_PUBLIC_vector_emplaceback_, T)
 #define xkvectorappend(T)       XK_CAT(xk_PUBLIC_vector_append_, T)
-#define xkvectorpop(T)          XK_CAT(xk_PUBLIC_vector_pop_, T)
+#define xkvectorpopfront(T)     XK_CAT(xk_PUBLIC_vector_popfront_, T)
+#define xkvectorpopback(T)      XK_CAT(xk_PUBLIC_vector_popback_, T)
 #define xkvectordata(T)         XK_CAT(xk_PUBLIC_vector_data_, T)
 #define xkvectordata_const(T)   XK_CAT(xk_PUBLIC_vector_data_const_, T)
 #define xkvectorget(T)          XK_CAT(xk_PUBLIC_vector_get_, T)
@@ -44,8 +47,8 @@
 #define xkvectorfront_const(T)  XK_CAT(xk_PUBLIC_vector_front_const_, T)
 #define xkvectorback(T)         XK_CAT(xk_PUBLIC_vector_back_, T)
 #define xkvectorback_const(T)   XK_CAT(xk_PUBLIC_vector_back_const_, T)
-#define xkvectorinsert(T)       XK_CAT(xk_PUBLIC_vector_insert_, T)
-#define xkvectorsplice(T)       XK_CAT(xk_PUBLIC_vector_splice_, T)
+#define xkvectorinsertbefore(T) XK_CAT(xk_PUBLIC_vector_insertbefore_, T)
+#define xkvectorinsertafter(T)  XK_CAT(xk_PUBLIC_vector_insertafter_, T)
 #define xkvectorerase(T)        XK_CAT(xk_PUBLIC_vector_erase_, T)
 #define xkvectorcutout(T)       XK_CAT(xk_PUBLIC_vector_cutout_, T)
 #define xkvectoroverwrite(T)    XK_CAT(xk_PUBLIC_vector_overwrite_, T)
@@ -84,10 +87,13 @@
     ATTR void xkvectorreserve(T)(xkvector(T)* me, size_t cap); \
     ATTR void xkvectorresize(T)(xkvector(T)* me, size_t n); \
     ATTR void xkvectorshrink(T)(xkvector(T)* me); \
-    ATTR void xkvectorpush(T)(xkvector(T)* me, T e); \
-    ATTR T* xkvectoremplace(T)(xkvector(T)* me); \
+    ATTR void xkvectorpushfront(T)(xkvector(T)* me, T e); \
+    ATTR void xkvectorpushback(T)(xkvector(T)* me, T e); \
+    ATTR T* xkvectoremplacefront(T)(xkvector(T)* me); \
+    ATTR T* xkvectoremplaceback(T)(xkvector(T)* me); \
     ATTR void xkvectorappend(T)(xkvector(T)* me, const T* p, size_t n); \
-    ATTR void xkvectorpop(T)(xkvector(T)* me); \
+    ATTR void xkvectorpopfront(T)(xkvector(T)* me); \
+    ATTR void xkvectorpopback(T)(xkvector(T)* me); \
     ATTR T* xkvectordata(T)(xkvector(T)* me); \
     ATTR const T* xkvectordata_const(T)(const xkvector(T)* me); \
     ATTR T xkvectorget(T)(const xkvector(T)* me, size_t i); \
@@ -98,8 +104,8 @@
     ATTR const T* xkvectorfront_const(T)(const xkvector(T)* me); \
     ATTR T* xkvectorback(T)(xkvector(T)* me); \
     ATTR const T* xkvectorback_const(T)(const xkvector(T)* me); \
-    ATTR void xkvectorinsert(T)(xkvector(T)* me, size_t i, T e); \
-    ATTR void xkvectorsplice(T)(xkvector(T)* me, size_t i, const T* p, size_t n); \
+    ATTR void xkvectorinsertbefore(T)(xkvector(T)* me, size_t i, T e); \
+    ATTR void xkvectorinsertafter(T)(xkvector(T)* me, size_t i, T e); \
     ATTR void xkvectorerase(T)(xkvector(T)* me, size_t i); \
     ATTR void xkvectorcutout(T)(xkvector(T)* me, size_t i, size_t n); \
     ATTR void xkvectoroverwrite(T)(xkvector(T)* me, size_t i, const T* p, size_t n); \
@@ -178,13 +184,24 @@
             me->capacity = me->size; \
         } \
     } \
-    ATTR void xkvectorpush(T)(xkvector(T)* me, T e) \
+    ATTR void xkvectorpushfront(T)(xkvector(T)* me, T e) \
+    { \
+        *xkvectoremplacefront(T)(me) = e; \
+    } \
+    ATTR void xkvectorpushback(T)(xkvector(T)* me, T e) \
+    { \
+        *xkvectoremplaceback(T)(me) = e; \
+    } \
+    ATTR T* xkvectoremplacefront(T)(xkvector(T)* me) \
     { \
         if (me->size == me->capacity) \
             xkvectorreserve(T)(me, me->size + 1); \
-        me->data[me->size++] = e; \
+        if (me->size) \
+            memmove(&me->data[1], &me->data[0], me->size * sizeof(T)); \
+        ++me->size; \
+        return &me->data[0]; \
     } \
-    ATTR T* xkvectoremplace(T)(xkvector(T)* me) \
+    ATTR T* xkvectoremplaceback(T)(xkvector(T)* me) \
     { \
         if (me->size == me->capacity) \
             xkvectorreserve(T)(me, me->size + 1); \
@@ -209,7 +226,14 @@
         me->size += n; \
         if (tmp) xkfree(tmp); \
     } \
-    ATTR void xkvectorpop(T)(xkvector(T)* me) \
+    ATTR void xkvectorpopfront(T)(xkvector(T)* me) \
+    { \
+        xkassert(me->size > 0); \
+        if (me->size > 1) \
+            memmove(&me->data[0], &me->data[1], (me->size - 1) * sizeof(T)); \
+        --me->size; \
+    } \
+    ATTR void xkvectorpopback(T)(xkvector(T)* me) \
     { \
         xkassert(me->size > 0); \
         --me->size; \
@@ -262,7 +286,7 @@
         xkassert(me->size > 0); \
         return &me->data[me->size - 1]; \
     } \
-    ATTR void xkvectorinsert(T)(xkvector(T)* me, size_t i, T e) \
+    ATTR void xkvectorinsertbefore(T)(xkvector(T)* me, size_t i, T e) \
     { \
         xkassert(i <= me->size); \
         if (me->size == me->capacity) \
@@ -271,26 +295,11 @@
         me->data[i] = e; \
         me->size++; \
     } \
-    ATTR void xkvectorsplice(T)(xkvector(T)* me, size_t i, const T* p, size_t n) \
+    ATTR void xkvectorinsertafter(T)(xkvector(T)* me, size_t i, T e) \
     { \
-        xkassert(i <= me->size); \
-        if (n == 0) return; \
-        if (n > (size_t)-1 / sizeof(T) || n > (size_t)-1 - me->size) \
-            xkabort(); \
-        T* tmp = NULL; \
-        if (XK_PRIVATE_VECTOR_OVERLAPPING(me, p, n)) \
-        { \
-            tmp = (T*)xkrealloc(NULL, n * sizeof(T)); \
-            if (!tmp) xkabort(); \
-            memcpy(tmp, p, n * sizeof(T)); \
-            p = tmp; \
-        } \
-        if (me->size + n > me->capacity) \
-            xkvectorreserve(T)(me, me->size + n); \
-        memmove(&me->data[i + n], &me->data[i], (me->size - i) * sizeof(T)); \
-        memcpy(&me->data[i], p, n * sizeof(T)); \
-        me->size += n; \
-        if (tmp) xkfree(tmp); \
+        xkassert(i < me->size); \
+        size_t pos = i + 1; \
+        xkvectorinsertbefore(T)(me, pos, e); \
     } \
     ATTR void xkvectorerase(T)(xkvector(T)* me, size_t i) \
     { \
