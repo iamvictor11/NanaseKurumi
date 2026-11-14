@@ -85,7 +85,7 @@ static inline void xkstringappend(xkstring* me, const char* p, size_t n)
     if (n == 0) return;
     if (n > (size_t)-1 - me->size) xkabort();
     char* tmp = NULL;
-    if (XK_STRING_OVERLAPPING(me, p, n))
+    if (XK_PRIVATE_STRING_OVERLAPPING(me, p, n))
     {
         tmp = (char*)xkrealloc(NULL, n);
         if (!tmp) xkabort();
@@ -165,7 +165,7 @@ static inline void xkstringsplice(xkstring* me, size_t i, const char* p, size_t 
     if (n == 0) return;
     if (n > (size_t)-1 - me->size) xkabort();
     char* tmp = NULL;
-    if (XK_STRING_OVERLAPPING(me, p, n))
+    if (XK_PRIVATE_STRING_OVERLAPPING(me, p, n))
     {
         tmp = (char*)xkrealloc(NULL, n);
         if (!tmp) xkabort();
@@ -201,7 +201,7 @@ static inline void xkstringoverwrite(xkstring* me, size_t i, const char* p, size
     if (n == 0) return;
     if (n > (size_t)-1 - i) xkabort();
     char* tmp = NULL;
-    if (XK_STRING_OVERLAPPING(me, p, n))
+    if (XK_PRIVATE_STRING_OVERLAPPING(me, p, n))
     {
         tmp = (char*)xkrealloc(NULL, n);
         if (!tmp) xkabort();
@@ -227,7 +227,7 @@ static inline void xkstringassign(xkstring* me, const char* p, size_t n)
         return;
     }
     char* tmp = NULL;
-    if (XK_STRING_OVERLAPPING(me, p, n))
+    if (XK_PRIVATE_STRING_OVERLAPPING(me, p, n))
     {
         tmp = (char*)xkrealloc(NULL, n);
         if (!tmp) xkabort();
