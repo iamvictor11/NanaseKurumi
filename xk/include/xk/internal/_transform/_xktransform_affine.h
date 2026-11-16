@@ -11,16 +11,20 @@
 #include "_xktransform_quat.h"
 
 // MARK: name
-#define xkmat4x4translation(T)          XK_CAT(xk_PUBLIC_mat4x4_translation_, T)
-#define xkmat4x4scaling(T)              XK_CAT(xk_PUBLIC_mat4x4_scaling_, T)
-#define xkmat4x4rotationx(T)            XK_CAT(xk_PUBLIC_mat4x4_rotationx_, T)
-#define xkmat4x4rotationy(T)            XK_CAT(xk_PUBLIC_mat4x4_rotationy_, T)
-#define xkmat4x4rotationz(T)            XK_CAT(xk_PUBLIC_mat4x4_rotationz_, T)
-#define xkmat4x4rotationaxis(T)         XK_CAT(xk_PUBLIC_mat4x4_rotationaxis_, T)
-#define xkmat4x4rotationquat(T)         XK_CAT(xk_PUBLIC_mat4x4_rotationquat_, T)
-#define xkmat4x4rotationyawpitchroll(T) XK_CAT(xk_PUBLIC_mat4x4_rotationyawpitchroll_, T)
-#define xkmat4x4transformvector(T)      XK_CAT(xk_PUBLIC_mat4x4_transformvector_, T)
-#define xkmat4x4transformpoint(T)       XK_CAT(xk_PUBLIC_mat4x4_transformpoint_, T)
+#define xkmat4x4translation(T)      XK_CAT(xk_PUBLIC_mat4x4_translation_, T)
+#define xkmat4x4scaling(T)          XK_CAT(xk_PUBLIC_mat4x4_scaling_, T)
+#define xkmat4x4rotationx(T)        XK_CAT(xk_PUBLIC_mat4x4_rotationx_, T)
+#define xkmat4x4rotationy(T)        XK_CAT(xk_PUBLIC_mat4x4_rotationy_, T)
+#define xkmat4x4rotationz(T)        XK_CAT(xk_PUBLIC_mat4x4_rotationz_, T)
+#define xkmat4x4rotationaxis(T)     XK_CAT(xk_PUBLIC_mat4x4_rotationaxis_, T)
+#define xkmat4x4orientation(T)      XK_CAT(xk_PUBLIC_mat4x4_orientation_, T)
+#define xkmat4x4yawpitchroll(T)     XK_CAT(xk_PUBLIC_mat4x4_yawpitchroll_, T)
+#define xkmat4x4transformvector(T)  XK_CAT(xk_PUBLIC_mat4x4_transformvector_, T)
+#define xkmat4x4transformpoint(T)   XK_CAT(xk_PUBLIC_mat4x4_transformpoint_, T)
+#define xkmat4x4translate(T)        XK_CAT(xk_PUBLIC_mat4x4_translate_, T)
+#define xkmat4x4rotate(T)           XK_CAT(xk_PUBLIC_mat4x4_rotate_, T)
+#define xkmat4x4orient(T)           XK_CAT(xk_PUBLIC_mat4x4_orient_, T)
+#define xkmat4x4scale(T)            XK_CAT(xk_PUBLIC_mat4x4_scale_, T)
 
 // MARK: impl
 #define XK_PRIVATE_TRANSFORM_MAT4_AFFINE_IMPL(T, ATTR, SIN, COS) \
@@ -91,11 +95,11 @@
         r.arr[2][1] = k * n.y * n.z - s * n.x; \
         return r; \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4rotationquat(T)(xkquat(T) q) \
+    ATTR xkmat(4, 4, T) xkmat4x4orientation(T)(xkquat(T) q) \
     { \
         return xkquattomat4(T)(q); \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4rotationyawpitchroll(T)(T yaw, T pitch, T roll) \
+    ATTR xkmat(4, 4, T) xkmat4x4yawpitchroll(T)(T yaw, T pitch, T roll) \
     { \
         xkquat(T) q = xkquatfromyawpitchroll(T)(yaw, pitch, roll); \
         return xkquattomat4(T)(q); \
@@ -126,6 +130,26 @@
                 + v.z * me->arr[2][j] + me->arr[3][j]; \
         } \
         return r; \
+    } \
+    ATTR xkmat(4, 4, T) xkmat4x4translate(T)(const xkmat(4, 4, T)* me, xkvec(3, T) t) \
+    { \
+        xkmat(4, 4, T) x = xkmat4x4translation(T)(t); \
+        return xkmat4x4mul4x4(T)(&x, me); \
+    } \
+    ATTR xkmat(4, 4, T) xkmat4x4rotate(T)(const xkmat(4, 4, T)* me, xkvec(3, T) axis, T angle) \
+    { \
+        xkmat(4, 4, T) x = xkmat4x4rotationaxis(T)(axis, angle); \
+        return xkmat4x4mul4x4(T)(&x, me); \
+    } \
+    ATTR xkmat(4, 4, T) xkmat4x4orient(T)(const xkmat(4, 4, T)* me, xkquat(T) q) \
+    { \
+        xkmat(4, 4, T) x = xkmat4x4orientation(T)(q); \
+        return xkmat4x4mul4x4(T)(&x, me); \
+    } \
+    ATTR xkmat(4, 4, T) xkmat4x4scale(T)(const xkmat(4, 4, T)* me, xkvec(3, T) s) \
+    { \
+        xkmat(4, 4, T) x = xkmat4x4scaling(T)(s); \
+        return xkmat4x4mul4x4(T)(&x, me); \
     }
 
 // MARK: instantiate
