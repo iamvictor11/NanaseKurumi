@@ -18,7 +18,7 @@ function(target_setup TARGET_NAME)
     )
     target_sources(${TARGET_NAME}
     PRIVATE
-        # "${CMAKE_CURRENT_SOURCE_DIR}/src/xk.impl.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/xk_impl.c"
     )
     target_link_libraries(${TARGET_NAME}
     PUBLIC
@@ -51,3 +51,4 @@ function(target_setup TARGET_NAME)
 endfunction()
 
 target_setup(01_vector)
+target_setup(06_dialog)

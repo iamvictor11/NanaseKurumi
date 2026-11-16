@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef XK_XKCONF_H
-#define XK_XKCONF_H
+#ifndef XK_INTERNAL__XKCONF_H
+#define XK_INTERNAL__XKCONF_H
 
 #ifndef xkrealloc
 #define xkrealloc   realloc

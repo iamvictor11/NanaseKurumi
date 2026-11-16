@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef XK_XKCOMPARE_H
-#define XK_XKCOMPARE_H
+#ifndef XK_INTERNAL__XKCOMPARE_H
+#define XK_INTERNAL__XKCOMPARE_H
 
 #ifndef XK_CAT
 #define XK_CAT_(a, b)   a##b
