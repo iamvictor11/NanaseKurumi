@@ -159,8 +159,12 @@
         xkmat(4, 4, T) x = xkmat4x4shearing(T)(s); \
         return xkmat4x4mul4x4(T)(&x, me); \
     } \
-    ATTR bool xkmat4x4decompose(T)(const xkmat(4, 4, T)* me, xkvec(3, T)* translation, xkquat(T)* rotation, xkvec(3, T)* scale, xkvec(3, T)* skew, xkvec(4, T)* perspective) \
+    ATTR bool xkmat4x4decompose(T)(const xkmat(4, 4, T)* me, xkvec(3, T)* translation, xkquat(T)* orientation, xkvec(3, T)* scale, xkvec(3, T)* skew, xkvec(4, T)* perspective) \
     { \
+        if (translation == NULL || orientation == NULL || scale == NULL || skew == NULL || perspective == NULL) \
+            return false; \
+        if (me->arr[3][3] < (T)EPS && me->arr[3][3] > -(T)EPS) \
+            return false; \
         xkmat(3, 3, T) a; \
         xkmat(3, 3, T) ai; \
         xkvec(3, T) r0; \
@@ -181,17 +185,11 @@
         T eps2; \
         T pw; \
         int i, j; \
-        if (translation == NULL || rotation == NULL || scale == NULL || skew == NULL || perspective == NULL) \
-            return false; \
-        if (me->arr[3][3] < (T)EPS && me->arr[3][3] > -(T)EPS) \
-            return false; \
         invw = (T)1 / me->arr[3][3]; \
         eps2 = (T)EPS * (T)EPS; \
         for (i = 0; i < 3; ++i) \
-        { \
             for (j = 0; j < 3; ++j) \
                 a.arr[i][j] = me->arr[i][j] * invw; \
-        } \
         r0 = xkvec3make(T)(a.arr[0][0], a.arr[0][1], a.arr[0][2]); \
         r1 = xkvec3make(T)(a.arr[1][0], a.arr[1][1], a.arr[1][2]); \
         r2 = xkvec3make(T)(a.arr[2][0], a.arr[2][1], a.arr[2][2]); \
@@ -259,15 +257,12 @@
         *translation = tr; \
         *scale = xkvec3make(T)(sx, sy, sz); \
         *skew = xkvec3make(T)(sxy, sxz, syz); \
-        *rotation = xkquatfrommat3(T)(&a); \
+        *orientation = xkquatfrommat3(T)(&a); \
         return true; \
     }
 
 // MARK: instantiate
-#define XK_PRIVATE_TRANSFORM_INSTALL_MAT4_AFFINE(T, ATTR, SIN, COS, EPS) \
-    XK_PRIVATE_TRANSFORM_MAT4_AFFINE_IMPL(T, ATTR, SIN, COS, EPS)
-
-XK_PRIVATE_TRANSFORM_INSTALL_MAT4_AFFINE(float, static inline, sinf, cosf, 1e-6f)
-XK_PRIVATE_TRANSFORM_INSTALL_MAT4_AFFINE(double, static inline, sin, cos, 1e-12)
+XK_PRIVATE_TRANSFORM_MAT4_AFFINE_IMPL(float, static inline, sinf, cosf, 1e-6f)
+XK_PRIVATE_TRANSFORM_MAT4_AFFINE_IMPL(double, static inline, sin, cos, 1e-12)
 
 #endif

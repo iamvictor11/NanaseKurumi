@@ -7,7 +7,6 @@
 #include "../_xkconf.h"
 #include "../_xkmath.h"
 #include <stddef.h>
-#include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
 

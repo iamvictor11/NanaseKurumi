@@ -186,10 +186,8 @@
     { \
         int i; \
         for (i = 0; i < (N); ++i) \
-        { \
             if (a.arr[i] != b.arr[i]) \
                 return false; \
-        } \
         return true; \
     } \
     ATTR T XK_PRIVATE_TRANSFORM_VEC_FN(N, _dot_, T)(xkvec(N, T) a, xkvec(N, T) b) \

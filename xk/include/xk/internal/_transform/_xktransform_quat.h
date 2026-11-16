@@ -325,10 +325,7 @@
     }
 
 // MARK: instantiate
-#define XK_PRIVATE_TRANSFORM_INSTALL_QUAT(T, ATTR, SQRT, SIN, COS, ACOS, EPS) \
-    XK_PRIVATE_TRANSFORM_QUAT_IMPL(T, ATTR, SQRT, SIN, COS, ACOS, EPS)
-
-XK_PRIVATE_TRANSFORM_INSTALL_QUAT(float, static inline, sqrtf, sinf, cosf, acosf, 1e-6f)
-XK_PRIVATE_TRANSFORM_INSTALL_QUAT(double, static inline, sqrt, sin, cos, acos, 1e-12)
+XK_PRIVATE_TRANSFORM_QUAT_IMPL(float, static inline, sqrtf, sinf, cosf, acosf, 1e-6f)
+XK_PRIVATE_TRANSFORM_QUAT_IMPL(double, static inline, sqrt, sin, cos, acos, 1e-12)
 
 #endif
