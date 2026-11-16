@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef XK_INTERNAL__XKTRANSFORM_COMMON_H
-#define XK_INTERNAL__XKTRANSFORM_COMMON_H
+#ifndef XK_INTERNAL__TRANSFORM__XKTRANSFORM_COMMON_H
+#define XK_INTERNAL__TRANSFORM__XKTRANSFORM_COMMON_H
 
 #include "../_xkconf.h"
 #include "../_xkmath.h"

@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef XK_INTERNAL__XKTRANSFORM_MAT_H
-#define XK_INTERNAL__XKTRANSFORM_MAT_H
+#ifndef XK_INTERNAL__TRANSFORM__XKTRANSFORM_MAT_H
+#define XK_INTERNAL__TRANSFORM__XKTRANSFORM_MAT_H
 
 #include "_xktransform_common.h"
 #include "_xktransform_type.h"
@@ -140,11 +140,7 @@
         } \
         return r; \
     } \
-    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _add_, T) \
-    ( \
-        const xkmat(R, C, T)* a, \
-        const xkmat(R, C, T)* b \
-    ) \
+    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _add_, T)(const xkmat(R, C, T)* a, const xkmat(R, C, T)* b) \
     { \
         xkmat(R, C, T) r; \
         int i, j; \
@@ -155,11 +151,7 @@
         } \
         return r; \
     } \
-    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _sub_, T) \
-    ( \
-        const xkmat(R, C, T)* a, \
-        const xkmat(R, C, T)* b \
-    ) \
+    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _sub_, T)(const xkmat(R, C, T)* a, const xkmat(R, C, T)* b) \
     { \
         xkmat(R, C, T) r; \
         int i, j; \
@@ -170,11 +162,7 @@
         } \
         return r; \
     } \
-    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _scale_, T) \
-    ( \
-        const xkmat(R, C, T)* me, \
-        T s \
-    ) \
+    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _scale_, T)(const xkmat(R, C, T)* me, T s) \
     { \
         xkmat(R, C, T) r; \
         int i, j; \
@@ -185,10 +173,7 @@
         } \
         return r; \
     } \
-    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _negate_, T) \
-    ( \
-        const xkmat(R, C, T)* me \
-    ) \
+    ATTR xkmat(R, C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _negate_, T)(const xkmat(R, C, T)* me) \
     { \
         xkmat(R, C, T) r; \
         int i, j; \
@@ -199,10 +184,7 @@
         } \
         return r; \
     } \
-    ATTR xkmat(C, R, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _transpose_, T) \
-    ( \
-        const xkmat(R, C, T)* me \
-    ) \
+    ATTR xkmat(C, R, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _transpose_, T)(const xkmat(R, C, T)* me) \
     { \
         xkmat(C, R, T) r; \
         int i, j; \
@@ -213,11 +195,7 @@
         } \
         return r; \
     } \
-    ATTR xkvec(C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _mulvec_, T) \
-    ( \
-        const xkmat(R, C, T)* me, \
-        xkvec(R, T) v \
-    ) \
+    ATTR xkvec(C, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _mulvec_, T)(const xkmat(R, C, T)* me, xkvec(R, T) v) \
     { \
         xkvec(C, T) r; \
         int i, j; \
@@ -230,11 +208,7 @@
         } \
         return r; \
     } \
-    ATTR xkvec(R, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _vecmul_, T) \
-    ( \
-        const xkmat(R, C, T)* me, \
-        xkvec(C, T) v \
-    ) \
+    ATTR xkvec(R, T) XK_PRIVATE_TRANSFORM_MAT_FN(R, C, _vecmul_, T)(const xkmat(R, C, T)* me, xkvec(C, T) v) \
     { \
         xkvec(R, T) r; \
         int i, j; \
@@ -263,11 +237,7 @@
 
 #define XK_PRIVATE_TRANSFORM_MAT_MUL_IMPL(R, C, K, T, ATTR) \
     ATTR xkmat(R, K, T) \
-    XK_PRIVATE_TRANSFORM_MAT_MUL_FN(R, C, K, T) \
-    ( \
-        const xkmat(R, C, T)* a, \
-        const xkmat(C, K, T)* b \
-    ) \
+    XK_PRIVATE_TRANSFORM_MAT_MUL_FN(R, C, K, T)(const xkmat(R, C, T)* a, const xkmat(C, K, T)* b) \
     { \
         xkmat(R, K, T) r; \
         int i, j, k; \
@@ -333,10 +303,7 @@
         } \
         return d; \
     } \
-    ATTR xkmat(N, N, T) XK_PRIVATE_TRANSFORM_MAT_FN(N, N, _inverse_, T) \
-    ( \
-        const xkmat(N, N, T)* me \
-    ) \
+    ATTR xkmat(N, N, T) XK_PRIVATE_TRANSFORM_MAT_FN(N, N, _inverse_, T)(const xkmat(N, N, T)* me) \
     { \
         T a[N][2 * (N)]; \
         xkmat(N, N, T) r; \

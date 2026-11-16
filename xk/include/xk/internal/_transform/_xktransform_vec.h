@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 廖宇康(夏空真宇/iamvictor)
 // License: MIT (see LICENSE)
-#ifndef XK_INTERNAL__XKTRANSFORM_VEC_H
-#define XK_INTERNAL__XKTRANSFORM_VEC_H
+#ifndef XK_INTERNAL__TRANSFORM__XKTRANSFORM_VEC_H
+#define XK_INTERNAL__TRANSFORM__XKTRANSFORM_VEC_H
 
 #include "_xktransform_common.h"
 #include "_xktransform_type.h"
@@ -108,11 +108,7 @@
             r.arr[i] = v; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _add_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _add_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -120,11 +116,7 @@
             r.arr[i] = a.arr[i] + b.arr[i]; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _sub_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _sub_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -132,11 +124,7 @@
             r.arr[i] = a.arr[i] - b.arr[i]; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _mul_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _mul_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -144,11 +132,7 @@
             r.arr[i] = a.arr[i] * b.arr[i]; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _div_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _div_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -156,11 +140,7 @@
             r.arr[i] = a.arr[i] / b.arr[i]; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _scale_, T) \
-    ( \
-        xkvec(N, T) me, \
-        T s \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _scale_, T)(xkvec(N, T) me, T s) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -179,11 +159,7 @@
             r.arr[i] = -me.arr[i]; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _min_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _min_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -191,11 +167,7 @@
             r.arr[i] = a.arr[i] < b.arr[i] ? a.arr[i] : b.arr[i]; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _max_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _max_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -203,12 +175,7 @@
             r.arr[i] = a.arr[i] > b.arr[i] ? a.arr[i] : b.arr[i]; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _clamp_, T) \
-    ( \
-        xkvec(N, T) me, \
-        xkvec(N, T) lo, \
-        xkvec(N, T) hi \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _clamp_, T)(xkvec(N, T) me, xkvec(N, T) lo, xkvec(N, T) hi) \
     { \
         xkvec(N, T) r; \
         int i; \
@@ -218,11 +185,7 @@
                 : (me.arr[i] > hi.arr[i] ? hi.arr[i] : me.arr[i]); \
         return r; \
     } \
-    ATTR bool XK_PRIVATE_TRANSFORM_VEC_FN(N, _equals_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR bool XK_PRIVATE_TRANSFORM_VEC_FN(N, _equals_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         int i; \
         for (i = 0; i < (N); ++i) \
@@ -232,11 +195,7 @@
         } \
         return true; \
     } \
-    ATTR T XK_PRIVATE_TRANSFORM_VEC_FN(N, _dot_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR T XK_PRIVATE_TRANSFORM_VEC_FN(N, _dot_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         T r = (T)0; \
         int i; \
@@ -253,11 +212,7 @@
         T lensq = XK_PRIVATE_TRANSFORM_VEC_FN(N, _lengthsq_, T)(me); \
         return (T)SQRT(lensq); \
     } \
-    ATTR T XK_PRIVATE_TRANSFORM_VEC_FN(N, _distancesq_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR T XK_PRIVATE_TRANSFORM_VEC_FN(N, _distancesq_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         T r = (T)0; \
         T d; \
@@ -269,19 +224,12 @@
         } \
         return r; \
     } \
-    ATTR T XK_PRIVATE_TRANSFORM_VEC_FN(N, _distance_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b \
-    ) \
+    ATTR T XK_PRIVATE_TRANSFORM_VEC_FN(N, _distance_, T)(xkvec(N, T) a, xkvec(N, T) b) \
     { \
         T dsq = XK_PRIVATE_TRANSFORM_VEC_FN(N, _distancesq_, T)(a, b); \
         return (T)SQRT(dsq); \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _normalize_, T) \
-    ( \
-        xkvec(N, T) me \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _normalize_, T)(xkvec(N, T) me) \
     { \
         T lensq = XK_PRIVATE_TRANSFORM_VEC_FN(N, _lengthsq_, T)(me); \
         T len; \
@@ -292,12 +240,7 @@
         inv = (T)1 / len; \
         return XK_PRIVATE_TRANSFORM_VEC_FN(N, _scale_, T)(me, inv); \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _lerp_, T) \
-    ( \
-        xkvec(N, T) a, \
-        xkvec(N, T) b, \
-        T t \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _lerp_, T)(xkvec(N, T) a, xkvec(N, T) b, T t) \
     { \
         xkvec(N, T) r; \
         int i; \
