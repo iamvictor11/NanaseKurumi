@@ -24,8 +24,8 @@
 #define XK_PRIVATE_HASHMAP_NAME(NAME, K, V) \
     XK_CAT(XK_CAT(NAME, K), XK_CAT(_, V))
 
-#define xkhashmap(K, V)             XK_PRIVATE_HASHMAP_NAME(xk_DETAIL_hashmap_, K, V)
-#define xkhashmapentry(K, V)        XK_PRIVATE_HASHMAP_NAME(xk_DETAIL_hashmap_entry_, K, V)
+#define xkhashmap(K, V)             XK_PRIVATE_HASHMAP_NAME(xkhashmap_, K, V)
+#define xkhashmapentry(K, V)        XK_PRIVATE_HASHMAP_NAME(xkhashmapentry_, K, V)
 #define xkhashmapinit(K, V)         XK_PRIVATE_HASHMAP_NAME(xk_PUBLIC_hashmap_init_, K, V)
 #define xkhashmapfree(K, V)         XK_PRIVATE_HASHMAP_NAME(xk_PUBLIC_hashmap_free_, K, V)
 #define xkhashmapreserve(K, V)      XK_PRIVATE_HASHMAP_NAME(xk_PUBLIC_hashmap_reserve_, K, V)

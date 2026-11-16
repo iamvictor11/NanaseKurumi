@@ -69,7 +69,7 @@ static inline XK_BITSET_WORD xk_PRIVATE_bitset_mask(size_t lo, size_t hi)
     return left & right;
 }
 
-#define xkbitset(N)             XK_CAT(xk_DETAIL_bitset_, N)
+#define xkbitset(N)             XK_CAT(xkbitset_, N)
 #define xkbitsetget(N)          XK_CAT(xk_PUBLIC_bitset_get_, N)
 #define xkbitsetset(N)          XK_CAT(xk_PUBLIC_bitset_set_, N)
 #define xkbitsetreset(N)        XK_CAT(xk_PUBLIC_bitset_reset_, N)

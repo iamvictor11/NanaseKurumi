@@ -20,8 +20,8 @@
 #define XK_PRIVATE_FLATMAP_NAME(NAME, K, V) \
     XK_CAT(XK_CAT(NAME, K), XK_CAT(_, V))
 
-#define xkflatmap(K, V)             XK_PRIVATE_FLATMAP_NAME(xk_DETAIL_flatmap_, K, V)
-#define xkflatmapentry(K, V)        XK_PRIVATE_FLATMAP_NAME(xk_DETAIL_flatmap_entry_, K, V)
+#define xkflatmap(K, V)             XK_PRIVATE_FLATMAP_NAME(xkflatmap_, K, V)
+#define xkflatmapentry(K, V)        XK_PRIVATE_FLATMAP_NAME(xkflatmap_entry_, K, V)
 #define xkflatmapinit(K, V)         XK_PRIVATE_FLATMAP_NAME(xk_PUBLIC_flatmap_init_, K, V)
 #define xkflatmapfree(K, V)         XK_PRIVATE_FLATMAP_NAME(xk_PUBLIC_flatmap_free_, K, V)
 #define xkflatmapreserve(K, V)      XK_PRIVATE_FLATMAP_NAME(xk_PUBLIC_flatmap_reserve_, K, V)

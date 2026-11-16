@@ -22,9 +22,9 @@
     (uintptr_t)(P) < (uintptr_t)((ME)->data) + (ME)->size * sizeof(*(ME)->data) && \
     (uintptr_t)(P) + (uintptr_t)(N) * sizeof(*(ME)->data) > (uintptr_t)((ME)->data))
 
-#define xkvector(T)             XK_CAT(xk_DETAIL_vector_, T)
-#define xkview(T)               XK_CAT(xk_DETAIL_view_, T)
-#define xkspan(T)               XK_CAT(xk_DETAIL_span_, T)
+#define xkvector(T)             XK_CAT(xkvector_, T)
+#define xkview(T)               XK_CAT(xkview_, T)
+#define xkspan(T)               XK_CAT(xkspan_, T)
 #define xkvectorinit(T)         XK_CAT(xk_PUBLIC_vector_init_, T)
 #define xkvectorfree(T)         XK_CAT(xk_PUBLIC_vector_free_, T)
 #define xkvectorreserve(T)      XK_CAT(xk_PUBLIC_vector_reserve_, T)
