@@ -148,10 +148,7 @@
             r.arr[i] = me.arr[i] * s; \
         return r; \
     } \
-    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _negate_, T) \
-    ( \
-        xkvec(N, T) me \
-    ) \
+    ATTR xkvec(N, T) XK_PRIVATE_TRANSFORM_VEC_FN(N, _negate_, T)(xkvec(N, T) me) \
     { \
         xkvec(N, T) r; \
         int i; \

@@ -24,6 +24,7 @@
 #define xkmat4x4orthographicrhgl(T)   XK_CAT(xk_PUBLIC_mat4x4_orthographicrhgl_, T)
 #define xkmat4x4orthographiclh(T)     XK_CAT(xk_PUBLIC_mat4x4_orthographiclh_, T)
 #define xkmat4x4orthographiclhgl(T)   XK_CAT(xk_PUBLIC_mat4x4_orthographiclhgl_, T)
+#define xkmat4x4perspective(T)        XK_CAT(xk_PUBLIC_mat4x4_perspective_, T)
 
 // MARK: impl
 #define XK_PRIVATE_TRANSFORM_MAT4_PROJECT_IMPL(T, ATTR, SIN, COS) \
@@ -201,6 +202,12 @@
         r.arr[3][1] = -(top + bottom) / (top - bottom); \
         r.arr[3][2] = -(zfar + znear) / (zfar - znear); \
         r.arr[3][3] = (T)1; \
+        return r; \
+    } \
+    ATTR xkmat(4, 4, T) xkmat4x4perspective(T)(T distance) \
+    { \
+        xkmat(4, 4, T) r = xkmat4x4identity(T)(); \
+        r.arr[2][3] = (T)-1 / distance; \
         return r; \
     }
 
