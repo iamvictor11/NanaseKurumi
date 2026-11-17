@@ -10,20 +10,20 @@
 #include "_xktransform_mat.h"
 
 // MARK: name
-#define xkmat4x4lookatrh(T)           XK_CAT(xk_PUBLIC_mat4x4_lookatrh_, T)
-#define xkmat4x4lookatlh(T)           XK_CAT(xk_PUBLIC_mat4x4_lookatlh_, T)
-#define xkmat4x4frustumrh(T)          XK_CAT(xk_PUBLIC_mat4x4_frustumrh_, T)
-#define xkmat4x4frustumrhgl(T)        XK_CAT(xk_PUBLIC_mat4x4_frustumrhgl_, T)
-#define xkmat4x4frustumlh(T)          XK_CAT(xk_PUBLIC_mat4x4_frustumlh_, T)
-#define xkmat4x4frustumlhgl(T)        XK_CAT(xk_PUBLIC_mat4x4_frustumlhgl_, T)
-#define xkmat4x4perspectivefovrh(T)   XK_CAT(xk_PUBLIC_mat4x4_perspectivefovrh_, T)
-#define xkmat4x4perspectivefovrhgl(T) XK_CAT(xk_PUBLIC_mat4x4_perspectivefovrhgl_, T)
-#define xkmat4x4perspectivefovlh(T)   XK_CAT(xk_PUBLIC_mat4x4_perspectivefovlh_, T)
-#define xkmat4x4perspectivefovlhgl(T) XK_CAT(xk_PUBLIC_mat4x4_perspectivefovlhgl_, T)
-#define xkmat4x4orthographicrh(T)     XK_CAT(xk_PUBLIC_mat4x4_orthographicrh_, T)
-#define xkmat4x4orthographicrhgl(T)   XK_CAT(xk_PUBLIC_mat4x4_orthographicrhgl_, T)
-#define xkmat4x4orthographiclh(T)     XK_CAT(xk_PUBLIC_mat4x4_orthographiclh_, T)
-#define xkmat4x4orthographiclhgl(T)   XK_CAT(xk_PUBLIC_mat4x4_orthographiclhgl_, T)
+#define xkmat4x4lookatRH(T)           XK_CAT(xk_PUBLIC_mat4x4_lookatRH_, T)
+#define xkmat4x4lookatLH(T)           XK_CAT(xk_PUBLIC_mat4x4_lookatLH_, T)
+#define xkmat4x4frustumRH(T)          XK_CAT(xk_PUBLIC_mat4x4_frustumRH_, T)
+#define xkmat4x4frustumRHgl(T)        XK_CAT(xk_PUBLIC_mat4x4_frustumRHgl_, T)
+#define xkmat4x4frustumLH(T)          XK_CAT(xk_PUBLIC_mat4x4_frustumLH_, T)
+#define xkmat4x4frustumLHgl(T)        XK_CAT(xk_PUBLIC_mat4x4_frustumLHgl_, T)
+#define xkmat4x4perspectivefovRH(T)   XK_CAT(xk_PUBLIC_mat4x4_perspectivefovRH_, T)
+#define xkmat4x4perspectivefovRHgl(T) XK_CAT(xk_PUBLIC_mat4x4_perspectivefovRHgl_, T)
+#define xkmat4x4perspectivefovLH(T)   XK_CAT(xk_PUBLIC_mat4x4_perspectivefovLH_, T)
+#define xkmat4x4perspectivefovLHgl(T) XK_CAT(xk_PUBLIC_mat4x4_perspectivefovLHgl_, T)
+#define xkmat4x4orthographicRH(T)     XK_CAT(xk_PUBLIC_mat4x4_orthographicRH_, T)
+#define xkmat4x4orthographicRHgl(T)   XK_CAT(xk_PUBLIC_mat4x4_orthographicRHgl_, T)
+#define xkmat4x4orthographicLH(T)     XK_CAT(xk_PUBLIC_mat4x4_orthographicLH_, T)
+#define xkmat4x4orthographicLHgl(T)   XK_CAT(xk_PUBLIC_mat4x4_orthographicLHgl_, T)
 #define xkmat4x4perspective(T)        XK_CAT(xk_PUBLIC_mat4x4_perspective_, T)
 #define xkmat4x4perspectivevec(T)     XK_CAT(xk_PUBLIC_mat4x4_perspectivevec_, T)
 
@@ -66,9 +66,9 @@
     }
 
 #define XK_PRIVATE_TRANSFORM_MAT4_PROJECT_IMPL(T, ATTR, SIN, COS) \
-    XK_PRIVATE_TRANSFORM_MAT4_LOOKAT(xkmat4x4lookatrh, T, ATTR, xkvec3sub(T)(eye, at)) \
-    XK_PRIVATE_TRANSFORM_MAT4_LOOKAT(xkmat4x4lookatlh, T, ATTR, xkvec3sub(T)(at, eye)) \
-    ATTR xkmat(4, 4, T) xkmat4x4frustumrh(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    XK_PRIVATE_TRANSFORM_MAT4_LOOKAT(xkmat4x4lookatRH, T, ATTR, xkvec3sub(T)(eye, at)) \
+    XK_PRIVATE_TRANSFORM_MAT4_LOOKAT(xkmat4x4lookatLH, T, ATTR, xkvec3sub(T)(at, eye)) \
+    ATTR xkmat(4, 4, T) xkmat4x4frustumRH(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 * znear / (right - left); \
@@ -80,7 +80,7 @@
         r.arr[3][2] = znear * zfar / (znear - zfar); \
         return r; \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4frustumrhgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    ATTR xkmat(4, 4, T) xkmat4x4frustumRHgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 * znear / (right - left); \
@@ -92,7 +92,7 @@
         r.arr[3][2] = (T)2 * znear * zfar / (znear - zfar); \
         return r; \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4frustumlh(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    ATTR xkmat(4, 4, T) xkmat4x4frustumLH(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 * znear / (right - left); \
@@ -104,7 +104,7 @@
         r.arr[3][2] = -znear * zfar / (zfar - znear); \
         return r; \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4frustumlhgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    ATTR xkmat(4, 4, T) xkmat4x4frustumLHgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 * znear / (right - left); \
@@ -116,11 +116,11 @@
         r.arr[3][2] = (T)-2 * znear * zfar / (zfar - znear); \
         return r; \
     } \
-    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovrh, xkmat4x4frustumrh, T, ATTR, SIN, COS) \
-    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovrhgl, xkmat4x4frustumrhgl, T, ATTR, SIN, COS) \
-    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovlh, xkmat4x4frustumlh, T, ATTR, SIN, COS) \
-    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovlhgl, xkmat4x4frustumlhgl, T, ATTR, SIN, COS) \
-    ATTR xkmat(4, 4, T) xkmat4x4orthographicrh(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovRH, xkmat4x4frustumRH, T, ATTR, SIN, COS) \
+    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovRHgl, xkmat4x4frustumRHgl, T, ATTR, SIN, COS) \
+    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovLH, xkmat4x4frustumLH, T, ATTR, SIN, COS) \
+    XK_PRIVATE_TRANSFORM_MAT4_PFOV(xkmat4x4perspectivefovLHgl, xkmat4x4frustumLHgl, T, ATTR, SIN, COS) \
+    ATTR xkmat(4, 4, T) xkmat4x4orthographicRH(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 / (right - left); \
@@ -132,7 +132,7 @@
         r.arr[3][3] = (T)1; \
         return r; \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4orthographicrhgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    ATTR xkmat(4, 4, T) xkmat4x4orthographicRHgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 / (right - left); \
@@ -144,7 +144,7 @@
         r.arr[3][3] = (T)1; \
         return r; \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4orthographiclh(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    ATTR xkmat(4, 4, T) xkmat4x4orthographicLH(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 / (right - left); \
@@ -156,7 +156,7 @@
         r.arr[3][3] = (T)1; \
         return r; \
     } \
-    ATTR xkmat(4, 4, T) xkmat4x4orthographiclhgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
+    ATTR xkmat(4, 4, T) xkmat4x4orthographicLHgl(T)(T left, T right, T bottom, T top, T znear, T zfar) \
     { \
         xkmat(4, 4, T) r = xkmat4x4zero(T)(); \
         r.arr[0][0] = (T)2 / (right - left); \
