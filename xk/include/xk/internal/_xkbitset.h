@@ -129,8 +129,7 @@ static inline XK_BITSET_WORD xk_PRIVATE_bitset_mask(size_t lo, size_t hi)
     ATTR int xkbitsetget(N)(const xkbitset(N)* me, size_t pos) \
     { \
         xkassert(pos < (N)); \
-        return (int)((me->words[pos / XK_PRIVATE_BITSET_WORD_WIDTH] \
-                    >> (pos % XK_PRIVATE_BITSET_WORD_WIDTH)) & 1); \
+        return (int)((me->words[pos / XK_PRIVATE_BITSET_WORD_WIDTH] >> (pos % XK_PRIVATE_BITSET_WORD_WIDTH)) & 1); \
     } \
     ATTR void xkbitsetset(N)(xkbitset(N)* me, size_t pos, int val) \
     { \
@@ -271,8 +270,7 @@ static inline XK_BITSET_WORD xk_PRIVATE_bitset_mask(size_t lo, size_t hi)
             me->words[i] = ~me->words[i]; \
         me->words[ew] ^= xk_PRIVATE_bitset_mask(0, eb); \
     } \
-    ATTR xkbitset(N) xkbitsetand(N)(const xkbitset(N)* xkrestrict a, \
-                                      const xkbitset(N)* xkrestrict b) \
+    ATTR xkbitset(N) xkbitsetand(N)(const xkbitset(N)* xkrestrict a, const xkbitset(N)* xkrestrict b) \
     { \
         xkbitset(N) r; \
         memset(&r, 0, sizeof r); \
@@ -291,8 +289,7 @@ static inline XK_BITSET_WORD xk_PRIVATE_bitset_mask(size_t lo, size_t hi)
             r.words[i] = a->words[i] | b->words[i]; \
         return r; \
     } \
-    ATTR xkbitset(N) xkbitsetxor(N)(const xkbitset(N)* xkrestrict a, \
-                                      const xkbitset(N)* xkrestrict b) \
+    ATTR xkbitset(N) xkbitsetxor(N)(const xkbitset(N)* xkrestrict a, const xkbitset(N)* xkrestrict b) \
     { \
         xkbitset(N) r; \
         memset(&r, 0, sizeof r); \
