@@ -360,10 +360,10 @@ static inline int xkcompare(xkstring)(xkstring a, xkstring b)
 }
 static inline size_t xkhash(xkstring)(xkstring v)
 {
-    constexpr uint64_t FNV_OFFSET = 0xCBF29CE484222325ull;
-    constexpr uint64_t FNV_PRIME  = 0x100000001B3ull;
+    const uint64_t FNV_OFFSET = 0xCBF29CE484222325ull;
+    const uint64_t FNV_PRIME  = 0x100000001B3ull;
 
-    uint64_t h = FNV_OFFSET ^ (uint64_t)v.size;
+    uint64_t h = FNV_OFFSET ^ (uint64_t)(v.size);
     for (size_t i = 0; i < v.size; ++i)
     {
         h ^= (uint8_t)v.data[i];
