@@ -115,7 +115,6 @@ static inline void* xk_PRIVATE_graph_offset(void* p, size_t off)
 {
     return p ? (void*)((char*)p - off) : NULL;
 }
-
 static inline const void* xk_PRIVATE_graph_offset_const(const void* p, size_t off)
 {
     return p ? (const void*)((const char*)p - off) : NULL;
