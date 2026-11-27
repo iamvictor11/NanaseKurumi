@@ -73,8 +73,11 @@
     } xksmallflatmapentry(K, V, N); \
     typedef struct xksmallflatmap(K, V, N) \
     { \
+        union \
+        { \
         xksmallflatmapentry(K, V, N) storage[((N) ? (N) : 1)]; \
         xksmallflatmapentry(K, V, N)* heap; \
+        }; \
         size_t size; \
         size_t capacity; \
     } xksmallflatmap(K, V, N); \
@@ -102,11 +105,11 @@
 #define xksmallflatmapimpl(K, V, N, ATTR) \
     static inline xksmallflatmapentry(K, V, N)* XK_PRIVATE_SMALLFLATMAP_NAME(xk_PRIVATE_smallflatmap_data_, K, V, N)(xksmallflatmap(K, V, N)* me) \
     { \
-        return me->heap ? me->heap : me->storage; \
+        return me->capacity > (size_t)(N) ? me->heap : me->storage; \
     } \
     static inline const xksmallflatmapentry(K, V, N)* XK_PRIVATE_SMALLFLATMAP_NAME(xk_PRIVATE_smallflatmap_data_const_, K, V, N)(const xksmallflatmap(K, V, N)* me) \
     { \
-        return me->heap ? me->heap : me->storage; \
+        return me->capacity > (size_t)(N) ? me->heap : me->storage; \
     } \
     static inline size_t XK_PRIVATE_SMALLFLATMAP_NAME(xk_PRIVATE_smallflatmap_lowerbound_, K, V, N)(const xksmallflatmap(K, V, N)* me, K key) \
     { \
@@ -124,20 +127,18 @@
     } \
     ATTR void xksmallflatmapinit(K, V, N)(xksmallflatmap(K, V, N)* me) \
     { \
-        me->heap = NULL; \
         me->size = 0; \
         me->capacity = (size_t)(N); \
     } \
     ATTR void xksmallflatmapfree(K, V, N)(xksmallflatmap(K, V, N)* me) \
     { \
-        if (me->heap) xkfree(me->heap); \
-        me->heap = NULL; \
+        if (me->capacity > (size_t)(N)) xkfree(me->heap); \
         me->size = 0; \
         me->capacity = (size_t)(N); \
     } \
     ATTR void xksmallflatmapreserve(K, V, N)(xksmallflatmap(K, V, N)* me, size_t cap) \
     { \
-        if (!me->heap && me->capacity < (size_t)(N)) \
+        if (me->capacity < (size_t)(N)) \
             me->capacity = (size_t)(N); \
         if (cap <= me->capacity) return; \
         const size_t maxcap = (size_t)-1 / sizeof(xksmallflatmapentry(K, V, N)); \
@@ -155,7 +156,7 @@
             } \
         } \
         xksmallflatmapentry(K, V, N)* p; \
-        if (me->heap) \
+        if (me->capacity > (size_t)(N)) \
         { \
             p = (xksmallflatmapentry(K, V, N)*)xkrealloc(me->heap, nc * sizeof(xksmallflatmapentry(K, V, N))); \
             if (!p) xkabort(); \
@@ -177,12 +178,12 @@
         if (me->capacity == target) return; \
         if (me->size <= base) \
         { \
-            if (me->heap) \
+            if (me->capacity > base) \
             { \
+                xksmallflatmapentry(K, V, N)* h = me->heap; \
                 if (me->size) \
-                    memcpy(me->storage, me->heap, me->size * sizeof(xksmallflatmapentry(K, V, N))); \
-                xkfree(me->heap); \
-                me->heap = NULL; \
+                    memcpy(me->storage, h, me->size * sizeof(xksmallflatmapentry(K, V, N))); \
+                xkfree(h); \
             } \
             me->capacity = base; \
         } \
@@ -288,13 +289,13 @@
     ATTR void xksmallflatmapmove(K, V, N)(xksmallflatmap(K, V, N)* dst, xksmallflatmap(K, V, N)* src) \
     { \
         if (dst == src) return; \
-        if (src->heap) \
+        if (src->capacity > (size_t)(N)) \
         { \
-            if (dst->heap && dst->heap != src->heap) xkfree(dst->heap); \
+            if (dst->capacity > (size_t)(N) && dst->heap != src->heap) \
+                xkfree(dst->heap); \
             dst->heap = src->heap; \
             dst->size = src->size; \
             dst->capacity = src->capacity; \
-            src->heap = NULL; \
             src->size = 0; \
             src->capacity = (size_t)(N); \
         } \
@@ -332,7 +333,7 @@
     } \
     ATTR size_t xksmallflatmapcapacity(K, V, N)(const xksmallflatmap(K, V, N)* me) \
     { \
-        return me->heap ? me->capacity : (size_t)(N); \
+        return me->capacity > (size_t)(N) ? me->capacity : (size_t)(N); \
     } \
     ATTR int xksmallflatmapempty(K, V, N)(const xksmallflatmap(K, V, N)* me) \
     { \
@@ -341,22 +342,12 @@
 
 // MARK: sugar
 #define xksmallflatmapforeach(K, V, N, ME, IT) \
-    for (xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base, \
-        *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_end; ++IT)
+    for (xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base, *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_end; ++IT)
 #define xksmallflatmapforeach_const(K, V, N, ME, IT) \
-    for (const xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base, \
-        *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_end; ++IT)
+    for (const xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base, *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_end; ++IT)
 #define xksmallflatmaprforeach(K, V, N, ME, IT) \
-    for (xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_base && (--IT, 1);)
+    for (xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_base && (--IT, 1);)
 #define xksmallflatmaprforeach_const(K, V, N, ME, IT) \
-    for (const xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_base && (--IT, 1);)
+    for (const xksmallflatmapentry(K, V, N)* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_base && (--IT, 1);)
 
 #endif

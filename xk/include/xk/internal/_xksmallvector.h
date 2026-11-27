@@ -71,8 +71,11 @@
 #define xksmallvectordecl(T, N, ATTR) \
     typedef struct xksmallvector(T, N) \
     { \
+        union \
+        { \
         T storage[((N) ? (N) : 1)]; \
         T* heap; \
+        }; \
         size_t size; \
         size_t capacity; \
     } xksmallvector(T, N); \
@@ -119,28 +122,26 @@
 #define xksmallvectorimpl(T, N, ATTR) \
     static inline T* XK_PRIVATE_SMALLVECTOR_NAME(xk_PRIVATE_smallvector_data_, T, N)(xksmallvector(T, N)* me) \
     { \
-        return me->heap ? me->heap : me->storage; \
+        return me->capacity > (size_t)(N) ? me->heap : me->storage; \
     } \
     static inline const T* XK_PRIVATE_SMALLVECTOR_NAME(xk_PRIVATE_smallvector_data_const_, T, N)(const xksmallvector(T, N)* me) \
     { \
-        return me->heap ? me->heap : me->storage; \
+        return me->capacity > (size_t)(N) ? me->heap : me->storage; \
     } \
     ATTR void xksmallvectorinit(T, N)(xksmallvector(T, N)* me) \
     { \
-        me->heap = NULL; \
         me->size = 0; \
         me->capacity = (size_t)(N); \
     } \
     ATTR void xksmallvectorfree(T, N)(xksmallvector(T, N)* me) \
     { \
-        if (me->heap) xkfree(me->heap); \
-        me->heap = NULL; \
+        if (me->capacity > (size_t)(N)) xkfree(me->heap); \
         me->size = 0; \
         me->capacity = (size_t)(N); \
     } \
     ATTR void xksmallvectorreserve(T, N)(xksmallvector(T, N)* me, size_t cap) \
     { \
-        if (!me->heap && me->capacity < (size_t)(N)) \
+        if (me->capacity < (size_t)(N)) \
             me->capacity = (size_t)(N); \
         if (cap <= me->capacity) return; \
         const size_t maxcap = (size_t)-1 / sizeof(T); \
@@ -158,7 +159,7 @@
             } \
         } \
         T* p; \
-        if (me->heap) \
+        if (me->capacity > (size_t)(N)) \
         { \
             p = (T*)xkrealloc(me->heap, nc * sizeof(T)); \
             if (!p) xkabort(); \
@@ -187,11 +188,11 @@
         if (me->capacity == target) return; \
         if (me->size <= base) \
         { \
-            if (me->heap) \
+            if (me->capacity > base) \
             { \
-                if (me->size) memcpy(me->storage, me->heap, me->size * sizeof(T)); \
-                xkfree(me->heap); \
-                me->heap = NULL; \
+                T* h = me->heap; \
+                if (me->size) memcpy(me->storage, h, me->size * sizeof(T)); \
+                xkfree(h); \
             } \
             me->capacity = base; \
         } \
@@ -419,13 +420,13 @@
     ATTR void xksmallvectormove(T, N)(xksmallvector(T, N)* dst, xksmallvector(T, N)* src) \
     { \
         if (dst == src) return; \
-        if (src->heap) \
+        if (src->capacity > (size_t)(N)) \
         { \
-            if (dst->heap && dst->heap != src->heap) xkfree(dst->heap); \
+            if (dst->capacity > (size_t)(N) && dst->heap != src->heap) \
+                xkfree(dst->heap); \
             dst->heap = src->heap; \
             dst->size = src->size; \
             dst->capacity = src->capacity; \
-            src->heap = NULL; \
             src->size = 0; \
             src->capacity = (size_t)(N); \
         } \
@@ -457,7 +458,7 @@
     } \
     ATTR size_t xksmallvectorcapacity(T, N)(const xksmallvector(T, N)* me) \
     { \
-        return me->heap ? me->capacity : (size_t)(N); \
+        return me->capacity > (size_t)(N) ? me->capacity : (size_t)(N); \
     } \
     ATTR int xksmallvectorempty(T, N)(const xksmallvector(T, N)* me) \
     { \
@@ -475,23 +476,13 @@
     }
 
 // MARK: sugar
-#define xksmallvectorforeach(T, ME, IT) \
-    for (T* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base, \
-        *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_end; ++IT)
-#define xksmallvectorforeach_const(T, ME, IT) \
-    for (const T* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base, \
-        *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_end; ++IT)
-#define xksmallvectorrforeach(T, ME, IT) \
-    for (T* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_base && (--IT, 1);)
-#define xksmallvectorrforeach_const(T, ME, IT) \
-    for (const T* IT##_HIDE_base = ((ME)->heap ? (ME)->heap : (ME)->storage), \
-        *IT = IT##_HIDE_base + (ME)->size; \
-        IT != IT##_HIDE_base && (--IT, 1);)
+#define xksmallvectorforeach(T, N, ME, IT) \
+    for (T* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base, *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_end; ++IT)
+#define xksmallvectorforeach_const(T, N, ME, IT) \
+    for (const T* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base, *IT##_HIDE_end = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_end; ++IT)
+#define xksmallvectorrforeach(T, N, ME, IT) \
+    for (T* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_base && (--IT, 1);)
+#define xksmallvectorrforeach_const(T, N, ME, IT) \
+    for (const T* IT##_HIDE_base = ((ME)->capacity > (size_t)(N) ? (ME)->heap : (ME)->storage), *IT = IT##_HIDE_base + (ME)->size; IT != IT##_HIDE_base && (--IT, 1);)
 
 #endif

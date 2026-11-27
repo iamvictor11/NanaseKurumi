@@ -75,8 +75,11 @@
 #define xksmallstringdecl(N, ATTR) \
     typedef struct xksmallstring(N) \
     { \
+        union \
+        { \
         char storage[((N) ? ((N) + 1) : 1)]; \
         char* heap; \
+        }; \
         size_t size; \
         size_t capacity; \
     } xksmallstring(N); \
@@ -131,30 +134,28 @@
 #define xksmallstringimpl(N, ATTR) \
     static inline char* XK_CAT(xk_PRIVATE_smallstring_data_, N)(xksmallstring(N)* me) \
     { \
-        return me->heap ? me->heap : me->storage; \
+        return me->capacity > (size_t)(N) ? me->heap : me->storage; \
     } \
     static inline const char* XK_CAT(xk_PRIVATE_smallstring_data_const_, N)(const xksmallstring(N)* me) \
     { \
-        return me->heap ? me->heap : me->storage; \
+        return me->capacity > (size_t)(N) ? me->heap : me->storage; \
     } \
     ATTR void xksmallstringinit(N)(xksmallstring(N)* me) \
     { \
-        me->heap = NULL; \
         me->size = 0; \
         me->capacity = (size_t)(N); \
         me->storage[0] = 0; \
     } \
     ATTR void xksmallstringfree(N)(xksmallstring(N)* me) \
     { \
-        if (me->heap) xkfree(me->heap); \
-        me->heap = NULL; \
+        if (me->capacity > (size_t)(N)) xkfree(me->heap); \
         me->size = 0; \
         me->capacity = (size_t)(N); \
         me->storage[0] = 0; \
     } \
     ATTR void xksmallstringreserve(N)(xksmallstring(N)* me, size_t cap) \
     { \
-        if (!me->heap && me->capacity < (size_t)(N)) \
+        if (me->capacity < (size_t)(N)) \
             me->capacity = (size_t)(N); \
         if (cap <= me->capacity) return; \
         if (cap > (size_t)-1 - 1) xkabort(); \
@@ -170,7 +171,7 @@
         } \
         if (nc > (size_t)-1 - 1) xkabort(); \
         char* p; \
-        if (me->heap) \
+        if (me->capacity > (size_t)(N)) \
         { \
             p = (char*)xkrealloc(me->heap, nc + 1); \
             if (!p) xkabort(); \
@@ -183,7 +184,7 @@
         } \
         me->heap = p; \
         me->capacity = nc; \
-        me->heap[me->size] = 0; \
+        p[me->size] = 0; \
     } \
     ATTR void xksmallstringresize(N)(xksmallstring(N)* me, size_t n) \
     { \
@@ -201,12 +202,12 @@
         if (me->capacity == target) return; \
         if (me->size <= base) \
         { \
-            if (me->heap) \
+            if (me->capacity > base) \
             { \
-                memcpy(me->storage, me->heap, me->size); \
+                char* h = me->heap; \
+                memcpy(me->storage, h, me->size); \
                 me->storage[me->size] = 0; \
-                xkfree(me->heap); \
-                me->heap = NULL; \
+                xkfree(h); \
             } \
             me->capacity = base; \
         } \
@@ -216,7 +217,7 @@
             if (!p) xkabort(); \
             me->heap = p; \
             me->capacity = me->size; \
-            me->heap[me->size] = 0; \
+            p[me->size] = 0; \
         } \
     } \
     ATTR void xksmallstringpush(N)(xksmallstring(N)* me, char e) \
@@ -467,13 +468,13 @@
     ATTR void xksmallstringmove(N)(xksmallstring(N)* dst, xksmallstring(N)* src) \
     { \
         if (dst == src) return; \
-        if (src->heap) \
+        if (src->capacity > (size_t)(N)) \
         { \
-            if (dst->heap && dst->heap != src->heap) xkfree(dst->heap); \
+            if (dst->capacity > (size_t)(N) && dst->heap != src->heap) \
+                xkfree(dst->heap); \
             dst->heap = src->heap; \
             dst->size = src->size; \
             dst->capacity = src->capacity; \
-            src->heap = NULL; \
             src->size = 0; \
             src->capacity = (size_t)(N); \
             src->storage[0] = 0; \
@@ -543,7 +544,7 @@
     } \
     ATTR size_t xksmallstringcapacity(N)(const xksmallstring(N)* me) \
     { \
-        return me->heap ? me->capacity : (size_t)(N); \
+        return me->capacity > (size_t)(N) ? me->capacity : (size_t)(N); \
     } \
     ATTR int xksmallstringempty(N)(const xksmallstring(N)* me) \
     { \
